@@ -1,0 +1,221 @@
+/* external CSS */
+/* external CSS is lowest priority */
+/* external CSS is best way to manage because it can be shared by multiple pages */
+* {
+  font-size: 20px;
+  color: black;
+  font-weight: bold;
+  font-family: sans-sans-serif;
+}
+
+p {
+  background-color: yellow;
+  font-family: Arial;
+  text-align: center;
+  color: red;
+}
+
+p::first-line {
+  color: blue;
+}
+
+p:hover {
+  color: orange;
+}
+
+h1 {
+  color: red;
+  background-color: blue;
+  font-family: Oswald, sans-serif;
+  text-shadow: 10px 15px 5px black;
+}
+
+/* CSS generater makes CSS much easier */
+h1:hover {
+  color: yellow;
+  font-size: 50px
+}
+
+#FirstH2 {
+  color: brown;
+}
+
+.SecondH2 {
+  color: red;
+}
+
+#iSecondH2 {
+  /* id has highest priority */
+  color: black;
+}
+
+h2 {
+  color: blue;
+}
+
+div p {
+  color: black;
+}
+
+ul>p {
+  font-size: 2em;
+  /* em = unit font-size */
+}
+
+/* equals to  ul p {} */
+div+p {
+  /* adjacent sibling combine */
+}
+
+div~p {
+  /* general sibling relationship */
+  /* selects anything after that */
+}
+
+h1, h2, h3 {
+  /* combine selection */
+  text-align: center;
+}
+
+* {
+  /* set the default browser style */
+  font-size: 20px;
+}
+
+h1 {
+  /* font-size: 30px; aboslute size = not dynamic */
+  /* font-size: 1rem; 1 unit of default font size of browser */
+  /* font-family: style of fonts, favorite to less favorite */
+}
+
+/* h1#s2 {any id = s2 in h1} */
+h6 {
+  /* font shorthand technique */
+  font: italic bold 12pt "Helvetica", sans-serif;
+  /* formatting text */
+  text-align: left;
+  text-decoration: underline;
+  letter-spacing: 0px;
+  text-indent: 70px;
+  text-transform: capitalize;
+  text-shadow: 5px 10px 3px blue;
+  word-wrap: normal;
+}
+
+.logo {
+  display: inline-block;
+  width: 33%;
+}
+
+.logo:hover {
+  background-color: orange;
+}
+
+.logo>img {
+  width: 100%;
+}
+
+.search {
+  margin-left: 5%;
+  width: 50%;
+  display: inline-block;
+}
+
+.inputbox {
+  width: 80%;
+  color: orange;
+  border-width: 1%;
+  border-color: orange;
+  background-color: white;
+}
+
+.queryButton {
+  width: 3% border-width: 1%;
+  border-color: orange;
+  background-color: white;
+  color: orange;
+}
+
+.main {
+  margin-top: 3%;
+}
+
+.key-info {
+  color: rgb(255, 223, 0);
+}
+
+.main .left {
+  float: left;
+  margin-right: 5%;
+  height: 100%;
+  display: inline-block;
+  width: 25%;
+  background-color: black;
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.13);
+}
+
+.key-menu li {
+  color: white;
+  text-align: center;
+  list-style: none;
+}
+
+.key-menu li:hover {
+  color: yellow;
+}
+
+.right {
+  display: inline-block;
+  width: 60%;
+  margin-top: 1%
+}
+
+.item-box {
+  border-bottom-width: thin;
+  border-bottom-style: solid;
+  border-bottom-color: yellow;
+  margin-bottom: 5%;
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.13);
+  height: 35vh;
+}
+
+.name{
+  font-size: 1.5vw;
+  color: orange;
+}
+
+.summary {
+  font-size: 1.0vw;
+}
+
+.item-box .desc img {
+  height: 90%;
+  float:left;
+}
+
+.clearfix {
+  overflow: auto;
+}
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.keyword span{
+  color: orange;
+  bottom:0;
+}
+.keyword {
+margin-top: 60px;
+    vertical-align: bottom;
+    bottom:0;
+    position:relative;
+}
+
+.fin {
+  margin-top: 10px;
+  font-family: Arial;
+  text-align: right;
+
+}
