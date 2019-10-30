@@ -15,6 +15,7 @@
 
 ### 진행상황 
 
+### - requirement 2차 checkpoint : system requirement까지 (2019/10/31)
 ### - requirement 1차 checkpoint : user requirement까지 (2019/10/30)
 ### - proposal 마지막 수정 (2019/10/19)
 ### - proposal 완료 (2019/10/11)
