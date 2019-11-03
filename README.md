@@ -14,7 +14,8 @@
 ## - 김진태
 
 ### 진행상황 
-
+### - requirement 4차 checkpoint : 전체 프로젝트 확인, 비교 및 feedback (2019/11/03) 
+### - requirement 3차 checkpoint : appendix 전까지 (2019/11/03)
 ### - requirement 2차 checkpoint : system requirement까지 (2019/10/31)
 ### - requirement 1차 checkpoint : user requirement까지 (2019/10/30)
 ### - proposal 마지막 수정 (2019/10/19)
