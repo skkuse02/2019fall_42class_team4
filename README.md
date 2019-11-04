@@ -14,6 +14,7 @@
 ## - 김진태
 
 ### 진행상황 
+### - design specification 1차 checkpoint : System architecture overall, frontend, backend 작성 (2019/11/06)
 ### - requirement 완료 (2019/11/03)
 ### - requirement 4차 checkpoint : 전체 프로젝트 확인, 비교 및 feedback (2019/11/03) 
 ### - requirement 3차 checkpoint : appendix 전까지 (2019/11/03)
