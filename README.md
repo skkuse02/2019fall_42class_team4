@@ -14,6 +14,7 @@
 ## - 김진태
 
 ### 진행상황 
+### - design specification 4차 checkpoint : Testing Plan, State Diagram, Package Diagram 보완 (2019/11/12)
 ### - design specification 3차 checkpoint : Protocol, Database Design 작성 (2019/11/09)
 ### - design specification 2차 checkpoint : preface, introduction, testing plan, development plan outline 작성 (2019/11/08)
 ### - design specification 1차 checkpoint : System architecture overall, frontend, backend 작성 (2019/11/06)
