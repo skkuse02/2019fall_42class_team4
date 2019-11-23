@@ -29,11 +29,13 @@
     @vue/cli 4.0.5
     ```
 1. project dependancy install
+    ./src/frontend 위치에서
     ```
     yarn install
     ```
 
 ### localhost로 프로젝트 serve
+./src/frontend 위치에서
 ```
 yarn serve
 ```
