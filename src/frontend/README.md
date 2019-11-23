@@ -13,7 +13,6 @@
 1. yarn 설치
     ```
     npm i -g yarn
-
     ```
 1. yarn 버전 확인
     ```
@@ -23,7 +22,6 @@
 1. vue/cli 설치
     ```
     npm install -g @vue/cli
-    
     ```
 1. vue/cli 버전 확인
     ```
