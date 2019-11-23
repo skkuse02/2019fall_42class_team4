@@ -19,10 +19,25 @@
                 <router-link :to="{name: 'itemDetail', params: {id:item.id}}"><h1>{{item.name}}</h1></router-link>
               </v-card-title>
               <v-card-text>
+                <!-- 상품 사진 -->
                 <v-img :src=item.img_src height="300" contain></v-img>
+
+                <!-- 상품 정보 -->
+                <strong>상품 정보</strong>
+                <br>
                 <div>{{item.info}}</div>
-                <div>price: {{item.price}}</div>
-                <div>item keywords: {{item.rep_keywords}}</div>
+                <br>
+
+                <!-- 상품 가격 -->
+                <div><strong>가격: </strong>{{item.price}}$</div>
+                <br>
+
+                <!-- 상품 키워드 -->
+                <strong>상품 키워드</strong>
+                <br>
+                <div v-for="keyword in item.rep_keywords" :key="keyword.keyword">
+                  {{keyword.keyword}}: {{keyword.point}}
+                </div>
               </v-card-text>
             </v-card>
           </v-flex>
@@ -35,6 +50,7 @@
 <script>
 export default {
   created () {
+    // 아이템 전체 목록 불러오기
     this.$http.get('/api/items').then((res) => {
       this.items = res.data
     })
