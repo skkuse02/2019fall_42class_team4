@@ -32,14 +32,20 @@
             </div>
             <br>
             <!-- 상품 리뷰 목록 -->
-            <strong>리뷰 목록</strong>
+            <h2>리뷰 목록</h2>
             <div v-for="review in curItemReviews" :key="review.id">
-              <div>리뷰 번호: {{review.id}}</div>
+              <div><strong>리뷰 번호: {{review.id}}</strong></div>
               <div>리뷰 작성날짜: {{review.date}}</div>
               <div>리뷰 작성자: {{review.writer}}</div>
               <div>상품 평점: {{review.item_score}}</div>
               <div>리뷰 평점: {{review.review_score}}</div>
               <div>리뷰 내용: {{review.contents}}</div>
+              <br>
+
+              <div><strong>리뷰 키워드</strong></div>
+              <div v-for="keyword in review.keyword_list" :key="keyword.keyword">
+                <div>{{keyword.keyword}}: {{keyword.point}}</div>
+              </div>
               <br>
             </div>
           </v-card-text>
@@ -47,15 +53,30 @@
       </v-flex>
 
       <!-- 상품 비교 카드 -->
-      <v-flex xs4 sm4 md4 lg4 v-for="item in similarItems" :key="item.id">
+      <v-flex xs4 sm4 md4 lg4 v-for="i in similarItems.length" :key="i">
         <v-card height="100%">
           <v-card-title primary-title>
             <div>
-              <h2>{{item.name}}</h2>
+              <h2>{{similarItems[i-1].name}}</h2>
             </div>
           </v-card-title>
           <v-card-text>
-              <h4>{{item.rep_reviews}}</h4>
+              <h4>대표 리뷰</h4>
+              <div v-for="review in similarItemsReviews[i-1]" :key="review.id">
+                <div><strong>리뷰 번호: {{review.id}}</strong></div>
+                <div>리뷰 작성날짜: {{review.date}}</div>
+                <div>리뷰 작성자: {{review.writer}}</div>
+                <div>상품 평점: {{review.item_score}}</div>
+                <div>리뷰 평점: {{review.review_score}}</div>
+                <div>리뷰 내용: {{review.contents}}</div>
+                <br>
+
+                <div><strong>리뷰 키워드</strong></div>
+                <div v-for="keyword in review.keyword_list" :key="keyword.keyword">
+                  <div>{{keyword.keyword}}: {{keyword.point}}</div>
+                </div>
+                <br>
+              </div>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -77,40 +98,40 @@ export default {
     }
   },
   created () {
-    // 현재 아이템 불러오기
-    var itemId = this.$route.params.id
-    this.$http.get('/api/items/' + itemId)
-      .then((res) => {
-        this.curItem = res.data[0]
-      })
+    const run = async () => {
+      // 현재 아이템 불러오기
+      const itemId = this.$route.params.id
+      const res = await this.$http.get('/api/items/' + itemId)
+      this.curItem = res.data[0]
+
       // 현재 아이템의 리뷰 불러오기
-      .then(() => {
-        this.curItem.rep_reviews.forEach((reviewId) => {
-          this.$http.get('/api/reviews/' + reviewId)
-            .then((res) => {
-              this.curItemReviews.push(res.data[0])
-            })
-        })
-      })
-      // 현재 선택된 아이템과 비슷한 아이템 불러오기
-      .then(() => {
-        this.curItem.similar_items.forEach((similar) => {
-          this.$http.get('/api/items/' + similar)
-            .then((res) => {
-              this.similarItems.push(res.data[0])
-            })
-        })
-      })
+      for (let i in this.curItem.rep_reviews) {
+        const reviewId = this.curItem.rep_reviews[i]
+        const res = await this.$http.get('/api/reviews/' + reviewId)
+        this.curItemReviews.push(res.data[0])
+      }
+
+      // 유사 아이템 불러오기
+      for (let i in this.curItem.similar_items) {
+        const similarId = this.curItem.similar_items[i]
+        const res = await this.$http.get('/api/items/' + similarId)
+        this.similarItems.push(res.data[0])
+      }
+
       // 유사 아이템의 리뷰 불러오기
-      .then(() => {
-        console.log(this.similarItems)
-        console.log(this.similarItems[0])
-        // Vue 특유의 Observer 형식으로 배열이 바뀌어서 자바스크립트 내에서 배열이 사용 불가하네요...
-        // 어케 하지... ㅠㅠ
-      })
-      .catch((err) => {
-        console.error(err)
-      })
+      for (let i in this.similarItems) {
+        var repReviews = this.similarItems[i].rep_reviews
+        var asembling = []
+        for (let j in repReviews) {
+          const reviewId = repReviews[j]
+          const res = await this.$http.get('/api/reviews/' + reviewId)
+          asembling.push(res.data[0])
+        }
+        this.similarItemsReviews.push(asembling)
+      }
+    }
+
+    run()
   }
 }
 </script>
