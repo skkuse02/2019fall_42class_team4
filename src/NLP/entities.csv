@@ -1,0 +1,23 @@
+mentions,metadata,name,type,salience,sentiment
+[object Object],[object Object],headphone set,OTHER,0.36849159002304077,-0.6000000238418579
+[object Object],[object Object],sound quality,OTHER,0.1361001878976822,-0.8999999761581421
+[object Object],[object Object],musician,PERSON,0.1343066394329071,0
+[object Object],[object Object],bass,OTHER,0.05322142317891121,0.4000000059604645
+[object Object],[object Object],way,OTHER,0.05322142317891121,-0.8999999761581421
+[object Object],[object Object],treble,OTHER,0.05322142317891121,-0.10000000149011612
+[object Object],[object Object],white noise,OTHER,0.025990569964051247,0
+[object Object],[object Object],Mids,OTHER,0.02579599991440773,0
+[object Object],[object Object],white noise,OTHER,0.02415667660534382,0
+[object Object],[object Object],music,WORK_OF_ART,0.019851529970765114,-0.4000000059604645
+[object Object],[object Object],noise videos,WORK_OF_ART,0.016135241836309433,-0.6000000238418579
+[object Object],[object Object],albums,WORK_OF_ART,0.012097631581127644,0
+[object Object],[object Object],concerto,OTHER,0.012097631581127644,-0.10000000149011612
+[object Object],[object Object],youtube,OTHER,0.010413269512355328,-0.5
+[object Object],[object Object],sound engineer experience,OTHER,0.009625190868973732,0.20000000298023224
+[object Object],[object Object],expert,PERSON,0.009625190868973732,0
+[object Object],[object Object],Led Zeppelin,WORK_OF_ART,0.009522578679025173,0
+[object Object],[object Object],Physical Graffiti,WORK_OF_ART,0.009522578679025173,0
+[object Object],[object Object],Rachmaninov,PERSON,0.007160230074077845,0
+[object Object],[object Object],Hillsong United,ORGANIZATION,0.003150541102513671,0
+[object Object],[object Object],Zion,LOCATION,0.003150541102513671,0
+[object Object],[object Object],Maxim Vengerov,PERSON,0.003141904016956687,0
