@@ -11,9 +11,8 @@ npm install
 npm install firebase
 ```
 
-1. firebaseConfig.json
-    backend/firebaseConfig.json
-    만들고 내용입력
+1. firebaseConfig.json<br>
+    backend/firebaseConfig.json 만들고 내용입력
 
 ### 프로젝트 실행
 
