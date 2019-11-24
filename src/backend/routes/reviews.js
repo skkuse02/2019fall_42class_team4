@@ -9,9 +9,49 @@ if (!firebase.apps.length) {
 }
 var firestore = firebase.firestore();
 
+/*
+작성자: 김진태
+items.js의 router.get 변경사항 설명
 
-/* GET users listing. */
+front-end에서는 리뷰들이 큰 배열에 담겨있다고 가정
+ex)
+[
+  {
+    ...
+  },
+  {
+    ...
+  },
+  {
+    ...
+  }
+]
+그래서 reviews라는 배열을 만든 후, firebase에서 불러온 데이터를 push
+그 후, res.sned(reviews)
+*/
+// get all reviews
+router.get('/', function(req, res, next){
+  var reviews = []
+  firestore.collection('/reviews').get()
+    .then((snapshot) => {
+      if(snapshot.empty){
+        console.log('No matching documents');
+        return;
+      }
+      snapshot.forEach((doc) => {
+        console.log(doc.id, '=>', doc.data());
+        reviews.push(doc.data())
+      });
+      res.send(reviews);
+    })
+    .catch((err) => {
+      console.log('Error getting documents', err);
+  });
+});
+
+// get Individual review
 router.get('/:id', function(req, res, next){
+  var reviews = []
   firestore.collection('/reviews').where('id', '==', Number(req.params.id)).get()
     .then((snapshot) => {
       if(snapshot.empty){
@@ -20,12 +60,13 @@ router.get('/:id', function(req, res, next){
       }
       snapshot.forEach((doc) => {
         console.log(doc.id, '=>', doc.data());
+        reviews.push(doc.data())
       });
+      res.send(reviews)
     })
     .catch((err) => {
       console.log('Error getting documents', err);
   });
-  res.send('Data Get Item');
 });
 
 router.post('/', function(req, res, next){
