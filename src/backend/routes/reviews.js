@@ -1,13 +1,13 @@
-var express = require('express');
-var router = express.Router();
+let express = require('express');
+let router = express.Router();
 
-var firebase = require('firebase');
-var firebaseConfig = require('../firebaseConfig.json');
+let firebase = require('firebase');
+let firebaseConfig = require('../firebaseConfig.json');
 
 if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
 }
-var firestore = firebase.firestore();
+let firestore = firebase.firestore();
 
 /*
 작성자: 김진태
@@ -30,11 +30,11 @@ ex)
 그 후, res.sned(reviews)
 */
 // get all reviews
-router.get('/', function(req, res, next){
-  var reviews = []
+router.get('/', function (req, res, next) {
+  let reviews = []
   firestore.collection('/reviews').get()
     .then((snapshot) => {
-      if(snapshot.empty){
+      if (snapshot.empty) {
         console.log('No matching documents');
         return;
       }
@@ -46,15 +46,15 @@ router.get('/', function(req, res, next){
     })
     .catch((err) => {
       console.log('Error getting documents', err);
-  });
+    });
 });
 
 // get Individual review
-router.get('/:id', function(req, res, next){
-  var reviews = []
+router.get('/:id', function (req, res, next) {
+  let reviews = []
   firestore.collection('/reviews').where('id', '==', Number(req.params.id)).get()
     .then((snapshot) => {
-      if(snapshot.empty){
+      if (snapshot.empty) {
         console.log('No matching documents');
         return;
       }
@@ -66,18 +66,18 @@ router.get('/:id', function(req, res, next){
     })
     .catch((err) => {
       console.log('Error getting documents', err);
-  });
+    });
 });
 
-router.post('/', function(req, res, next){
+router.post('/', function (req, res, next) {
   firestore.collection('/reviews').add(req.body);
   res.send('Data Post Item');
 });
 
-router.put('/:id', function(req, res, next){
+router.put('/:id', function (req, res, next) {
   firestore.collection('/reviews').where('id', '==', Number(req.params.id)).get()
     .then((snapshot) => {
-      if(snapshot.empty){
+      if (snapshot.empty) {
         console.log('No matching documents');
         return;
       }
@@ -88,14 +88,14 @@ router.put('/:id', function(req, res, next){
     })
     .catch((err) => {
       console.log('Error getting documents', err);
-  });
+    });
   res.send('Data Put Item');
 });
 
-router.delete('/:id', function(req, res, next){
+router.delete('/:id', function (req, res, next) {
   firestore.collection('/reviews').where('id', '==', Number(req.params.id)).get()
     .then((snapshot) => {
-      if(snapshot.empty){
+      if (snapshot.empty) {
         console.log('No matching documents');
         return;
       }
@@ -106,7 +106,7 @@ router.delete('/:id', function(req, res, next){
     })
     .catch((err) => {
       console.log('Error getting documents', err);
-  });
+    });
   res.send('Data Delete Item');
 });
 
