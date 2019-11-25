@@ -10,27 +10,7 @@ if (!firebase.apps.length) {
 }
 let firestore = firebase.firestore();
 
-/*
-작성자: 김진태
-items.js의 router.get 변경사항 설명
-
-front-end에서는 상품들이 큰 배열에 담겨있다고 가정
-ex)
-[
-  {
-    ...
-  },
-  {
-    ...
-  },
-  {
-    ...
-  }
-]
-그래서 items라는 배열을 만든 후, firebase에서 불러온 데이터를 push
-그 후, res.send(items)
-*/
-// get all items
+// get all items (it will be replaced by router.get('/?query',) {...} )
 router.get('/', function (req, res, next) {
   let items = []
   firestore.collection('/items').get()
