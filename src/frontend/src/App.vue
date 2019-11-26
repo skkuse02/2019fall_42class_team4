@@ -1,7 +1,8 @@
 <template>
   <v-app>
+    <!-- 상단 툴바 -->
     <toolbar @changeDrawer="drawer = !drawer"></toolbar>
-
+    <!-- 왼쪽 네비게이션 바 -->
     <v-navigation-drawer v-model="drawer" absolute temporary>
       <v-toolbar flat>
         <router-link :to="{name: 'Sign'}"><v-toolbar-title><v-icon>mdi-login-variant</v-icon>Login</v-toolbar-title></router-link>
@@ -18,7 +19,6 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-
     <v-content>
       <router-view/>
     </v-content>
