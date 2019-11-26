@@ -6,27 +6,27 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'Home',
     component: () => import('../views/Home.vue')
   },
   {
-    path: '/login',
-    name: 'login',
-    component: () => import('../views/login.vue')
+    path: '/Sign',
+    name: 'Sign',
+    component: () => import('../views/Sign.vue')
   },
   {
-    path: '/myPage',
-    name: 'myPage',
+    path: '/MyPage',
+    name: 'MyPage',
     component: () => import('../views/MyPage.vue')
   },
   {
     path: '/ItemDetail/:id',
-    name: 'itemDetail',
+    name: 'ItemDetail',
     component: () => import('../views/ItemDetail.vue')
   },
   {
     path: '/*',
-    name: 'notFound',
+    name: 'NotFound',
     component: () => import('../views/404.vue')
   }
 ]

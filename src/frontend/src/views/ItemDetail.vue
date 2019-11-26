@@ -1,7 +1,6 @@
 <template>
   <v-container fluid grid-list-md>
     <v-layout row wrap>
-
       <!-- 상품 상세 정보 표시할 카드 -->
       <v-flex xs12 sm12 md12 lg12>
         <v-card>
