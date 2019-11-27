@@ -1,20 +1,20 @@
-var express = require('express');
-var router = express.Router();
-var crypto = require('crypto');
-var session = require('express-session');
+let express = require('express');
+let router = express.Router();
+let crypto = require('crypto');
+let session = require('express-session');
 
 //firebase initialize
-var firebase = require('firebase');
-var firebaseConfig = require('../firebaseConfig.json');
+let firebase = require('firebase');
+let firebaseConfig = require('../firebaseConfig.json');
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
-var firestore = firebase.firestore();
+let firestore = firebase.firestore();
 
 router.post('/', function(req, res, next) {
-  var hashPW = crypto.createHash('sha512').update(req.body["PW"]).digest('base64');
-  var loginInfo = {};
+  let hashPW = crypto.createHash('sha512').update(req.body["PW"]).digest('base64');
+  let loginInfo = {};
   loginInfo['ID'] = req.body["ID"];
   loginInfo['PW'] = hashPW;
 

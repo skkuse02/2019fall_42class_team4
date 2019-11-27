@@ -1,17 +1,17 @@
-var express = require('express');
-var router = express.Router();
+let express = require('express');
+let router = express.Router();
 
-var firebase = require('firebase');
-var firebaseConfig = require('../firebaseConfig.json');
+let firebase = require('firebase');
+let firebaseConfig = require('../firebaseConfig.json');
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
-var firestore = firebase.firestore();
+let firestore = firebase.firestore();
 
 // get all items
 router.get('/', function(req, res, next){
-  var items = []
+  let items = []
   firestore.collection('/items').get()
     .then((snapshot) => {
       if(snapshot.empty){
@@ -33,7 +33,7 @@ router.get('/', function(req, res, next){
 
 // get Individual item
 router.get('/:id', function(req, res, next){
-  var items = []
+  let items = []
   firestore.collection('/items').where('id', '==', Number(req.params.id)).get()
     .then((snapshot) => {
       if(snapshot.empty){

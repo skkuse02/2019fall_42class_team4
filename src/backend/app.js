@@ -1,21 +1,21 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var session = require('express-session');
-var FileStore = require('session-file-store');
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
+let session = require('express-session');
+let FileStore = require('session-file-store');
 
-var indexRouter = require('./routes/index');
-var itemsRouter = require('./routes/items');
-var reviewsRouter = require('./routes/reviews');
-var usersRouter = require('./routes/users');
-var loginRouter = require('./routes/login');
-var logoutRouter = require('./routes/logout');
-var signupRouter = require('./routes/signup');
+let indexRouter = require('./routes/index');
+let itemsRouter = require('./routes/items');
+let reviewsRouter = require('./routes/reviews');
+let usersRouter = require('./routes/users');
+let loginRouter = require('./routes/login');
+let logoutRouter = require('./routes/logout');
+let signupRouter = require('./routes/signup');
 
 
-var app = express();
+let app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,13 +35,13 @@ app.use(session({
 }));
 
 //firebase
-var firebase = require('firebase');
-var firebaseConfig = require('./firebaseConfig.json');
+let firebase = require('firebase');
+let firebaseConfig = require('./firebaseConfig.json');
 
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
-var firestore = firebase.firestore();
+let firestore = firebase.firestore();
 
 //router
 app.use('/', indexRouter);

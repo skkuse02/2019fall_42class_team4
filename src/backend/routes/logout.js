@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var crypto = require('crypto');
-var session = require('express-session');
+let express = require('express');
+let router = express.Router();
+let crypto = require('crypto');
+let session = require('express-session');
 
 router.delete('/', function(req, res, next) {
   req.session.destroy();
