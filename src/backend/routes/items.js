@@ -1,94 +1,116 @@
-let express = require('express');
-let router = express.Router();
+var express = require('express');
+var router = express.Router();
 
-// use firebase
-let firebase = require('firebase');
-let firebaseConfig = require('../firebaseConfig.json');
+var firebase = require('firebase');
+var firebaseConfig = require('../firebaseConfig.json');
 
 if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfig);
 }
-let firestore = firebase.firestore();
+var firestore = firebase.firestore();
 
-// get all items (it will be replaced by router.get('/?query',) {...} )
-router.get('/', function (req, res, next) {
-  let items = []
+// get all items
+router.get('/', function(req, res, next){
+  var items = []
   firestore.collection('/items').get()
     .then((snapshot) => {
-      if (snapshot.empty) {
-        console.log('No matching documents');
+      if(snapshot.empty){
+        console.log('No Matching Items');
+        res.status(404).send('No Matching Items');
         return;
       }
       snapshot.forEach((doc) => {
         console.log(doc.id, '=>', doc.data());
         items.push(doc.data())
       });
-      res.send(items);
+      res.status(200).send(items);
     })
     .catch((err) => {
-      console.log('Error getting documents', err);
-    });
+      console.log('Error Getting Items', err);
+      res.status(400).send(err);
+  });
 });
 
-// get specific item by id
-router.get('/:id', function (req, res, next) {
-  let items = []
+// get Individual item
+router.get('/:id', function(req, res, next){
+  var items = []
   firestore.collection('/items').where('id', '==', Number(req.params.id)).get()
     .then((snapshot) => {
-      if (snapshot.empty) {
-        console.log('No matching documents');
+      if(snapshot.empty){
+        console.log('No Matching Items');
+        res.status(404).send('No Matching Items');
         return;
       }
       snapshot.forEach((doc) => {
         console.log(doc.id, '=>', doc.data());
         items.push(doc.data())
       });
-      res.send(items);
+      res.status(200).send(items);
     })
     .catch((err) => {
-      console.log('Error getting documents', err);
-    });
+      console.log('Error Getting Items', err);
+      res.status(400).send(err);
+  });
 });
 
-router.post('/', function (req, res, next) {
-  firestore.collection('/items').add(req.body);
-  res.send('Data Post Item');
-});
-
-router.put('/:id', function (req, res, next) {
+router.post('/', function(req, res, next){
   firestore.collection('/items').where('id', '==', Number(req.params.id)).get()
     .then((snapshot) => {
-      if (snapshot.empty) {
-        console.log('No matching documents');
+      if(snapshot.empty){
+        firestore.collection('/items').add(req.body);
+        console.log('Item Post');
+        res.status(201).send('Item Post');
+        return;
+      } else {
+        console.log('Item Already Exist');
+        res.status(400).send('Item Already Exist')
+      }
+    })
+    .catch((err) => {
+      console.log('Error Getting Items', err);
+      res.status(400).send(err);
+  });
+});
+
+router.put('/:id', function(req, res, next){
+  firestore.collection('/items').where('id', '==', Number(req.params.id)).get()
+    .then((snapshot) => {
+      if(snapshot.empty){
+        firestore.collection('/items').add(req.body);
+        console.log('No matching Items & Review Post');
+        res.status(201).send('No matching Items & Review Post');
         return;
       }
       snapshot.forEach((doc) => {
         firestore.collection('/items').doc(doc.id).set(req.body);
         console.log(doc.id, '=>', doc.data());
       });
+      res.status(200).send('Item Put');
     })
     .catch((err) => {
-      console.log('Error getting documents', err);
-    });
-  res.send('Data Put Item');
+      console.log('Error Getting Items', err);
+      res.status(400).send(err);
+  });
 });
 
-router.delete('/:id', function (req, res, next) {
+router.delete('/:id', function(req, res, next){
   firestore.collection('/items').where('id', '==', Number(req.params.id)).get()
     .then((snapshot) => {
-      if (snapshot.empty) {
-        console.log('No matching documents');
+      if(snapshot.empty){
+        console.log('No Matching Item');
+        res.status(404).send('No Matching Item')
         return;
       }
       snapshot.forEach((doc) => {
         firestore.collection('/items').doc(doc.id).delete();
         console.log(doc.id, '=>', doc.data());
       });
+      res.status(200).send('Item Delete')
     })
     .catch((err) => {
-      console.log('Error getting documents', err);
-    });
-  res.send('Data Delete Item');
+      console.log('Error Getting Items', err);
+      res.status(400).send(err);
+  });
 });
 
 module.exports = router;
