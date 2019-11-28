@@ -82,7 +82,15 @@ router.put('/:id', function(req, res, next){
         return;
       }
       snapshot.forEach((doc) => {
-        firestore.collection('/reviews').doc(doc.id).set(req.body);
+        if(req.params.content)  doc.content = req.params.content;
+        if(req.params.item_score) doc.item_score = req.params.item_score;
+        //following part is body for 리뷰평가.
+        if(req.params.critique_score) {
+          doc.critique_number = doc.critique_number + 1;
+          doc.critique_score = req.params.item_score;
+        }
+        //firestore.collection('/reviews').doc(doc.id).update({content: req.params.content});
+        firestore.collection('/reviews').doc(doc.id).set(doc);
         console.log(doc.id, '=>', doc.data());
       });
       res.status(200).send('Review Put');
