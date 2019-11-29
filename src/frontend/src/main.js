@@ -10,5 +10,8 @@ Vue.config.productionTip = false
 new Vue({
   router,
   store,
+  beforeCreate () {
+    this.$store.dispatch('getUserInfo')
+  },
   render: h => h(App)
 }).$mount('#app')
