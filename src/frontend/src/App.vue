@@ -5,7 +5,8 @@
     <!-- 왼쪽 네비게이션 바 -->
     <v-navigation-drawer v-model="drawer" absolute temporary>
       <v-toolbar flat>
-        <router-link :to="{name: 'Sign'}"><v-toolbar-title><v-icon>mdi-login-variant</v-icon>Login</v-toolbar-title></router-link>
+        <v-btn flat v-if="$store.state.userInfo" @click="Logout"><v-toolbar-title><v-icon>mdi-logout-variant</v-icon>Logout</v-toolbar-title></v-btn>
+        <v-btn flat v-else @click="Login"><v-toolbar-title><v-icon>mdi-login-variant</v-icon>Login</v-toolbar-title></v-btn>
       </v-toolbar>
       <v-divider></v-divider>
       <v-list>
@@ -40,6 +41,15 @@ export default {
   },
   components: {
     Toolbar
+  },
+  methods: {
+    Login () {
+      this.$router.push('/Sign')
+    },
+    Logout () {
+      this.$store.commit('LOGOUT')
+      this.$router.push('/').then().catch(e => { this.drawer = false })
+    }
   }
 }
 </script>
