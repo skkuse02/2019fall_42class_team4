@@ -40,6 +40,8 @@
 ### 
     {
         review_id: "review_id"
+        , author: "author"
+        , title: "title"
         , content: "content"
         , last_modified_time: last_modified_time
         , keyword: ["extracted_keyword1", ...]

@@ -44,4 +44,4 @@
 
 ## item_id = 18: [Vogek Headphones](https://www.amazon.com/Headphones-Lightweight-Portable-Fold-Flat-Microphone-Black/dp/B07MCCJ6VY/ref=sr_1_3?crid=1G7RCT65Y0R72&keywords=vogek+on+ear+headphones+with+mic&qid=1575083040&sprefix=vogek+on+ear%2Caps%2C318&sr=8-3)
 
-## item_id = 19: [Vogek Headphones](https://www.amazon.com/Betron-Headphones-Definition-Smartphones-Microphone/dp/B00XBZY0EI/ref=sr_1_3?crid=14HSQ2E8PTYME&keywords=betron+ysm1000&qid=1575083239&sprefix=betron+ysm%2Caps%2C304&sr=8-3)
+## item_id = 19: [Betron ysm1000](https://www.amazon.com/Betron-Headphones-Definition-Smartphones-Microphone/dp/B00XBZY0EI/ref=sr_1_3?crid=14HSQ2E8PTYME&keywords=betron+ysm1000&qid=1575083239&sprefix=betron+ysm%2Caps%2C304&sr=8-3)
