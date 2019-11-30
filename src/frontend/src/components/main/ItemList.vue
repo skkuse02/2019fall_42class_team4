@@ -1,32 +1,34 @@
 <template>
   <v-layout row wrap>
-    <v-flex d-flex xs12 sm12 md12 lg12 v-for="item in items" :key="item.id">
+    <v-flex d-flex xs4 sm4 md4 lg4 v-for="item in items" :key="item.id">
       <v-card>
-        <v-layout align-center justify-center row wrap>
-          <v-flex ma-2 d-flex xs12 sm12 md3 lg3>
-            <!-- 상품 사진 -->
-            <v-img :src=item.img_src height="300" contain></v-img>
-          </v-flex>
-          <v-flex d-flex xs12 sm12 md8 lg8>
-            <v-card-text>
-              <router-link :to="{name: 'ItemDetail', params: {id:item.id}}"><h2>{{item.name}}</h2></router-link>
-              <!-- 상품 정보 -->
-              <strong>상품 정보</strong>
-              <br>
-              <div>{{item.info}}</div>
-              <br>
-              <!-- 상품 가격 -->
-              <div><strong>가격: </strong>{{item.price}}$</div>
-              <br>
-              <!-- 상품 키워드 -->
-              <strong>상품 키워드</strong>
-              <br>
-              <div v-for="keyword in item.rep_keywords" :key="keyword.keyword">
-                {{keyword.keyword}}: {{keyword.point}}
-              </div>
-            </v-card-text>
-          </v-flex>
-        </v-layout>
+        <!-- 상품 사진 -->
+        <v-img :src=item.img_src height="200" contain></v-img>
+        <v-card-title primary-title>
+          <!-- 상품 이름 -->
+          <router-link :to="{name: 'ItemDetail', params: {id:item.id}}"><h2>{{item.name}}</h2></router-link>
+        </v-card-title>
+        <v-card-text>
+          <span style="color: blue;"><h6>Free Delivery</h6></span>
+          <!-- 상품 키워드 -->
+          <span v-for="keyword in item.rep_keywords" :key="keyword.keyword">
+            <!-- {{keyword.keyword}}: {{keyword.point}} -->
+            <v-chip disabled v-if="keyword.point > 0" color="blue" text-color="white">{{keyword.keyword}}</v-chip>
+            <v-chip disabled v-else color="red" text-color="white">{{keyword.keyword}}</v-chip>
+          </span>
+          <br>
+          <!-- 상품 별점 -->
+          <v-rating
+            v-model="item.scores"
+            readonly
+            small
+            background-color="orange lighten-3"
+            color="orange"
+            half-increments>
+          </v-rating>
+          <!-- 상품 가격 -->
+          <div><strong>price: </strong>{{item.price}}$</div>
+        </v-card-text>
       </v-card>
     </v-flex>
   </v-layout>
@@ -52,5 +54,9 @@ export default {
 a {
     text-decoration: none;
     color: black;
+}
+a:hover {
+  text-decoration: underline;
+  color: blue;
 }
 </style>

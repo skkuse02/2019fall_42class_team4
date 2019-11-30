@@ -1,9 +1,6 @@
 <template>
   <v-container fluid grid-list-md>
     <v-layout row wrap>
-      <v-flex d-flex xs12 sm12 md12 lg12>
-        <search-bar></search-bar>
-      </v-flex>
       <v-flex d-flex xs2 sm2 md2 lg2>
         <keyword-list></keyword-list>
       </v-flex>
@@ -18,11 +15,10 @@
 <script>
 import KeywordList from '../components/main/KeywordList'
 import ItemList from '../components/main/ItemList'
-import SearchBar from '../components/main/SearchBar'
 
 export default {
   components: {
-    KeywordList, ItemList, SearchBar
+    KeywordList, ItemList
   }
 }
 </script>
