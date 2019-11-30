@@ -7,8 +7,8 @@
         user_id: "user_id"
         , password: "hashed_password"
         , my_purchased_item: ["item_name", ...]
-        , my_posted_review: "review_id"
-        , my_recommend_review: ["review_id", ...]
+        , my_posted_review: "item_id(space)review_id"
+        , my_recommended_review: ["item_id(space)review_id", ...]
     }
 ##### 설명: User의 암호는 hash된 값으로 저장된다. 
 ##### 설명: User가 구매한 상품과, 남긴 리뷰, 추천한 리뷰들의 정보는 User 안에 저장된다. . 
@@ -19,6 +19,7 @@
 ### 
     {
         item_id: "item_id"
+        , item_name: ["item_tag1, ..."]
         , item_img
         , description_img
         , price: "price"
@@ -26,13 +27,14 @@
         , review: <<Review_Collection>>
         , total_star_sum: total_star_sum
         , total_review_num: total_review_num
-        , keywords_num: {"keyword1":total_keyword1_num, ...}
+        , keywords_map: {"keyword1":total_keyword1_num, ...}
     }
 ##### 설명: Item의 similar_id에 유사 상품의 item_id가 array로 묶여서 저장된다. 
+##### 설명: Item의 item_name에 상품의 tag가 array로 묶여서 저장된다. 상품 검색시에 활용된다. (전부 소문자로 저장 : case insensitive) 
 ##### 설명: Item의 review에 상품에 대한 Review가 Review_Collection으로 소속된다.
 ##### 설명: total_star_sum과 total_review_num을 통해서 상품 평점을 도출할 수 있다.
-##### 설명: keywords_num을 통해서 keyword_set에 해당하는 키워드가 각각 몇 번씩 나왔는지 알 수 있으며, 대표 키워드를 도출할 수 있다.
-##### 설명: total_star_su, total_review_num과 keyword_num은 새로운 리뷰가 들어올 때마다 업데이트하며, 상품 평점과 대표 키워드를 쉽게 구하기 위해서 사용되었다.
+##### 설명: keywords_map을 통해서 keyword_set에 해당하는 키워드가 각각 몇 번씩 나왔는지 알 수 있으며, 대표 키워드를 도출할 수 있다.
+##### 설명: total_star_sum, total_review_num과 keywords_map은 새로운 리뷰가 들어올 때마다 업데이트하며, 상품 평점과 대표 키워드를 쉽게 구하기 위해서 사용되었다.
 
 ## **Review**
 
@@ -40,6 +42,7 @@
     {
         review_id: "review_id"
         , content: "content"
+        , last_modified_time: last_modified_time
         , keyword: ["extracted_keyword1", ...]
         , star_num: star_num 
         , review_rating: total_num_of_review_recommendation
