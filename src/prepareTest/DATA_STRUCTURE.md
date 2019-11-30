@@ -20,8 +20,6 @@
     {
         item_id: "item_id"
         , item_name: ["item_tag1, ..."]
-        , item_img
-        , description_img
         , price: "price"
         , similar_item: ["item_id", ...]
         , review: <<Review_Collection>>
@@ -35,6 +33,7 @@
 ##### 설명: total_star_sum과 total_review_num을 통해서 상품 평점을 도출할 수 있다.
 ##### 설명: keywords_map을 통해서 keyword_set에 해당하는 키워드가 각각 몇 번씩 나왔는지 알 수 있으며, 대표 키워드를 도출할 수 있다.
 ##### 설명: total_star_sum, total_review_num과 keywords_map은 새로운 리뷰가 들어올 때마다 업데이트하며, 상품 평점과 대표 키워드를 쉽게 구하기 위해서 사용되었다.
+##### 설명: item_img와 description_img는 firebase storage의 해당 폴더에 item_id.png파일로 저장된다.
 
 ## **Review**
 
