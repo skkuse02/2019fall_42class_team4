@@ -89,7 +89,7 @@ function name2tag(name) {
               "mid",
               "treble",
               "design",
-              "uesability",
+              "usability",
               "battery",
               "price",
               "customer service",
@@ -116,7 +116,7 @@ function name2tag(name) {
   if(cond.test(name)) return "design";
 
   cond = /comfort|control|use|ache/;
-  if(cond.test(name)) return "uesability";
+  if(cond.test(name)) return "usability";
 
   cond = /cheap|cost|expens|money|price|purchase/;
   if(cond.test(name)) return "price";

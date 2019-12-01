@@ -27,7 +27,7 @@
         , review: <<Review_Collection>>
         , total_star_sum: total_star_sum
         , total_review_num: total_review_num
-        , keywords_map: {"keyword1":total_keyword1_num, ...}
+        , total_keywords_map: {"keyword1":total_keyword1_score, ...}
     }
 ##### 설명: Item의 similar_id에 유사 상품의 item_id가 array로 묶여서 저장된다. 
 ##### 설명: Item의 item_name에 상품의 tag가 array로 묶여서 저장된다. 상품 검색시에 활용된다. (전부 소문자로 저장 : case insensitive) 
@@ -46,10 +46,10 @@
         , title: "title"
         , content: "content"
         , last_modified_time: last_modified_time
-        , keyword: ["extracted_keyword1", ...]
-        , star_num: star_num 
+        , keywords_map: [{name:"keyword_name", score:"keyword_score"}, ...]
+        , item_rating: item_rating 
         , review_rating: total_num_of_review_recommendation
     }
 ##### 설명: Review의 keyword에 해당 리뷰에서 추출된 키워드들이 저장된다. 
-##### 설명: Review의 star_num에는 해당 리뷰가 상품을 평가한 별점을, review_rating에는 해당 리뷰에 대한 추천수를 저장한다.
+##### 설명: Review의 item_rating에는 해당 리뷰가 상품을 평가한 별점을, review_rating에는 해당 리뷰에 대한 추천수를 저장한다.
 
