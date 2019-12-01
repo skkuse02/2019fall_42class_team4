@@ -126,8 +126,15 @@ const firestore = firebase.firestore();
 const NLP = require('./processNLP')
 
 NLP(`After losing my iPhone7 EarPods, I bought these replacements---crossing my fingers that these would be legit Apple products (my order was \"Sold by Amazon\" new as a Prime Exclusive). I miraculously found my original EarPods so when these arrived I compared them directly to see whether they matched up. The ones Amazon sent me are just like the ones I got with my phone, and the packaging is just like all my other classic Apple stuff: everything sealed, meticulously held in place, documentation, etc. Photos below show all the box details and the packaged EarPods. The only thing that seemed slightly different was the thickness of the main cord---these are a tiny bit thinner it feels like (but I got my IPhone7 some time ago so these might be the \"current\" version). As for sound, I can't tell any difference between my original EarPods and these replacements.  My one star off is because the shape of the actual earpiece is not my favorite. That's just preference---or ear size, maybe? UPDATE: looks like Amazon isn't always offering these as Prime-Exclusive, or at all. I would never go for these if listed by others, new or used. Head to the Apple Store otherwise!`)
-.then(result=>console.log(result))
+.then(result=>console.log(result))// output: [{"name":"product quality","score":0.6000000238418579},{"name":"sound quality","score":-0.10000000149011612}]
 
+NLP(`This headphone set has poor sound quality: it lacks midrange, and attempts to compensate by boosting treble and bass, but in a bad way. Mids are still scooped & music sounds poor & cheap.
+The hissing white noise is intolerable, unless you like white noise then these are perfect for your youtube noise videos.
+
+I tested these with (remastered) Led Zeppelin, Physical Graffiti, and Hillsong United, Zion. I would've also tested with Maxim Vengerov or a Rachmaninov concerto but didn't bother after listening to two albums.
+
+I'm not an expert but I am a musician with sound engineer experience.`)
+.then(result=>console.log(result))// output: [{"name":"sound quality","score":-0.42500000074505806},{"name":"bass","score":0.4000000059604645},{"name":"treble","score":-0.10000000149011612}]  
 
 
 // end of module
