@@ -1,7 +1,7 @@
 function name2tag(name) {
   name = name.toLowerCase();
 
-  let tags = ["audio quality",
+  let tags = ["sound quality",
               "product quality",
               "microphone",
               "bass",

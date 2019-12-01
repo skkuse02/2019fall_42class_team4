@@ -82,7 +82,7 @@ async function callNLP(text) {
 function name2tag(name) {
   name = name.toLowerCase();
 
-  var tags = ["audio quality",
+  var tags = ["sound quality",
               "product quality",
               "microphone",
               "bass",
