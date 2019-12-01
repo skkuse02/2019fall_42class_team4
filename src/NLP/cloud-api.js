@@ -7,7 +7,7 @@ function loadReview() {
   return text;
 }
 
-function storeEntity(entities) {
+function storeEntity(entitiez) {
   const fastcsv = require('fast-csv');
   const fs = require('fs');
   const ws = fs.createWriteStream("entities.csv");
@@ -79,20 +79,82 @@ async function callNLP(text) {
   return parser(entities);
 }
 
-function loadNParser(entities){
-  var name = "";
+function name2tag(name) {
+  name = name.toLowerCase();
 
+  var tags = ["audio quality",
+              "product quality",
+              "microphone",
+              "bass",
+              "mid",
+              "treble",
+              "design",
+              "uesability",
+              "battery",
+              "price",
+              "customer service",
+              "bluetooth",
+              "noise canceling",
+              "bone conduction"];
+
+  var cond = /pack|build\ quality|wire|device|rubber|silicon|button|cable/;
+  if(cond.test(name)) return "product quality";
+
+  cond = /call|connect|speak|voice|mic/;
+  if(cond.test(name)) return "microphone";
+
+  cond = /bass|base\ tone/;
+  if(cond.test(name)) return "bass";
+
+  cond = /mid/;
+  if(cond.test(name)) return "mid";
+
+  cond = /treble/;
+  if(cond.test(name)) return "treble";
+
+  cond = /design|color/;
+  if(cond.test(name)) return "design";
+
+  cond = /comfort|control|use|ache/;
+  if(cond.test(name)) return "uesability";
+
+  cond = /cheap|cost|expens|money|price|purchase/;
+  if(cond.test(name)) return "price";
+
+  cond = /battery|power|charg/;
+  if(cond.test(name)) return "battery";
+
+  cond = /customer|sale|seller/;
+  if(cond.test(name)) return "customer service";
+
+  cond = /bluetooth|blue\ tooth|pairing/;
+  if(cond.test(name)) return "bluetooth";
+
+  cond = /noise\ canc|canceling|noise-canc/;
+  if(cond.test(name)) return "noise canceling";
+
+  cond = /bone\ conduct/;
+  if(cond.test(name)) return "bone conduction";
+
+  cond = /audio|quality|music|sound|noise|buzz|listen|performance|volume/;
+  if(cond.test(name)) return "sound quality";
+
+  return "";
+}
+
+function loadNParser(entities){
   var abstracted = {};//abstracted is a dictionary that contains abstracted entity
   var counter = {}
-  var tags = ["bass", "treble", "white noise", "Mids"]; // need to make all charicters lower case
-
+ 
   //get the scores
   for (var i = 0; i < entities.length; i++) {
-    name = entities[i].name;
+    if(entities[i].sentiment == 0) continue;
+    var name = name2tag(entities[i].name);
     
-    if (tags.includes(name)) {
+    if (name != "") {
       console.log(`Entity Name : ${entities[i].name}`);
       console.log(`Entity\'s score : ${entities[i].sentiment}`);
+
       if(name in abstracted) {
         abstracted[name] += parseFloat(entities[i].sentiment);//.score;
         counter[name] += 1.0;
@@ -121,7 +183,7 @@ function loadNParser(entities){
 
   //
   items.sort(function(a, b) {
-    return Math.abs(b[1]) - Math.abs(a[1]);
+    return Math.abs(b.score) - Math.abs(a.score);
   });
 
   console.log(items.slice(0, 7));
@@ -130,18 +192,16 @@ function loadNParser(entities){
   //return jsonOutput;
 }
 
-function parser(entities){
-  var name = "";
-
+function parser(entities) {
   var abstracted = {};//abstracted is a dictionary that contains abstracted entity
   var counter = {}
-  var tags = ["bass", "treble", "white noise", "Mids"]; // need to make all charicters lower case
-
+  
   //get the scores
   for (var i = 0; i < entities.length; i++) {
-    name = entities[i].name;
+    if(entities[i].sentiment.score == 0) continue;
+    var name = name2tag(entities[i].name);
     
-    if (tags.includes(name)) {
+    if (name != "") {
       if(name in abstracted) {
         abstracted[name] += parseFloat(entities[i].sentiment.score);
         counter[name] += 1.0;
@@ -161,15 +221,19 @@ function parser(entities){
 
   //sort by mean score value
   var items = Object.keys(abstracted).map(function(key) {
-    return [key, abstracted[key]];
+    return {
+      name : key,
+      score : abstracted[key]
+    };
   });
 
   items.sort(function(a, b) {
-    return Math.abs(b[1]) - Math.abs(a[1]);
+    return Math.abs(b.score) - Math.abs(a.score);
   });
 
   //make outputfile
   var jsonOutput = JSON.stringify(items.slice(0, 7));
+
 
   return jsonOutput;
 }
