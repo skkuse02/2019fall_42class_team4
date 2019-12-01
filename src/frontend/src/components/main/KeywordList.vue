@@ -4,8 +4,8 @@
       <div><h3 class="headline mb-0">Keyword</h3></div>
     </v-card-title>
     <v-card-text>
-      <div v-for="keyword in keywords" :key="keyword.keyword">
-        {{keyword.keyword}}: {{keyword.point}}
+      <div v-for="keyword in user.customized_keyword" :key="keyword.keyword">
+        <v-chip disabled color="blue" text-color="white">{{keyword}}</v-chip>
       </div>
     </v-card-text>
   </v-card>
@@ -15,20 +15,13 @@
 export default {
   data () {
     return {
-      keywords: [
-        {
-          keyword: 'keyword1',
-          point: 0.7
-        },
-        {
-          keyword: 'keyword2',
-          point: 0.4
-        },
-        {
-          keyword: 'keyword3',
-          point: 0.5
-        }
-      ]
+      user: JSON.parse(sessionStorage.getItem('userInfo'))
+    }
+  },
+  created () {
+    if (this.user === null) {
+      this.user = []
+      this.user['customized_keyword'] = []
     }
   }
 }

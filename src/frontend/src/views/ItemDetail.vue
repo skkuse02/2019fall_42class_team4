@@ -2,19 +2,25 @@
   <v-container fluid grid-list-md>
     <v-layout row wrap>
       <!-- 상품 상세 정보 표시할 영역 -->
-      <v-flex xs12 sm12 md12 lg12>
+      <v-flex xs12>
         <selected-item
           v-bind:cur-item="curItem"
-          v-bind:cur-item-reviews="curItemReviews">
+        >
         </selected-item>
       </v-flex>
       <!-- 유사 상품 정보 표시할 영역 -->
-      <v-flex xs4 sm4 md4 lg4 v-for="i in similarItems.length" :key="i">
+      <v-flex xs3 v-for="i in similarItems.length" :key="i">
         <similar-items
           v-bind:similar-items="similarItems"
           v-bind:similar-items-reviews="similarItemsReviews"
           v-bind:i="i">
         </similar-items>
+      </v-flex>
+      <v-flex xs12>
+        <selected-item-reviews
+          v-bind:cur-item-reviews="curItemReviews"
+        >
+        </selected-item-reviews>
       </v-flex>
     </v-layout>
   </v-container>
@@ -23,10 +29,11 @@
 <script>
 import SelectedItem from '../components/main/SelectedItem'
 import SimilarItems from '../components/main/SimilarItems'
+import SelectedItemReviews from '../components/main/selectedItemReviews'
 
 export default {
   components: {
-    SelectedItem, SimilarItems
+    SelectedItem, SimilarItems, SelectedItemReviews
   },
   data () {
     return {

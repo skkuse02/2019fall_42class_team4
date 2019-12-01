@@ -20,7 +20,7 @@ router.get('/', function(req, res, next){
         return;
       }
       snapshot.forEach((doc) => {
-        console.log(doc.id, '=>', doc.data());
+        // console.log(doc.id, '=>', doc.data());
         items.push(doc.data())
       });
       res.status(200).send(items);

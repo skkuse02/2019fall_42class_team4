@@ -1,5 +1,6 @@
 let express = require('express');
 let router = express.Router();
+let crypto = require('crypto');
 
 let firebase = require('firebase');
 let firebaseConfig = require('../firebaseConfig.json');
@@ -32,22 +33,43 @@ router.post('/', function (req, res, next) {
   res.send('Data Post Item');
 });
 
+/*
+작성자: 김진태
+user.put 변경
+set대신 update method 사용
+*/
 router.put('/:id', function (req, res, next) {
-  firestore.collection('/users').where('id', '==', Number(req.params.id)).get()
+  firestore.collection('/user').where('id', '==', req.params.id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
         console.log('No matching documents');
         return;
       }
       snapshot.forEach((doc) => {
-        firestore.collection('/users').doc(doc.id).set(req.body);
-        console.log(doc.id, '=>', doc.data());
+        let hashPW = crypto.createHash('sha512').update(req.body.password).digest('base64');
+        if(doc.data()["password"] == hashPW){
+          if(req.body.type === "keyword_change") {
+            console.log("keyword change")
+            firestore.collection('/user').doc(doc.id).update({
+              customized_keyword: req.body.keywords
+            })
+          } else {
+            console.log("password change")
+            const change = crypto.createHash('sha512').update(req.body.changePassword).digest('base64')
+            firestore.collection('/user').doc(doc.id).update({
+              password: change
+            })
+          }
+          res.status(200).send("Modify Success");
+        } else {
+          console.log('PW Not Equal');
+          res.status(400).send('PW Not Equal');
+        }
       });
     })
     .catch((err) => {
       console.log('Error getting documents', err);
     });
-  res.send('Data Put Item');
 });
 
 router.delete('/:id', function (req, res, next) {

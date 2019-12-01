@@ -1,15 +1,14 @@
 <template>
   <v-container fluid grid-list-md>
     <v-layout row wrap>
-      <v-flex d-flex xs12 sm12 md12 lg12>
-        <search-bar></search-bar>
-      </v-flex>
-      <v-flex d-flex xs2 sm2 md2 lg2>
+      <v-flex d-flex xs2>
         <keyword-list></keyword-list>
       </v-flex>
 
-      <v-flex d-flex xs10 sm10 md10 lg10>
-        <item-list></item-list>
+      <v-flex d-flex xs10>
+        <item-list
+          v-bind:items="items"
+        ></item-list>
       </v-flex>
     </v-layout>
   </v-container>
@@ -18,11 +17,21 @@
 <script>
 import KeywordList from '../components/main/KeywordList'
 import ItemList from '../components/main/ItemList'
-import SearchBar from '../components/main/SearchBar'
 
 export default {
   components: {
-    KeywordList, ItemList, SearchBar
+    KeywordList, ItemList
+  },
+  created () {
+    // 아이템 전체 목록 불러오기
+    this.$http.get('/api/items').then((res) => {
+      this.items = res.data
+    })
+  },
+  data () {
+    return {
+      items: []
+    }
   }
 }
 </script>
