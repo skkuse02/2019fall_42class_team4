@@ -15,6 +15,7 @@ new Vue({
   store,
   beforeCreate () {
     this.$store.dispatch('getUserInfo')
+    this.$store.dispatch('getCartInfo')
   },
   render: h => h(App)
 }).$mount('#app')

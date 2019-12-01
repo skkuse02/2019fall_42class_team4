@@ -27,15 +27,32 @@ const routes = [
     beforeEnter: requireSignOut()
   },
   {
-    path: '/MyPage',
-    name: 'MyPage',
-    component: () => import('../views/MyPage.vue'),
+    path: '/MyPage/KeywordSetting',
+    name: 'KeywordSetting',
+    component: () => import('../views/KeywordSetting.vue'),
+    beforeEnter: requireSignIn()
+  },
+  {
+    path: '/MyPage/PasswordChange',
+    name: 'PasswordChange',
+    component: () => import('../views/PasswordChange.vue'),
+    beforeEnter: requireSignIn()
+  },
+  {
+    path: '/MyPage/History',
+    name: 'History',
+    component: () => import('../views/History.vue'),
     beforeEnter: requireSignIn()
   },
   {
     path: '/ItemDetail/:id',
     name: 'ItemDetail',
     component: () => import('../views/ItemDetail.vue')
+  },
+  {
+    path: '/Cart',
+    name: 'Cart',
+    component: () => import('../views/Cart.vue')
   },
   {
     path: '/*',

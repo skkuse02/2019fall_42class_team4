@@ -9,9 +9,18 @@
     <input type="search" id="search" v-model="searchCriteria" placeholder="Search..." />
     <v-btn small icon @click="Search()"><v-icon>mdi-magnify</v-icon></v-btn>
     <v-spacer></v-spacer>
-    <!-- <v-toolbar-items>
-      <v-btn icon><v-icon>mdi-dots-vertical</v-icon></v-btn>
-    </v-toolbar-items> -->
+    <v-toolbar-items>
+      <v-badge bottom left overlap>
+        <template v-slot:badge>
+          <span>{{$store.state.inCart === null ? 0 : $store.state.inCart.length}}</span>
+        </template>
+        <v-btn icon :to="{name: 'Cart'}">
+          <v-icon large color="grey lighten-1">
+            mdi-cart-outline
+          </v-icon>
+        </v-btn>
+      </v-badge>
+    </v-toolbar-items>
   </v-toolbar>
 </template>
 
@@ -19,7 +28,8 @@
 export default {
   data () {
     return {
-      searchCriteria: ''
+      searchCriteria: '',
+      cartCount: 0
     }
   },
   methods: {
@@ -39,7 +49,7 @@ a {
 input#search{
     background: white;
     height: 30px;
-    width: 400px;
+    width: 1000px;
     border: none;
     font-size: 10pt;
     float: left;

@@ -4,34 +4,49 @@
       <v-flex xs12 sm8 md4>
         <v-card class="elevation-12">
           <v-toolbar dark color="primary">
-            <v-toolbar-title>Sign In Form</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <a @click="$emit('changeShow')">Sgin Up</a>
+            <v-toolbar-title>Modify Personal Information</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
               <v-text-field
-                prepend-icon="mdi-account"
-                v-model="id"
+                v-model="user.id"
                 label="ID"
                 type="text"
+                disabled
               >
               </v-text-field>
               <v-text-field
-                prepend-icon="mdi-lock-question"
                 v-model="password"
                   :append-icon="isPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
                   :type="isPasswordShow ? 'text' : 'password'"
                 label="Password"
                 @click:append="isPasswordShow = !isPasswordShow"
-                @keyup.enter="SignIn"
               >
               </v-text-field>
+              <v-text-field
+                v-model="user.name"
+                label="Name"
+                type="text"
+                disabled
+              >
+              </v-text-field>
+              <v-text-field
+                v-model="addKeyword"
+                label="keyword"
+                type="text"
+              >
+              </v-text-field>
+              <v-btn color="success" small @click="KeywordsAdd()" >Add</v-btn><br>
+              <v-chip
+                v-for="keyword in keywords" :key="keyword"
+                close
+                @input="KeywordsRemove(keyword)"
+              >{{keyword}}</v-chip>
             </v-form>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" @click="SignIn">Sign In</v-btn>
+            <v-btn color="primary" @click="Submit()">Submit</v-btn>
           </v-card-actions>
         </v-card>
         <v-alert :value="isAlertShow"  type="error">
@@ -46,8 +61,10 @@
 export default {
   data () {
     return {
-      id: '',
+      user: JSON.parse(sessionStorage.getItem('userInfo')),
       password: '',
+      addKeyword: '',
+      keywords: [],
       isPasswordShow: false,
       state: '',
       isAlertShow: false
@@ -57,24 +74,32 @@ export default {
     if (this.isAlertShow === true) {
       this.isAlertShow = false
     }
+    this.keywords = this.user.customized_keyword
   },
   methods: {
-    async SignIn () {
-      // backend에 로그인 요청
+    KeywordsAdd () {
+      this.keywords.push(this.addKeyword)
+      this.addKeyword = ''
+    },
+    KeywordsRemove (keyword) {
+      this.keywords.splice(this.keywords.indexOf(keyword), 1)
+      this.keywords = [...this.keywords]
+    },
+    async Submit () {
+      // backend에 개인정보 수정 요청
       try {
-        const res = await this.$http.post('/api/login', {
-          ID: this.id,
-          PW: this.password
+        const res = await this.$http.put('/api/users/' + this.user.id, {
+          type: 'keyword_change',
+          password: this.password,
+          keywords: this.keywords
         })
-        // console.log(res.data)
-        this.$store.commit('LOGIN', res.data.userInfo)
+        console.log(res)
+        this.user.customized_keyword = this.keywords
+        this.$store.commit('MODIFY', this.user)
         this.$router.push('/')
       } catch (e) {
         let stateCode = e.message
-        if (stateCode.includes('404')) {
-          this.state = 'ID가 존재하지 않습니다.'
-          this.isAlertShow = true
-        } else if (stateCode.includes('400')) {
+        if (stateCode.includes('400')) {
           this.state = 'PW가 일치하지 않습니다.'
           this.isAlertShow = true
         } else {

@@ -4,37 +4,41 @@
       <v-flex xs12 sm8 md4>
         <v-card class="elevation-12">
           <v-toolbar dark color="primary">
-            <v-toolbar-title>Sign In Form</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <a @click="$emit('changeShow')">Sgin Up</a>
+            <v-toolbar-title>Password Change</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form>
               <v-text-field
-                prepend-icon="mdi-account"
-                v-model="id"
+                v-model="user.id"
                 label="ID"
                 type="text"
+                disabled
               >
               </v-text-field>
               <v-text-field
-                prepend-icon="mdi-lock-question"
                 v-model="password"
-                  :append-icon="isPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
-                  :type="isPasswordShow ? 'text' : 'password'"
-                label="Password"
-                @click:append="isPasswordShow = !isPasswordShow"
-                @keyup.enter="SignIn"
+                  :append-icon="isPasswordShow1 ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="isPasswordShow1 ? 'text' : 'password'"
+                label="Current Password"
+                @click:append="isPasswordShow1 = !isPasswordShow1"
+              >
+              </v-text-field>
+              <v-text-field
+                v-model="changePassword"
+                  :append-icon="isPasswordShow2 ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="isPasswordShow2 ? 'text' : 'password'"
+                label="Change Password"
+                @click:append="isPasswordShow2 = !isPasswordShow2"
               >
               </v-text-field>
             </v-form>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" @click="SignIn">Sign In</v-btn>
+            <v-btn color="primary" @click="Submit()">Submit</v-btn>
           </v-card-actions>
         </v-card>
-        <v-alert :value="isAlertShow"  type="error">
+        <v-alert :value="isAlertShow" type="error">
           {{state}}
         </v-alert>
       </v-flex>
@@ -46,9 +50,11 @@
 export default {
   data () {
     return {
-      id: '',
+      user: JSON.parse(sessionStorage.getItem('userInfo')),
       password: '',
-      isPasswordShow: false,
+      changePassword: '',
+      isPasswordShow1: false,
+      isPasswordShow2: false,
       state: '',
       isAlertShow: false
     }
@@ -59,23 +65,20 @@ export default {
     }
   },
   methods: {
-    async SignIn () {
-      // backend에 로그인 요청
+    async Submit () {
+      // backend에 개인정보 수정 요청
       try {
-        const res = await this.$http.post('/api/login', {
-          ID: this.id,
-          PW: this.password
+        const res = await this.$http.put('/api/users/' + this.user.id, {
+          type: 'password_change',
+          password: this.password,
+          changePassword: this.changePassword
         })
-        // console.log(res.data)
-        this.$store.commit('LOGIN', res.data.userInfo)
+        console.log(res)
         this.$router.push('/')
       } catch (e) {
         let stateCode = e.message
-        if (stateCode.includes('404')) {
-          this.state = 'ID가 존재하지 않습니다.'
-          this.isAlertShow = true
-        } else if (stateCode.includes('400')) {
-          this.state = 'PW가 일치하지 않습니다.'
+        if (stateCode.includes('400')) {
+          this.state = '기존 PW가 일치하지 않습니다.'
           this.isAlertShow = true
         } else {
           this.state = '알 수 없는 에러가 발생했습니다.' + e
