@@ -3,6 +3,17 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
+const requireSignIn = () => (from, to, next) => {
+  if (sessionStorage.getItem('userInfo')) return next()
+  alert('Login이 필요합니다.')
+  next('/Sign')
+}
+
+const requireSignOut = () => (from, to, next) => {
+  if (!sessionStorage.getItem('userInfo')) return next()
+  next('/')
+}
+
 const routes = [
   {
     path: '/',
@@ -12,12 +23,14 @@ const routes = [
   {
     path: '/Sign',
     name: 'Sign',
-    component: () => import('../views/Sign.vue')
+    component: () => import('../views/Sign.vue'),
+    beforeEnter: requireSignOut()
   },
   {
     path: '/MyPage',
     name: 'MyPage',
-    component: () => import('../views/MyPage.vue')
+    component: () => import('../views/MyPage.vue'),
+    beforeEnter: requireSignIn()
   },
   {
     path: '/ItemDetail/:id',

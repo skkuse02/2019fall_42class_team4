@@ -21,7 +21,8 @@
                 :append-icon="isPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="isPasswordShow ? 'text' : 'password'"
               label="Password"
-              @click:append="isPasswordShow = !isPasswordShow"></v-text-field>
+              @click:append="isPasswordShow = !isPasswordShow"
+              @keyup.enter="SignIn"></v-text-field>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -29,6 +30,9 @@
             <v-btn color="primary" @click="SignIn">Sign In</v-btn>
           </v-card-actions>
         </v-card>
+        <v-alert :value="isAlertShow"  type="error">
+          {{state}}
+        </v-alert>
       </v-flex>
     </v-layout>
   </v-container>
@@ -40,14 +44,41 @@ export default {
     return {
       id: '',
       password: '',
-      isPasswordShow: false
+      isPasswordShow: false,
+      state: '',
+      isAlertShow: false
+    }
+  },
+  created () {
+    if (this.isAlertShow === true) {
+      this.isAlertShow = false
     }
   },
   methods: {
-    SignIn () {
-      // backend에 요청
-      console.log(this.id)
-      console.log(this.password)
+    async SignIn () {
+      // backend에 로그인 요청
+      try {
+        const res = await this.$http.post('/api/login', {
+          ID: this.id,
+          PW: this.password
+        })
+        // console.log(res.data)
+        this.$store.commit('LOGIN', res.data.userInfo)
+        this.$router.push('/')
+      } catch (e) {
+        let stateCode = e.message
+        if (stateCode.includes('404')) {
+          this.state = 'ID가 존재하지 않습니다.'
+          this.isAlertShow = true
+        } else if (stateCode.includes('400')) {
+          this.state = 'PW가 일치하지 않습니다.'
+          this.isAlertShow = true
+        } else {
+          this.state = '알 수 없는 에러가 발생했습니다.' + e
+          console.log(e)
+          this.isAlertShow = true
+        }
+      }
     }
   }
 }
