@@ -1,7 +1,7 @@
 function name2tag(name) {
   name = name.toLowerCase();
 
-  var tags = ["audio quality",
+  let tags = ["audio quality",
               "product quality",
               "microphone",
               "bass",
@@ -16,7 +16,7 @@ function name2tag(name) {
               "noise canceling",
               "bone conduction"];
 
-  var cond = /pack|build\ quality|wire|device|rubber|silicon|button|cable/;
+  let cond = /pack|build\ quality|wire|device|rubber|silicon|button|cable/;
   if(cond.test(name)) return "product quality";
 
   cond = /call|connect|speak|voice|mic/;
@@ -86,13 +86,13 @@ async function callNLP(text) {
 }
 
 function parser(entities) {
-  var abstracted = {};//abstracted is a dictionary that contains abstracted entity
-  var counter = {}
+  let abstracted = {};//abstracted is a dictionary that contains abstracted entity
+  let counter = {}
   
   //get the scores
-  for (var i = 0; i < entities.length; i++) {
+  for (let i = 0; i < entities.length; i++) {
     if(entities[i].sentiment.score == 0) continue;
-    var name = name2tag(entities[i].name);
+    let name = name2tag(entities[i].name);
     
     if (name != "") {
       if(name in abstracted) {
@@ -108,12 +108,12 @@ function parser(entities) {
 
   //get the mean score
   //store the keyword and score of keyword
-  for (var i in abstracted) {
+  for (let i in abstracted) {
     abstracted[i] = abstracted[i] / counter[i];
   }
 
   //sort by mean score value
-  var items = Object.keys(abstracted).map(function(key) {
+  let items = Object.keys(abstracted).map(function(key) {
     return {
       name : key,
       score : abstracted[key]
@@ -125,7 +125,7 @@ function parser(entities) {
   });
 
   //make outputfile
-  var jsonOutput = JSON.stringify(items.slice(0, 7));
+  let jsonOutput = JSON.stringify(items.slice(0, 7));
 
 
   return jsonOutput;

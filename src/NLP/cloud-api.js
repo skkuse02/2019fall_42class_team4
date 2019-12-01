@@ -7,7 +7,7 @@ function loadReview() {
   return text;
 }
 
-function storeEntity(entitiez) {
+function storeEntity(entities) {
   const fastcsv = require('fast-csv');
   const fs = require('fs');
   const ws = fs.createWriteStream("entities.csv");
