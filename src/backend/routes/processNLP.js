@@ -130,3 +130,5 @@ function parser(entities) {
 
   return jsonOutput;
 }
+
+module.exports = callNLP;
