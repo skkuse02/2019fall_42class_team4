@@ -175,8 +175,8 @@ const NLP = require('./processNLP')
 const reviews = [];
 
 let recommends = 300;// because the rows' sequence were sorted by review_rate in decreasing order
-let i = 0;// control number of reviews we push
-let item_id = 0;// shows the item id of review
+let i = 0;
+let item_id = 9;// THE ID OF ITEM CONTAINING REVIEW YOU WANT TO POST 
 let docPointer;
 let numToPost = 40;
 let tags = [// tags from the NLP module, processNLP.js, name2tags(name) function
@@ -224,10 +224,7 @@ fs.createReadStream('./review_csv/' + item_id + '.csv') // reading csv files
           let total_review_num = 0;
           for (let i = 0; i < numToPost; i++) {// update global values of item affected by each new review
             for (let key_score of reviews[i].keywords_map) {
-              console.log(key_score)
-              console.log(total_keywords_map_template[key_score.name])
               total_keywords_map_template[key_score.name] += key_score.score
-              console.log(total_keywords_map_template[key_score.name])
             }
             total_review_num++;
             total_star_sum += reviews[i].item_rating;
@@ -242,8 +239,9 @@ fs.createReadStream('./review_csv/' + item_id + '.csv') // reading csv files
             , total_review_num: total_review_num
             , total_keywords_map: total_keywords_map_template
           }))
-          // Promise.all(promisesForReviewPosting)
-          //   .then(() => console.log("reviews are successfully initialized to DB"))
+          Promise.all(promisesForReviewPosting)
+            .then(() => console.log(`reviews of item #${item_id} are successfully initialized to DB`))
+            .catch(err=>console.error(err.message))
         }
       )
   });
