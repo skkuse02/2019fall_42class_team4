@@ -24,7 +24,7 @@
 
 ## item_id = 8: [Cowin E7](https://www.amazon.com/Cancelling-Headphones-Bluetooth-Microphone-Comfortable/dp/B019U00D7K/ref=sr_1_1_sspa?keywords=cowin+e7&qid=1575081377&sr=8-1-spons&psc=1&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUExTUVFNU5EV1ZaTVo1JmVuY3J5cHRlZElkPUEwMzU1NzU0VEs3NUZMTDVXS05BJmVuY3J5cHRlZEFkSWQ9QTAxNjk3MjUyMFkyUEk5MVhTUjNTJndpZGdldE5hbWU9c3BfYXRmJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ==)
 
-## item_id = 9: [Vogek Earbuds](https://www.amazon.com/Cancelling-Headphones-Bluetooth-Microphone-Comfortable/dp/B019U00D7K/ref=sr_1_1_sspa?keywords=cowin+e7&qid=1575081377&sr=8-1-spons&psc=1&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUExTUVFNU5EV1ZaTVo1JmVuY3J5cHRlZElkPUEwMzU1NzU0VEs3NUZMTDVXS05BJmVuY3J5cHRlZEFkSWQ9QTAxNjk3MjUyMFkyUEk5MVhTUjNTJndpZGdldE5hbWU9c3BfYXRmJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ==)
+## item_id = 9: [Vogek Earbuds](https://www.amazon.com/Tangle-Free-Ergonomic-Headphones-Earphones-Compatible/dp/B07WN1J66G/ref=sr_1_1?keywords=Earbuds%2C+Vogek+Tangle-Free+Flat+Cord+Ergonomic+in-Ear+Headphones+with+Dynamic+Crystal+Clear+Sound%2C+Earphones+with+S%2FM%2FL+Eartips+Compatible+with+Samsung%2C+Android+Phone+and+More-Black&qid=1575184706&sr=8-1)
 
 ## item_id = 10: [Mpow059](https://www.amazon.com/Mpow-Bluetooth-Headphones-Wireless-Memory-Protein/dp/B01NAJGGA2/ref=sxin_2_ac_d_rm?ac_md=0-0-bXBvdyAwNTk%3D-ac_d_rm&keywords=mpow+059&pd_rd_i=B01NAJGGA2&pd_rd_r=6ebb8bee-a017-49e4-b1b7-f969bfca06eb&pd_rd_w=lk4Re&pd_rd_wg=DHTGm&pf_rd_p=e2f20af2-9651-42af-9a45-89425d5bae34&pf_rd_r=PAS3J24H2ZYMWYM98YRM&psc=1&qid=1575081719)
 

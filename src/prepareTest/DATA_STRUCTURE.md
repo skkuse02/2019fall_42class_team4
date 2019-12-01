@@ -19,6 +19,8 @@
 ### 
     {
         item_id: "item_id"
+        , item_img_url: "item_img_url"
+        , desc_img_url: "desc_img_url"
         , item_name: ["item_tag1, ..."]
         , price: "price"
         , similar_item: ["item_id", ...]
