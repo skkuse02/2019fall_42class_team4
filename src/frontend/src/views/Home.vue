@@ -4,7 +4,6 @@
       <v-flex d-flex xs2>
         <keyword-list></keyword-list>
       </v-flex>
-
       <v-flex d-flex xs10>
         <item-list
           v-bind:items="items"
