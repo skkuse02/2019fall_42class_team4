@@ -2,7 +2,7 @@
 
 ## **items**
 
-### GET      /items/?query
+### GET      /items/?search=query
 ### GET      /items/:item_id
 ### POST     /items/
 ### PUT      /items/:item_id
