@@ -9,11 +9,11 @@
         <v-flex xs12>
           <v-card-title primary-title>
             <!-- 상품 이름 -->
-            <h2>{{curItem.name.join(" ")}}</h2>
+            <h2>{{curItem.name.join(' ')}}</h2
           </v-card-title>
           <!-- 상품 별점 -->
           <v-rating
-            v-model="curItem.total_star_num"
+            v-model="curItem.total_star_sum"
             readonly
             small
             background-color="orange lighten-3"
@@ -27,14 +27,15 @@
           <div><strong>Price: </strong>{{curItem.price}}$ <span id="delivery">Free Delivery</span></div>
           <!-- 상품 키워드 -->
           <div>
-            <span v-for="keyword in curItem.keywords_map" :key="keyword.keyword">
-              <v-chip disabled v-if="keyword.point > 0" color="blue" text-color="white">{{keyword.keyword}}</v-chip>
-              <v-chip disabled v-else color="red" text-color="white">{{keyword.keyword}}</v-chip>
+            <span v-for="keyword in Object.keys(curItem.total_keywords_map)" :key="keyword">
+              <v-chip disabled v-if="curItem.total_keywords_map[keyword] > 0" color="blue" text-color="white">{{keyword}}</v-chip>
+              <v-chip disabled v-else-if="curItem.total_keywords_map[keyword] < 0" color="red" text-color="white">{{keyword}}</v-chip>
             </span>
           </div>
           <span id="count_minus" @click="count > 1 ? count-- : 0">-</span>
           <span id="count">{{count}}</span>
           <span id="count_plus" @click="count++">+</span>
+          <h3 style="margin-bottom: 10px;">Total Price: {{count * curItem.price}}$</h3>
           <v-spacer></v-spacer>
           <v-btn v-if="isCart" color="success" @click="AddCart()">Add Cart</v-btn>
           <v-btn v-else dark color="red" @click="RemoveCart()">Remove Cart</v-btn>
@@ -60,6 +61,9 @@ export default {
       isCart: true
     }
   },
+  created () {
+    this.IsCart()
+  },
   updated () {
     this.IsCart()
   },
@@ -69,18 +73,16 @@ export default {
       if (cart) {
         for (let i in cart) {
           const id = cart[i].id
-          // console.log(id, this.curItem.id)
           if (id === this.curItem.id) {
-            // console.log('false')
             this.isCart = false
             return
           }
         }
       }
-      // console.log('true')
       this.isCart = true
     },
     AddCart () {
+      this.curItem.quantity = this.count
       this.$store.commit('ADDCART', this.curItem)
       this.IsCart()
     },
@@ -100,14 +102,14 @@ export default {
 #count_minus, #count_plus {
   cursor: pointer;
   width: 20px;
-  line-height: 100px;
+  line-height: 50px;
   margin-left: 20px;
   text-align: center;
 }
 
 #count {
   width: 20px;
-  line-height: 100px;
+  line-height: 50px;
   margin-left: 20px;
   text-align: center;
 }
