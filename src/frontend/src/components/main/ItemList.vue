@@ -15,9 +15,9 @@
             <v-card-text>
               <span style="color: blue;"><h3>Free Delivery</h3></span>
               <!-- 상품 키워드 -->
-              <span v-for="keyword in Object.keys(item.total_keywords_map)" :key="keyword">
-                <v-chip disabled v-if="item.total_keywords_map[keyword] > 0" color="blue" text-color="white">{{keyword}}</v-chip>
-                <v-chip disabled v-else-if="item.total_keywords_map[keyword] < 0" color="red" text-color="white">{{keyword}}</v-chip>
+              <span v-for="keyword in Object.keys(item.keywordsMap)" :key="keyword">
+                <v-chip disabled v-if="item.keywordsMap[keyword] > 0" color="blue" text-color="white">{{keyword}}</v-chip>
+                <v-chip disabled v-else-if="item.keywordsMap[keyword] < 0" color="red" text-color="white">{{keyword}}</v-chip>
               </span>
               <br>
               <!-- 상품 별점 -->
