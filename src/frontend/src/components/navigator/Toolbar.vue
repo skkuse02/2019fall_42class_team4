@@ -34,7 +34,13 @@ export default {
   },
   methods: {
     Search () {
-      console.log(this.searchCriteria)
+      // 아이템 전체 목록 불러오기
+      this.$http.get('/api/items?search=' + this.searchCriteria)
+        .then((res) => {
+          console.log(res.data)
+          // 불러온 아이템을 선호 키워드 순으로 정렬후 보여주기
+        })
+        .catch(err => console.error(err.message))
     }
   }
 }

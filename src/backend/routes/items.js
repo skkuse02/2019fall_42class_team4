@@ -12,7 +12,8 @@ let firestore = firebase.firestore();
 // get all items
 router.get('/', function(req, res, next){
   let items = []
-  firestore.collection('/items').get()
+  if(req.query.search === undefined) {
+    firestore.collection('/items').get()
     .then((snapshot) => {
       if(snapshot.empty){
         console.log('No Matching Items');
@@ -29,6 +30,26 @@ router.get('/', function(req, res, next){
       console.log('Error Getting Items', err);
       res.status(400).send(err);
   });
+  }
+  else {
+    firestore.collection('/items').where("name", "array-contains-any", req.query.search.toLowerCase().split(" ")).get()
+    .then((snapshot) => {
+      if(snapshot.empty){
+        console.log('No Matching Items');
+        res.status(404).send('No Matching Items');
+        return;
+      }
+      snapshot.forEach((doc) => {
+        // console.log(doc.id, '=>', doc.data());
+        items.push(doc.data())
+      });
+      res.status(200).send(items);
+    })
+    .catch((err) => {
+      console.log('Error Getting Items', err);
+      res.status(400).send(err);
+  });
+  }
 });
 
 // get Individual item
