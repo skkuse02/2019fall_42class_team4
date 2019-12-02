@@ -9,7 +9,7 @@
         <v-flex xs12>
           <v-card-title primary-title>
             <!-- 상품 이름 -->
-            <h2>{{curItem.name.join(' ')}}</h2>
+            <h2>{{curItem.name.join(' ')}}</h2
           </v-card-title>
           <!-- 상품 별점 -->
           <v-rating
