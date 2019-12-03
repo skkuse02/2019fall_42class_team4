@@ -13,7 +13,7 @@
           </v-card-title>
           <!-- 상품 별점 -->
           <v-rating
-            v-model="curItem.total_star_sum"
+            v-model="curItem.item_rating"
             readonly
             small
             background-color="orange lighten-3"
@@ -27,9 +27,9 @@
           <div><strong>Price: </strong>{{curItem.price}}$ <span id="delivery">Free Delivery</span></div>
           <!-- 상품 키워드 -->
           <div>
-            <span v-for="keyword in Object.keys(curItem.total_keywords_map)" :key="keyword">
-              <v-chip disabled v-if="curItem.total_keywords_map[keyword] > 0" color="blue" text-color="white">{{keyword}}</v-chip>
-              <v-chip disabled v-else-if="curItem.total_keywords_map[keyword] < 0" color="red" text-color="white">{{keyword}}</v-chip>
+            <span v-for="keyword in Object.keys(curItem.keywordsMap)" :key="keyword">
+              <v-chip disabled v-if="curItem.keywordsMap[keyword] > 0" color="blue" text-color="white">{{keyword}}</v-chip>
+              <v-chip disabled v-else-if="curItem.keywordsMap[keyword] < 0" color="red" text-color="white">{{keyword}}</v-chip>
             </span>
           </div>
           <span id="count_minus" @click="count > 1 ? count-- : 0">-</span>

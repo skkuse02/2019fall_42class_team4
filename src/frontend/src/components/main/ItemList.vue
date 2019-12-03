@@ -22,7 +22,7 @@
               <br>
               <!-- 상품 별점 -->
               <v-rating
-                v-model="item.total_star_sum"
+                v-model="item.item_rating"
                 readonly
                 small
                 background-color="orange lighten-3"

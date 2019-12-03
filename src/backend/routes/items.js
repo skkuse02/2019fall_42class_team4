@@ -9,6 +9,28 @@ if (!firebase.apps.length) {
 }
 let firestore = firebase.firestore();
 
+// utility function : postprocess items 
+let postprocessItems = (items) => {
+  //postprocess for items
+  let absScores = []
+  let thresholdScore;
+  let numOfKeywords = 6;
+  for(let item of items) {
+    item.item_rating = item.total_star_sum / item.total_review_num; // derive item's rating 
+    for(let k in item.total_keywords_map) {// derive item's representative keywords
+      absScores.push(Math.abs(item.total_keywords_map[k]))
+    }
+    thresholdScore = absScores.sort((a,b)=>(b-a))[numOfKeywords-1]
+    item.keywordsMap = {}
+    for(let k in item.total_keywords_map) {
+      itemScore = item.total_keywords_map[k]
+      if(Math.abs(itemScore)>=thresholdScore) {
+        item.keywordsMap[k] = itemScore
+      }
+    }
+  }
+}
+
 // get all items
 router.get('/', function(req, res, next){
   let items = []
@@ -24,6 +46,7 @@ router.get('/', function(req, res, next){
         // console.log(doc.id, '=>', doc.data());
         items.push(doc.data())
       });
+      postprocessItems(items)
       res.status(200).send(items);
     })
     .catch((err) => {
@@ -43,6 +66,7 @@ router.get('/', function(req, res, next){
         // console.log(doc.id, '=>', doc.data());
         items.push(doc.data())
       });
+      postprocessItems(items)
       res.status(200).send(items);
     })
     .catch((err) => {
@@ -66,6 +90,7 @@ router.get('/:id', function(req, res, next){
         console.log(doc.id, '=>', doc.data());
         items.push(doc.data())
       });
+      postprocessItems(items)
       res.status(200).send(items);
     })
     .catch((err) => {
@@ -133,5 +158,6 @@ router.delete('/:id', function(req, res, next){
       res.status(400).send(err);
   });
 });
+
 
 module.exports = router;
