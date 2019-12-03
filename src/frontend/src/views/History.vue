@@ -22,7 +22,7 @@ export default {
   },
   data () {
     return {
-      user: JSON.parse(sessionStorage.getItem('userInfo')),
+      user: this.$store.state.userInfo,
       purchasedItems: []
     }
   },
@@ -31,6 +31,7 @@ export default {
       for (let i in this.user.purchased_items) {
         const itemId = this.user.purchased_items[i]
         const res = await this.$http.get('/api/items/' + itemId)
+        res.data[0]['history'] = 'history'
         this.purchasedItems.push(res.data[0])
       }
     }

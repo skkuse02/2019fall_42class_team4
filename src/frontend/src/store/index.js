@@ -24,7 +24,7 @@ export default new Vuex.Store({
     },
     ADDCART (state, item) {
       const tmp = []
-      const cart = JSON.parse(sessionStorage.getItem('inCart'))
+      const cart = state.inCart
       if (cart) {
         cart.forEach(element => {
           tmp.push(element)
@@ -37,7 +37,7 @@ export default new Vuex.Store({
     },
     REMOVECART (state, item) {
       const tmp = []
-      const cart = JSON.parse(sessionStorage.getItem('inCart'))
+      const cart = state.inCart
       if (cart) {
         for (let i in cart) {
           const id = cart[i].id

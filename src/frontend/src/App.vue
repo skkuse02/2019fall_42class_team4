@@ -72,15 +72,11 @@ export default {
     Login () {
       this.$router.push('/Sign')
     },
-    async Logout () {
+    Logout () {
       this.$store.commit('LOGOUT')
-      await this.$http.delete('/api/logout')
-      if (window.location.pathname === '/') {
-        this.drawer = false
-        window.location.reload()
-      } else {
-        this.$router.push('/')
-      }
+      this.drawer = false
+      this.$router.go()
+      this.$http.delete('/api/logout')
     }
   }
 }

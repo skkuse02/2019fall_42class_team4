@@ -12,16 +12,23 @@ if (!firebase.apps.length) {
 }
 let firestore = firebase.firestore();
 
+/*
+작성자: 김진태
+회원가입 수정
+user collection에 유저 추가
+*/
 router.post('/', function(req, res, next) {
-  let hashPW = crypto.createHash('sha512').update(req.body["PW"]).digest('base64');
+  let hashPW = crypto.createHash('sha512').update(req.body["password"]).digest('base64');
   let loginInfo = {};
-  loginInfo['ID'] = req.body["ID"];
-  loginInfo['PW'] = hashPW;
+  loginInfo['id'] = req.body["id"];
+  loginInfo['password'] = hashPW;
+  loginInfo['name'] = req.body["name"];
+  loginInfo['customized_keyword'] = req.body["customized_keyword"];
 
-  firestore.collection('/login').where('ID', '==', req.body["ID"]).get()
+  firestore.collection('/user').where('id', '==', req.body["id"]).get()
   .then((snapshot) => {
     if(snapshot.empty){
-      firestore.collection('/login').add(loginInfo);
+      firestore.collection('/user').add(loginInfo);
       console.log('Sign Up');
       res.status(201).send('Sign Up');
       return;
