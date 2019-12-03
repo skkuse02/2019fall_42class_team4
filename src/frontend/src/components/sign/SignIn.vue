@@ -9,12 +9,19 @@
             <a @click="$emit('changeShow')">Sgin Up</a>
           </v-toolbar>
           <v-card-text>
-            <v-form>
+            <v-form
+              v-model="valid"
+              ref="form"
+              lazy-validation
+            >
               <v-text-field
                 prepend-icon="mdi-account"
                 v-model="id"
+                  :counter="10"
                 label="ID"
                 type="text"
+                :rules="[rule.required, rule.maxLength(10)]"
+                required
               >
               </v-text-field>
               <v-text-field
@@ -22,16 +29,19 @@
                 v-model="password"
                   :append-icon="isPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
                   :type="isPasswordShow ? 'text' : 'password'"
+                  :counter="10"
                 label="Password"
                 @click:append="isPasswordShow = !isPasswordShow"
                 @keyup.enter="SignIn"
+                :rules="[rule.required, rule.maxLength(10)]"
+                required
               >
               </v-text-field>
             </v-form>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" @click="SignIn">Sign In</v-btn>
+            <v-btn color="primary" @click="SignIn" :disabled="!valid">Sign In</v-btn>
           </v-card-actions>
         </v-card>
         <v-alert :value="isAlertShow"  type="error">
@@ -50,7 +60,12 @@ export default {
       password: '',
       isPasswordShow: false,
       state: '',
-      isAlertShow: false
+      isAlertShow: false,
+      rule: {
+        required: v => !!v || '필수 항목입니다.',
+        maxLength: length => v => v.length <= length || length + '자 이하로 입력해 주세요'
+      },
+      valid: false
     }
   },
   created () {
@@ -60,6 +75,12 @@ export default {
   },
   methods: {
     async SignIn () {
+      if (!this.$refs.form.validate()) {
+        this.state = '입력을 올바르게 해주세요'
+        this.isAlertShow = true
+        return
+      }
+
       // backend에 로그인 요청
       try {
         const res = await this.$http.post('/api/login', {
@@ -68,7 +89,7 @@ export default {
         })
         // console.log(res.data)
         this.$store.commit('LOGIN', res.data.userInfo)
-        this.$router.push('/')
+        this.$router.go(-1)
       } catch (e) {
         let stateCode = e.message
         if (stateCode.includes('404')) {

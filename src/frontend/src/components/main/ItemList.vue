@@ -3,7 +3,7 @@
     <v-flex d-flex xs12 v-for="item in items" :key="item.id">
       <v-card>
         <v-layout align-center justify-center>
-          <v-flex xs5>
+          <v-flex xs4>
             <!-- 상품 사진 -->
             <v-img :src=item.item_img_url height="300" contain></v-img>
           </v-flex>
@@ -15,9 +15,9 @@
             <v-card-text>
               <span style="color: blue;"><h3>Free Delivery</h3></span>
               <!-- 상품 키워드 -->
-              <span v-for="keyword in Object.keys(item.keywordsMap)" :key="keyword">
-                <v-chip disabled v-if="item.keywordsMap[keyword] > 0" color="blue" text-color="white">{{keyword}}</v-chip>
-                <v-chip disabled v-else-if="item.keywordsMap[keyword] < 0" color="red" text-color="white">{{keyword}}</v-chip>
+              <span v-for="keyword in Object.keys(item.total_keywords_map)" :key="keyword">
+                <v-chip disabled v-if="item.total_keywords_map[keyword] > 0" color="blue" text-color="white">{{keyword}}</v-chip>
+                <v-chip disabled v-else-if="item.total_keywords_map[keyword] < 0" color="red" text-color="white">{{keyword}}</v-chip>
               </span>
               <br>
               <!-- 상품 별점 -->
@@ -27,11 +27,14 @@
                 small
                 background-color="orange lighten-3"
                 color="orange"
-                half-increments>
+                half-increments
+              >
               </v-rating>
               <!-- 상품 가격 -->
               <div><strong>Price: </strong>{{item.price}}$</div>
               <div>Total Review: {{item.total_review_num}}</div>
+
+              <!-- 장바구니에 표시할 항목 -->
               <template v-if="item.quantity">
                 <v-divider></v-divider>
                 <div>Quantity: {{item.quantity}}</div>
@@ -40,6 +43,101 @@
                 <v-btn color="success">Buy</v-btn>
               </template>
             </v-card-text>
+          </v-flex>
+          <v-flex xs1 v-if="item.history">
+            <!-- 구매내역에 표시할 항목 -->
+            <v-dialog
+              v-model="dialog"
+              persistent
+              max-width="700px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on"><v-icon>mdi-comment-plus-outline</v-icon></v-btn>
+              </template>
+              <v-card>
+                <v-card-title>
+                  <span class="headline">Reviews</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container grid-list-md>
+                    <v-layout wrap>
+                      <v-flex xs4>
+                        <v-text-field
+                          v-model="user.id"
+                          disabled
+                          label="author"
+                          box
+                        >
+                        </v-text-field>
+                      </v-flex>
+                      <v-flex xs8>
+                        <v-text-field
+                          v-model="date"
+                          disabled
+                          label="date"
+                          box
+                        >
+                        </v-text-field>
+                      </v-flex>
+                      <!-- <v-flex xs12>
+                        <v-text-field
+                          v-model="item.review.title"
+                          label="title"
+                          box
+                        >
+                        </v-text-field>
+                      </v-flex>
+                      <v-flex xs12>
+                        <v-textarea
+                          v-model="item.review.content"
+                          label="content"
+                          auto-grow
+                          box
+                        >
+                        </v-textarea>
+                      </v-flex>
+                      <v-flex xs12>
+                        <v-rating
+                          v-model="item.review.item_rating"
+                          background-color="orange lighten-3"
+                          color="orange"
+                          half-increments
+                        >
+                        </v-rating>
+                      </v-flex> -->
+                      <v-flex xs12>
+                        <v-text-field
+                          label="title"
+                          box
+                        >
+                        </v-text-field>
+                      </v-flex>
+                      <v-flex xs12>
+                        <v-textarea
+                          label="content"
+                          auto-grow
+                          box
+                        >
+                        </v-textarea>
+                      </v-flex>
+                      <v-flex xs12>
+                        <v-rating
+                          background-color="orange lighten-3"
+                          color="orange"
+                          half-increments
+                        >
+                        </v-rating>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
+                  <v-btn color="blue darken-1" flat @click="Save(item)">Save</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </v-flex>
         </v-layout>
       </v-card>
@@ -50,6 +148,29 @@
 <script>
 export default {
   props: ['items'],
+  data () {
+    return {
+      dialog: false,
+      user: this.$store.state.userInfo,
+      date: new Date()
+    }
+  },
+  created () {
+    // backend에 review 요청
+    /*
+    위의 vue 코드에서는 items를 v-for로 반복하기 때문에 처음 데이터를 받아올 때 item들의 review를 요청해서 미리 저장
+    const run = async () => {
+      for(item of items) {
+        const res = await this.$http.get('/api/review/' + item.id)
+        item.review = res.data
+        if (item.review) item.isReview = true // 기존 review 존재 시
+        else item.isReview = false
+      }
+    }
+    run()
+    */
+  },
+  // 첫 번째 페이지의 검색 결과 업데이트에 사용되는 함수
   updated () {
     const searchResult = JSON.parse(sessionStorage.getItem('searchResult'))
     if (searchResult) {
@@ -60,7 +181,26 @@ export default {
   methods: {
     RemoveCart (item) {
       this.$store.commit('REMOVECART', item)
-      this.items = JSON.parse(sessionStorage.getItem('inCart'))
+      this.items = this.$store.state.inCart
+    },
+    Save (item) {
+      this.dialog = false
+      // backend에 review 생성/수정 요청
+      /*
+      if (item.isReview) {  // 기존 review 존재 시
+        delete item.review.isReview
+        this.$http.put('/api/review/', {
+          review: item.review
+        })
+        alert('리뷰 수정 완료')
+      } else {  // 기존 리뷰 존재 시
+        delete item.review.isReview
+        this.$http.post('/api/review/', {
+          review: item.review
+        })
+        alert('리뷰 등록 완료')
+      }
+      */
     }
   }
 }

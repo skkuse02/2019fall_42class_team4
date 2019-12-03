@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     IsCart () {
-      const cart = JSON.parse(sessionStorage.getItem('inCart'))
+      const cart = this.$store.state.inCart
       if (cart) {
         for (let i in cart) {
           const id = cart[i].id
