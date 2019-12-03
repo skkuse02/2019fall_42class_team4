@@ -54,29 +54,22 @@ export default {
       this.curItem = res.data[0]
 
       // 현재 아이템의 리뷰 불러오기
-      for (let i in this.curItem.rep_reviews) {
-        const reviewId = this.curItem.rep_reviews[i]
-        const res = await this.$http.get('/api/reviews/' + reviewId)
-        this.curItemReviews.push(res.data[0])
-      }
+      let resR = await this.$http.get(`/api/reviews/${this.curItem.id}/-1/?criteria=rating`)
+      this.curItemReviews.push(resR.data)
+      console.log(resR.data)
 
+      // 유사 아이템 비교 목록에 현재 아이템 추가하기
+      this.curItem.similar_items.unshift(this.curItem.id)
       // 유사 아이템 불러오기
-      for (let i in this.curItem.similar_items) {
-        const similarId = this.curItem.similar_items[i]
-        const res = await this.$http.get('/api/items/' + similarId)
+      for (let itemId of this.curItem.similar_items) {
+        const res = await this.$http.get('/api/items/' + itemId)
         this.similarItems.push(res.data[0])
       }
 
       // 유사 아이템의 리뷰 불러오기
-      for (let i in this.similarItems) {
-        var repReviews = this.similarItems[i].rep_reviews
-        var asembling = []
-        for (let j in repReviews) {
-          const reviewId = repReviews[j]
-          const res = await this.$http.get('/api/reviews/' + reviewId)
-          asembling.push(res.data[0])
-        }
-        this.similarItemsReviews.push(asembling)
+      for (let itemId of this.curItem.similar_items) {
+        const res = await this.$http.get('/api/reviews/' + itemId)
+        this.similarItemsReviews.push(res.data)
       }
     }
 
