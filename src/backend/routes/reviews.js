@@ -71,6 +71,9 @@ router.get('/:item_id/:lastReviewId', function(req, res, next){
         //console.log(doc.id, '=>', doc.data());
         reviews.push(doc.data())
       });
+      reviews.forEach(review=>{
+        review.last_modified_time = review.last_modified_time.toDate().toLocaleDateString()
+      })
       res.status(200).send(reviews);
     })
     .catch((err) => {
@@ -93,9 +96,12 @@ router.get('/:item_id', function(req, res, next){
         return;
       }
       snapshot.forEach((doc) => {
-        console.log(doc.id, '=>', doc.data());
+        // console.log(doc.id, '=>', doc.data());
         reviews.push(doc.data())
       });
+      reviews.forEach(review=>{
+        review.last_modified_time = review.last_modified_time.toDate().toLocaleDateString()
+      })
       res.status(200).send(reviews)
     })
     .catch((err) => {

@@ -13,9 +13,9 @@
           <v-card-text>
             <span style="color: blue;"><h3>Free Delivery</h3></span>
             <!-- 상품 키워드 -->
-              <span v-for="keyword in similarItems[i-1].keywords_map" :key="keyword">
-                <v-chip disabled v-if="similarItems[i-1].keywords_map[keyword] > 0" color="blue" text-color="white">{{keyword}}</v-chip>
-                <v-chip disabled v-else-if="similarItems[i-1].keywords_map[keyword] < 0" color="red" text-color="white">{{keyword}}</v-chip>
+              <span v-for="keyword in Object.keys(similarItems[i-1].keywordsMap)" :key="keyword">
+                <v-chip disabled v-if="similarItems[i-1].keywordsMap[keyword] > 0" color="blue" text-color="white">{{keyword}}</v-chip>
+                <v-chip disabled v-else-if="similarItems[i-1].keywordsMap[keyword] < 0" color="red" text-color="white">{{keyword}}</v-chip>
               </span>
             <br>
             <!-- 상품 별점 -->
@@ -41,7 +41,7 @@
         <v-flex xs12 v-for="review in similarItemsReviews[i-1]" :key="review.id">
           <v-divider></v-divider>
           <v-card-text>
-            <div><strong>{{review.writer}}</strong> {{review.date}}</div>
+            <div><strong>{{review.author}}</strong> {{(review.last_modified_time)}}</div>
             <v-rating
               v-model="review.item_score"
               readonly
@@ -51,11 +51,11 @@
               half-increments
             >
             </v-rating>
-            <div>{{review.contents}}</div>
+            <div>{{review.content}}</div>
             <br>
-            <span v-for="keyword in review.keyword_list" :key="keyword.keyword">
-              <v-chip disabled v-if="keyword.point > 0" color="blue" text-color="white">{{keyword.keyword}}</v-chip>
-              <v-chip disabled v-else color="red" text-color="white">{{keyword.keyword}}</v-chip>
+            <span v-for="keyword in review.keywords_map" :key="keyword.keyword">
+              <v-chip disabled v-if="keyword.score > 0" color="blue" text-color="white">{{keyword.name}}</v-chip>
+              <v-chip disabled v-else color="red" text-color="white">{{keyword.name}}</v-chip>
             </span>
             <br>
             <div><v-icon>mdi-thumb-up-outline</v-icon>{{review.review_score}}</div>

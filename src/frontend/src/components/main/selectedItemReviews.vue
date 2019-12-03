@@ -7,7 +7,7 @@
       <v-flex xs12 v-for="review of curItemReviews" :key="review.id">
         <v-divider></v-divider>
         <v-card-text>
-          <div><strong>{{review.writer}}</strong> {{review.date}}</div>
+          <div><strong>{{review.author}}</strong> {{new Date(review.last_modified_time)}}</div>
           <v-rating
             v-model="review.item_score"
             readonly
@@ -17,7 +17,7 @@
             half-increments
           >
           </v-rating>
-          <div>{{review.contents}}</div>
+          <div>{{review.content}}</div>
           <br>
           <!-- 상품 키워드 -->
               <span v-for="keyword of review.keywords_map" :key="keyword">
