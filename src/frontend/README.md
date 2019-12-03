@@ -37,7 +37,7 @@
 ### localhost로 프로젝트 serve
 ./src/frontend 위치에서
 ```
-yarn serve
+yarn start
 ```
 
 ### Compiles and minifies for production

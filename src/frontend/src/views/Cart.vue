@@ -22,7 +22,7 @@ export default {
   },
   data () {
     return {
-      cart: JSON.parse(sessionStorage.getItem('inCart')),
+      cart: this.$store.state.inCart,
       cartItems: []
     }
   },
