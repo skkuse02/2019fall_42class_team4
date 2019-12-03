@@ -11,8 +11,50 @@ if (!firebase.apps.length) {
 }
 let firestore = firebase.firestore();
 
+let documentLimit = 10;// number of reviews in one page 
+
 // get all reviews
-router.get('/', function(req, res, next){
+router.get('/:item_id/:lastReviewId', function(req, res, next){
+  let criteria = req.query.criteria;
+  let reqForDB;
+  if(Number(req.params.lastReviewId)===-1) {// request firstPage
+    if(criteria === "rating") {
+      reqForDB = firestore.collection("items").docs(Number(req.params.item_id))
+      .collection("reviews").orderBy("review_rating", "desc").limit(documentLimit)
+    }
+    else if(criteria === "recent") {
+      reqForDB = firestore.collection("items").docs(Number(req.params.item_id))
+      .collection("reviews").orderBy("last_modified_time", "desc").limit(documentLimit)
+    }
+    else if(criteria === "keyword") {
+      let keyword = req.query.keyword;
+      reqForDB = firestore.collection("items").docs(Number(req.params.item_id))
+      .collection("reviews").where('keywords', 'array-contains', keyword).orderBy("review_rating", "desc").limit(documentLimit)
+    }
+    else {
+      console.log('Error Getting Reviews', err);
+      res.status(400).send(err);
+    }
+  }
+  else {
+    if(criteria === "rating") {
+      reqForDB = firestore.collection("items").docs(Number(req.params.item_id))
+      .collection("reviews").orderBy("review_rating", "desc").limit(documentLimit)
+    }
+    else if(criteria === "recent") {
+      reqForDB = firestore.collection("items").docs(Number(req.params.item_id))
+      .collection("reviews").orderBy("last_modified_time", "desc").limit(documentLimit)
+    }
+    else if(criteria === "keyword") {
+      let keyword = req.query.keyword;
+      reqForDB = firestore.collection("items").docs(Number(req.params.item_id))
+      .collection("reviews").where('keywords', 'array-contains', keyword).orderBy("review_rating", "desc").limit(documentLimit)
+    }
+    else {
+      console.log('Error Getting Reviews', err);
+      res.status(400).send(err);
+    }
+  }
   let reviews = []
   firestore.collection('/reviews').get()
     .then((snapshot) => {

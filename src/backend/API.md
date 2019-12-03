@@ -10,7 +10,7 @@
 
 ## **reviews**
 
-### GET      /reviews/:item_id/:page_num/?criteria
+### GET      /reviews/:item_id/:lastReviewId/?criteria   (lastReviewId = -1 when first page, criteria = "rating, recent, keyword"                                                       (when criteria = "keyword", additional query : keyword = "requestedKeyword")
 ### GET      /reviews/:item_id/:review_id
 ### POST     /reviews/:item_id
 ### PUT      /reviews/:item_id/:review_id

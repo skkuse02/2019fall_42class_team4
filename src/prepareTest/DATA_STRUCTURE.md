@@ -47,6 +47,7 @@
         , content: "content"
         , last_modified_time: last_modified_time
         , keywords_map: [{name:"keyword_name", score:"keyword_score"}, ...]
+        , keywords: [keyword_name, ...] 
         , item_rating: item_rating 
         , review_rating: total_num_of_review_recommendation
     }
