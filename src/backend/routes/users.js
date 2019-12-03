@@ -1,6 +1,5 @@
 let express = require('express');
 let router = express.Router();
-let crypto = require('crypto');
 
 let firebase = require('firebase');
 let firebaseConfig = require('../firebaseConfig.json');
@@ -16,59 +15,58 @@ router.get('/:id', function (req, res, next) {
     .then((snapshot) => {
       if (snapshot.empty) {
         console.log('No matching documents');
+        res.status(404).send('No Matching Reviews');
         return;
       }
       snapshot.forEach((doc) => {
         console.log(doc.id, '=>', doc.data());
+        reviews.push(doc.data());
       });
+      res.status(200).send(reviews);
     })
     .catch((err) => {
       console.log('Error getting documents', err);
+      res.status(400).send(err);
     });
-  res.send('Data Get Item');
 });
 
 router.post('/', function (req, res, next) {
-  firestore.collection('/users').add(req.body);
-  res.send('Data Post Item');
+  firestore.collection('/users').where('id', '==', Number(req.params.id)).get()
+  .then((snapshot) => {
+    if(snapshot.empty){
+      firestore.collection('/users').add(req.body);
+      console.log('User Post');
+      res.status(201).send('User Post');
+      return;
+    } else {
+      console.log('User Already Exist');
+      res.status(400).send('User Already Exist');
+    }
+  })
+  .catch((err) => {
+    console.log('Error Getting Reviews', err);
+    res.status(400).send(err);
+  });
 });
 
-/*
-작성자: 김진태
-user.put 변경
-set대신 update method 사용
-*/
 router.put('/:id', function (req, res, next) {
-  firestore.collection('/user').where('id', '==', req.params.id).get()
+  firestore.collection('/users').where('id', '==', Number(req.params.id)).get()
     .then((snapshot) => {
       if (snapshot.empty) {
-        console.log('No matching documents');
+        firestore.collection('/users').add(req.body);
+        console.log('No Matching Users & Review Users');
+        res.status(201).send('No Matching Users & Review Users');
         return;
       }
       snapshot.forEach((doc) => {
-        let hashPW = crypto.createHash('sha512').update(req.body.password).digest('base64');
-        if(doc.data()["password"] == hashPW){
-          if(req.body.type === "keyword_change") {
-            console.log("keyword change")
-            firestore.collection('/user').doc(doc.id).update({
-              customized_keyword: req.body.keywords
-            })
-          } else {
-            console.log("password change")
-            const change = crypto.createHash('sha512').update(req.body.changePassword).digest('base64')
-            firestore.collection('/user').doc(doc.id).update({
-              password: change
-            })
-          }
-          res.status(200).send("Modify Success");
-        } else {
-          console.log('PW Not Equal');
-          res.status(400).send('PW Not Equal');
-        }
+        firestore.collection('/users').doc(doc.id).set(req.body);
+        console.log(doc.id, '=>', doc.data());
       });
+      res.status(200).send('Review Put');
     })
     .catch((err) => {
       console.log('Error getting documents', err);
+      res.status(400).send(err);
     });
 });
 
@@ -77,17 +75,19 @@ router.delete('/:id', function (req, res, next) {
     .then((snapshot) => {
       if (snapshot.empty) {
         console.log('No matching documents');
+        res.status(404).send('No Matching Users');
         return;
       }
       snapshot.forEach((doc) => {
         firestore.collection('/users').doc(doc.id).delete();
         console.log(doc.id, '=>', doc.data());
       });
+      res.status(200).send('Review Delete');
     })
     .catch((err) => {
       console.log('Error getting documents', err);
+      res.status(400).send(err);
     });
-  res.send('Data Delete Item');
 });
 
 module.exports = router;

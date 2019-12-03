@@ -11,7 +11,7 @@ if (!firebase.apps.length) {
 }
 let firestore = firebase.firestore();
 
-let documentLimit = 10;// number of reviews in one page 
+let documentLimit = 10;// number of reviews in one page
 
 router.get('/:item_id/:lastReviewId', function(req, res, next){
   let criteria = req.query.criteria;
@@ -104,21 +104,25 @@ router.get('/:item_id', function(req, res, next){
   });
 });
 
-router.post('/', function(req, res, next){
-  firestore.collection('/reviews').where('id', '==', Number(req.params.id)).get()
+router.post('/:item_id', function(req, res, next){
+  firestore.collection('/items').doc(req.params.item_id)
+    .collection('/reviews').orderBy('id', 'desc').limit(1).get()
     .then((snapshot) => {
       if(snapshot.empty){
-        //TODO : check we can modify request's body
-        //keyword object is json object which contains name, score field
         req.body.keyword = nlpProcessor.callNLP(req.body.content);
-        firestore.collection('/reviews').add(req.body);
+        firestore.collection('/items').doc(req.params.item_id)
+          .collection('/reviews').doc('0').set(req.body);
         console.log('Review Post');
         res.status(201).send('Review Post');
         return;
-      } else {
-        console.log('Review Already Exist');
-        res.status(400).send('Review Already Exist')
       }
+      snapshot.forEach((doc) => {
+        console.log(Number(doc.id)+1)
+        firestore.collection('/items').doc(req.params.item_id)
+          .collection('/reviews').doc(String(Number(doc.id)+1)).set(req.body);
+        console.log('Review Post');
+        res.status(201).send('Review Post');
+      });
     })
     .catch((err) => {
       console.log('Error Getting Reviews', err);
@@ -126,21 +130,23 @@ router.post('/', function(req, res, next){
   });
 });
 
-router.put('/:id', function(req, res, next){
-  firestore.collection('/reviews').where('id', '==', Number(req.params.id)).get()
-    .then((snapshot) => {
-      if(snapshot.empty){
-        firestore.collection('/reviews').add(req.body);
+router.put('/:item_id/:review_id', function(req, res, next){
+  firestore.collection('/items').doc(req.params.item_id)
+    .collection('/reviews').doc(req.params.review_id).get()
+    .then((doc) => {
+      if(!doc.exists){
+        firestore.collection('/items').doc(req.params.item_id)
+          .collection('/reviews').doc(req.params.review_id).set(req.body);
         console.log('No Matching Reviews & Review Post');
         res.status(201).send('No Matching Reviews & Review Post');
         return;
-      }
-      snapshot.forEach((doc) => {
-        if(req.params.content)  firestore.collection('/reviews').doc(doc.id).update({content: req.params.content});
-        if(req.params.item_score) firestore.collection('/reviews').doc(doc.id).update({content: req.params.item_score});
-        console.log(doc.id, '=>', doc.data());
-      });
-      res.status(200).send('Review Put');
+      } else {
+        firestore.collection('/items').doc(req.params.item_id)
+          .collection('/reviews').doc(req.params.review_id).set(req.body);
+        console.log('Review Put');
+        res.status(200).send('Review Put');
+      };
+
     })
     .catch((err) => {
       console.log('Error Getting Reviews', err);
@@ -148,24 +154,26 @@ router.put('/:id', function(req, res, next){
   });
 });
 
-router.delete('/:id', function(req, res, next){
-  firestore.collection('/reviews').where('id', '==', Number(req.params.id)).get()
-    .then((snapshot) => {
-      if(snapshot.empty){
+router.delete('/:item_id/:review_id', function(req, res, next){
+  firestore.collection('/items').doc(req.params.item_id)
+    .collection('/reviews').doc(req.params.review_id).get()
+    .then((doc) => {
+      if(!doc.exists){
         console.log('No Matching Reviews');
         res.status(404).send('No Matching Reviews')
         return;
-      }
-      snapshot.forEach((doc) => {
-        firestore.collection('/reviews').doc(doc.id).delete();
+      } else {
+        firestore.collection('/items').doc(req.params.item_id)
+          .collection('/reviews').doc(req.params.review_id).delete();
         console.log(doc.id, '=>', doc.data());
-      });
-      res.status(200).send('Review Delete')
+        res.status(200).send('Review Delete');
+      }
     })
     .catch((err) => {
       console.log('Error Getting Reviews', err);
       res.status(400).send(err);
   });
 });
+
 
 module.exports = router;
