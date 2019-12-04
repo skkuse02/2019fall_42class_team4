@@ -167,99 +167,137 @@ const firestore = firebase.firestore();
 
 // start of module
 
-// csv-parser
-const csv = require('csv-parser');
-const fs = require('fs');
-const NLP = require('./processNLP')
+// // csv-parser
+// const csv = require('csv-parser');
+// const fs = require('fs');
+// const NLP = require('./processNLP')
 
-const reviews = [];
+// const reviews = [];
 
-let recommends = 300;// because the rows' sequence were sorted by review_rate in decreasing order
-let i = 0;
-let item_id = 16;// THE ID OF ITEM CONTAINING REVIEW YOU WANT TO POST 
-let docPointer;
-let numToPost = 40;
-let tags = [// tags from the NLP module, processNLP.js, name2tags(name) function
-  "sound quality"
-  , "product quality"
-  , "microphone"
-  , "bass"
-  , "mid"
-  , "treble"
-  , "design"
-  , "usability"
-  , "battery"
-  , "price"
-  , "customer service"
-  , "bluetooth"
-  , "noise canceling"
-  , "bone conduction"];
-let total_keywords_map_template = {}
-for (let tag of tags) {
-  total_keywords_map_template[tag] = 0;
-}
+// let recommends = 300;// because the rows' sequence were sorted by review_rate in decreasing order
+// let i = 0;
+// let item_id = 16;// THE ID OF ITEM CONTAINING REVIEW YOU WANT TO POST 
+// let docPointer;
+// let numToPost = 40;
+// let tags = [// tags from the NLP module, processNLP.js, name2tags(name) function
+//   "sound quality"
+//   , "product quality"
+//   , "microphone"
+//   , "bass"
+//   , "mid"
+//   , "treble"
+//   , "design"
+//   , "usability"
+//   , "battery"
+//   , "price"
+//   , "customer service"
+//   , "bluetooth"
+//   , "noise canceling"
+//   , "bone conduction"];
+// let total_keywords_map_template = {}
+// for (let tag of tags) {
+//   total_keywords_map_template[tag] = 0;
+// }
 
-fs.createReadStream('./review_csv/' + item_id + '.csv') // reading csv files 
-  .pipe(csv())
-  .on('data', (row) => {
-    //process each row 
-    if (i < numToPost) {
-      reviews.push(new oneReview(i, row.author, row.title, new Date(row.date), row.content, Number(row.rating[0]), recommends--));
-      i++;
-    }
-  })
-  .on('end', () => {
-    let promisesForNLP = [];
-    for (let i = 0; i < numToPost; i++) {
-      promisesForNLP.push(
-        NLP(reviews[i].content)
-          .then((keywords_map) => { 
-            reviews[i].keywords_map = JSON.parse(keywords_map)
-            reviews[i].keywords = reviews[i].keywords_map.map(keywordObj=>keywordObj.name)
-          })
-      )
-    }
-    Promise.all(promisesForNLP)
-      .then(
-        () => {
-          let promisesForReviewPosting = []
-          let total_star_sum = 0;
-          let total_review_num = 0;
-          for (let i = 0; i < numToPost; i++) {// update global values of item affected by each new review
-            for (let key_score of reviews[i].keywords_map) {
-              total_keywords_map_template[key_score.name] += key_score.score
-            }
-            total_review_num++;
-            total_star_sum += reviews[i].item_rating;
-            docPointer = firestore.collection("items").doc(""+item_id).collection("reviews").doc("" + i);
-            promisesForReviewPosting.push(docPointer.set(
-              Object.assign({}, reviews[i])
-            ))
-          }
-          docPointer = firestore.collection("items").doc(""+item_id)// finally update item's rating.
-          promisesForReviewPosting.push(docPointer.update({
-            total_star_sum: total_star_sum
-            , total_review_num: total_review_num
-            , total_keywords_map: total_keywords_map_template
-          }))
-          Promise.all(promisesForReviewPosting)
-            .then(() => console.log(`reviews of item #${item_id} are successfully initialized to DB`))
-            .catch(err=>console.error(err.message))
-        }
-      )
-  });
+// fs.createReadStream('./review_csv/' + item_id + '.csv') // reading csv files 
+//   .pipe(csv())
+//   .on('data', (row) => {
+//     //process each row 
+//     if (i < numToPost) {
+//       reviews.push(new oneReview(i, row.author, row.title, new Date(row.date), row.content, Number(row.rating[0]), recommends--));
+//       i++;
+//     }
+//   })
+//   .on('end', () => {
+//     let promisesForNLP = [];
+//     for (let i = 0; i < numToPost; i++) {
+//       promisesForNLP.push(
+//         NLP(reviews[i].content)
+//           .then((keywords_map) => { 
+//             reviews[i].keywords_map = JSON.parse(keywords_map)
+//             reviews[i].keywords = reviews[i].keywords_map.map(keywordObj=>keywordObj.name)
+//           })
+//       )
+//     }
+//     Promise.all(promisesForNLP)
+//       .then(
+//         () => {
+//           let promisesForReviewPosting = []
+//           let total_star_sum = 0;
+//           let total_review_num = 0;
+//           for (let i = 0; i < numToPost; i++) {// update global values of item affected by each new review
+//             for (let key_score of reviews[i].keywords_map) {
+//               total_keywords_map_template[key_score.name] += key_score.score
+//             }
+//             total_review_num++;
+//             total_star_sum += reviews[i].item_rating;
+//             docPointer = firestore.collection("items").doc(""+item_id).collection("reviews").doc("" + i);
+//             promisesForReviewPosting.push(docPointer.set(
+//               Object.assign({}, reviews[i])
+//             ))
+//           }
+//           docPointer = firestore.collection("items").doc(""+item_id)// finally update item's rating.
+//           promisesForReviewPosting.push(docPointer.update({
+//             total_star_sum: total_star_sum
+//             , total_review_num: total_review_num
+//             , total_keywords_map: total_keywords_map_template
+//           }))
+//           Promise.all(promisesForReviewPosting)
+//             .then(() => console.log(`reviews of item #${item_id} are successfully initialized to DB`))
+//             .catch(err=>console.error(err.message))
+//         }
+//       )
+//   });
 
-// object_template
-class oneReview {
-  constructor(id, author, title, date, content, item_rating, review_rating) {
-    this.id = id;
-    this.author = author;
-    this.title = title;
-    this.last_modified_time = date;
-    this.content = content;
-    this.item_rating = item_rating;
-    this.review_rating = review_rating;
+// // object_template
+// class oneReview {
+//   constructor(id, author, title, date, content, item_rating, review_rating) {
+//     this.id = id;
+//     this.author = author;
+//     this.title = title;
+//     this.last_modified_time = date;
+//     this.content = content;
+//     this.item_rating = item_rating;
+//     this.review_rating = review_rating;
+//   }
+// }
+
+// end of module
+
+
+
+
+// module for finding similar items
+
+// start of module
+
+// only using price for the similarity factor. 
+// there can be clustering, cosine-similarity, user-history, data mining technique... for determining the similar items 
+// numOfSimilarItem : 2
+firestore.collection('items').orderBy('price').get()
+.then(snapshot => {
+  let itemLists = []
+  snapshot.forEach(doc => itemLists.push(doc))
+  let promisesForSimilarItem = []
+  let prevId, nowId, nextId
+  lengthOfItems = itemLists.length
+  // first item's similarItems
+  promisesForSimilarItem.push(firestore.collection('items').doc(''+itemLists[0].id).update({similar_items:[itemLists[1].id,itemLists[2].id]}))
+  prevId = itemLists[0].id
+  nowId = itemLists[1].id
+  nextId = itemLists[2].id
+  for(let i=1 ; i<lengthOfItems-1 ; i++) {
+    nowId = nextId
+    nextId = itemLists[i+1].id
+    promisesForSimilarItem.push(firestore.collection('items').doc(''+nowId).update({similar_items:[prevId,nextId]}))
+    prevId = nowId
   }
-}
-
+  nowId = nextId
+  // last item's similarItems
+  promisesForSimilarItem.push(firestore.collection('items').doc(''+nowId).update({similar_items:[itemLists[lengthOfItems-3].id,itemLists[lengthOfItems-2].id]}))
+  Promise.all(promisesForSimilarItem)
+  .then(res=>{console.log("SIMILAR ITEM FINDING FINISHED")})
+  .catch(err=>console.error(err.message))
+})
+    
 // end of module

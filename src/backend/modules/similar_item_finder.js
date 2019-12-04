@@ -6,18 +6,35 @@ if (!firebase.apps.length) {
 }
 let firestore = firebase.firestore();
 
-async function simmilar() {
-	let itemDB = await firestore.collection('/items').orderBy('price').get();
-	let itemList = itemDB._snapshot.docChanges;
-	
-	for (var i = 0; i<itemList.length; i++) {
-		var idxs = [];
-		idxs.push(itemList[i-2].doc.proto.fields.id.integerValue);
-		idxs.push(itemList[i-1].doc.proto.fields.id.integerValue);
-		idxs.push(itemList[i+1].doc.proto.fields.id.integerValue);
-		idxs.push(itemList[i+2].doc.proto.fields.id.integerValue);
-		firestore.collection('/reviews').doc(itemList.doc.proto.fields.id.integerValue)
-				.update({simmilar_items: idxs});
-	}
-	
+function similarItemFinder() {
+    // only using price for the similarity factor. 
+    // there can be clustering, cosine-similarity, user-history, data mining technique... for determining the similar items 
+    // numOfSimilarItem : 2
+    console.log('similarItemFinder executed')
+    firestore.collection('items').orderBy('price').get()
+        .then(snapshot => {
+            let itemLists = []
+            snapshot.forEach(doc => itemLists.push(doc))
+            let promisesForSimilarItem = []
+            let prevId, nowId, nextId
+            lengthOfItems = itemLists.length
+            // first item's similarItems
+            promisesForSimilarItem.push(firestore.collection('items').doc('' + itemLists[0].id).update({ similar_items: [itemLists[1].id, itemLists[2].id] }))
+            prevId = itemLists[0].id
+            nowId = itemLists[1].id
+            nextId = itemLists[2].id
+            for (let i = 1; i < lengthOfItems - 1; i++) {
+                nowId = nextId
+                nextId = itemLists[i + 1].id
+                promisesForSimilarItem.push(firestore.collection('items').doc('' + nowId).update({ similar_items: [prevId, nextId] }))
+                prevId = nowId
+            }
+            nowId = nextId
+            // last item's similarItems
+            promisesForSimilarItem.push(firestore.collection('items').doc('' + nowId).update({ similar_items: [itemLists[lengthOfItems - 3].id, itemLists[lengthOfItems - 2].id] }))
+            Promise.all(promisesForSimilarItem)
+                .then(res => { console.log("SIMILAR ITEM FINDING FINISHED") })
+                .catch(err => console.error(err.message))
+        })
 }
+module.exports = similarItemFinder

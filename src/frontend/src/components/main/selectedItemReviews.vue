@@ -37,7 +37,7 @@
         <v-divider></v-divider>
         <v-card-text>
           <!-- 리뷰 작성자, 시간 -->
-          <div><strong>{{review.author}}</strong> {{review.last_modified_time}}</div>
+          <div><strong>{{review.author}}</strong> {{review.timeString}}</div>
           <!-- 상품 평점 -->
           <v-rating
             v-model="review.item_rating"

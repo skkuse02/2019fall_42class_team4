@@ -1,4 +1,5 @@
 <template>
+<!-- 이 component는 상품의 리스트를 표시하는 역할을 하며 상품 검색 후 화면, 장바구니, 구매내역에 들어간다. -->
   <v-layout row wrap>
     <v-flex d-flex xs12 v-for="item in items" :key="item.id">
       <v-card>

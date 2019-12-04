@@ -17,20 +17,20 @@ router.get('/:item_id/:offsetValue', function(req, res, next){
   debugger
   let criteria = req.query.criteria;
   let reqForDB;
-  let offsetValue = Number(req.params.offsetValue);
-  let item_id = Number(req.params.item_id)
+  let offsetValue = req.params.offsetValue;
+  let item_id = req.params.item_id
   if(offsetValue ===-1) {// request firstPage
     if(criteria === "rating") {
-      reqForDB = firestore.collection("items").doc(""+item_id)
+      reqForDB = firestore.collection("items").doc(item_id)
       .collection("reviews").orderBy("review_rating", "desc").limit(documentLimit)
     }
     else if(criteria === "recent") {
-      reqForDB = firestore.collection("items").doc(""+item_id)
+      reqForDB = firestore.collection("items").doc(item_id)
       .collection("reviews").orderBy("last_modified_time", "desc").limit(documentLimit)
     }
     else if(criteria === "keyword") {
       let keyword = req.query.keyword;
-      reqForDB = firestore.collection("items").doc(""+item_id)
+      reqForDB = firestore.collection("items").doc(item_id)
       .collection("reviews").where('keywords', 'array-contains', keyword).orderBy("review_rating", "desc").limit(documentLimit)
     }
     else {
@@ -40,19 +40,18 @@ router.get('/:item_id/:offsetValue', function(req, res, next){
   }
   else {
     if(criteria === "rating") {
-      reqForDB = firestore.collection("items").doc(""+item_id)
+      reqForDB = firestore.collection("items").doc(item_id)
       .collection("reviews").orderBy("review_rating", "desc")
       .startAfter(offsetValue).limit(documentLimit)
     }
     else if(criteria === "recent") {
-      reqForDB = firestore.collection("items").doc(""+item_id)
+      reqForDB = firestore.collection("items").doc(item_id)
       .collection("reviews").orderBy("last_modified_time", "desc")
-      .startAfter(offsetValue)
-      .limit(documentLimit)
+      .startAfter(new Date(offsetValue)).limit(documentLimit)
     }
     else if(criteria === "keyword") {
       let keyword = req.query.keyword;
-      reqForDB = firestore.collection("items").doc(""+item_id)
+      reqForDB = firestore.collection("items").doc(item_id)
       .collection("reviews").where('keywords', 'array-contains', keyword).orderBy("review_rating", "desc")
       .startAfter(offsetValue).limit(documentLimit)
     }
@@ -74,9 +73,11 @@ router.get('/:item_id/:offsetValue', function(req, res, next){
         reviews.push(doc.data())
       });
       reviews.forEach(review=>{
-        review.last_modified_time = review.last_modified_time.toDate().toLocaleDateString()
+        review.last_modified_time = review.last_modified_time.toDate()
+        review.timeString = review.last_modified_time.toLocaleDateString()
       })
       res.status(200).send(reviews);
+      console.log(reviews)
     })
     .catch((err) => {
       console.log('Error Getting Reviews', err);
@@ -89,8 +90,8 @@ router.get('/:item_id', function(req, res, next){
   debugger
   let reviews = [];
   let numberOfReview = 3;
-  let item_id = Number(req.params.item_id);
-  firestore.collection("items").doc(""+item_id)
+  let item_id = req.params.item_id;
+  firestore.collection("items").doc(item_id)
   .collection('reviews').orderBy("review_rating", "desc").limit(numberOfReview).get()
     .then((snapshot) => {
       if(snapshot.empty){
@@ -103,7 +104,8 @@ router.get('/:item_id', function(req, res, next){
         reviews.push(doc.data())
       });
       reviews.forEach(review=>{
-        review.last_modified_time = review.last_modified_time.toDate().toLocaleDateString()
+        review.last_modified_time = review.last_modified_time.toDate()
+        review.timeString = review.last_modified_time.toLocaleDateString()
       })
       res.status(200).send(reviews)
     })

@@ -12,15 +12,6 @@ if (!firebase.apps.length) {
 }
 let firestore = firebase.firestore();
 
-/*
-작성자: 김진태
-firebase collection 불러오는 것을 login에서 user로 변경
-user에 실질적인 데이터가 들어갈 것이라고 생각해서 변경
-user에 id, password key값을 사용
-
-추후 users 등의 collection이 생기게 되면 아래 코드 중 33번째 줄을 변경해야 함
-*/
-
 router.post('/', (req, res) => {
   let hashPW = crypto.createHash('sha512').update(req.body["PW"]).digest('base64');
   let loginInfo = {};
