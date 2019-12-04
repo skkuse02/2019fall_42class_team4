@@ -14,6 +14,7 @@ let loginRouter = require('./routes/login');
 let logoutRouter = require('./routes/logout');
 let signupRouter = require('./routes/signup');
 
+let similarItemFInder = require('./modules/similar_item_finder');
 
 let app = express();
 
@@ -43,6 +44,10 @@ if (!firebase.apps.length) {
 }
 let firestore = firebase.firestore();
 
+//find similar items in interval
+let interval = (1000*60*60) * 12 // (1000*60*60) = 1 hour 
+similarItemFInder()
+setInterval(similarItemFInder, interval);
 //router
 app.use('/', indexRouter);
 app.use('/api/items', itemsRouter);
