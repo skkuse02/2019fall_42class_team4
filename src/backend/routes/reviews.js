@@ -47,8 +47,7 @@ router.get('/:item_id/:offsetValue', function(req, res, next){
     else if(criteria === "recent") {
       reqForDB = firestore.collection("items").doc(item_id)
       .collection("reviews").orderBy("last_modified_time", "desc")
-      .startAfter(offsetValue)
-      .limit(documentLimit)
+      .startAfter(new Date(offsetValue)).limit(documentLimit)
     }
     else if(criteria === "keyword") {
       let keyword = req.query.keyword;
@@ -78,6 +77,7 @@ router.get('/:item_id/:offsetValue', function(req, res, next){
         review.timeString = review.last_modified_time.toLocaleDateString()
       })
       res.status(200).send(reviews);
+      console.log(reviews)
     })
     .catch((err) => {
       console.log('Error Getting Reviews', err);
