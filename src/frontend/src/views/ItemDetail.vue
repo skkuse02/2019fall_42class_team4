@@ -35,11 +35,38 @@ export default {
   components: {
     SelectedItem, SimilarItems, SelectedItemReviews
   },
+  methods: {
+    scroll (that) {
+      window.onscroll = () => {
+        let bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
+        console.log(bottomOfWindow)
+        if (bottomOfWindow) {
+          that.$http.get(`/api/reviews/${that.curItem.id}/${that.offsetValue}/?criteria=${that.criteria}&keyword=${that.keyword}`)
+            .then(response => {
+              let criteriaMap = {
+                'rating': 'review_rating',
+                'recent': 'last_modified_time',
+                'keyword': 'review_rating'
+              }
+              that.curItemReviews.push(...response.data)
+              that.offsetValue = response.data.pop()[criteriaMap[that.criteria]]
+            }
+            )
+        }
+      }
+    }
+  },
+  mounted () {
+    this.scroll(this)
+  },
   data () {
     return {
       // 현재 아이템과 리뷰
       curItem: {},
       curItemReviews: [],
+      offsetValue: -1,
+      criteria: 'rating',
+      keyword: '',
 
       // 유사 아이템 목록과 리뷰
       similarItems: [],
@@ -55,7 +82,13 @@ export default {
 
       // 현재 아이템의 리뷰 불러오기
       let resR = await this.$http.get(`/api/reviews/${this.curItem.id}/-1/?criteria=rating`)
+      let criteriaMap = {
+        'rating': 'review_rating',
+        'recent': 'last_modified_time',
+        'keyword': 'review_rating'
+      }
       this.curItemReviews.push(...resR.data)
+      this.offsetValue = resR.data.pop()[criteriaMap[this.criteria]]
       console.log(this.curItemReviews)
 
       // 유사 아이템 비교 목록에 현재 아이템 추가하기

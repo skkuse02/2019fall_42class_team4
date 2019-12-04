@@ -10,7 +10,7 @@
 
 ## **reviews**
 
-### GET      /reviews/:item_id/:lastReviewId/?criteria   (lastReviewId = -1 when first page, criteria = "rating", "recent", "keyword"
+### GET      /reviews/:item_id/:offsetValue/?criteria   (lastReviewId = -1 when first page, criteria = "rating", "recent", "keyword"
 ###                                                    (when criteria = "keyword", additional query : keyword = "requestedKeyword")
 ### GET      /reviews/:item_id            (getting top-rated reviews)
 ### POST     /reviews/:item_id

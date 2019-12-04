@@ -176,7 +176,7 @@ const reviews = [];
 
 let recommends = 300;// because the rows' sequence were sorted by review_rate in decreasing order
 let i = 0;
-let item_id = 19;// THE ID OF ITEM CONTAINING REVIEW YOU WANT TO POST 
+let item_id = 16;// THE ID OF ITEM CONTAINING REVIEW YOU WANT TO POST 
 let docPointer;
 let numToPost = 40;
 let tags = [// tags from the NLP module, processNLP.js, name2tags(name) function

@@ -13,12 +13,13 @@ let firestore = firebase.firestore();
 
 let documentLimit = 10;// number of reviews in one page 
 
-router.get('/:item_id/:lastReviewId', function(req, res, next){
+router.get('/:item_id/:offsetValue', function(req, res, next){
+  debugger
   let criteria = req.query.criteria;
   let reqForDB;
-  let lastReviewId = Number(req.params.lastReviewId);
+  let offsetValue = Number(req.params.offsetValue);
   let item_id = Number(req.params.item_id)
-  if(lastReviewId ===-1) {// request firstPage
+  if(offsetValue ===-1) {// request firstPage
     if(criteria === "rating") {
       reqForDB = firestore.collection("items").doc(""+item_id)
       .collection("reviews").orderBy("review_rating", "desc").limit(documentLimit)
@@ -40,19 +41,20 @@ router.get('/:item_id/:lastReviewId', function(req, res, next){
   else {
     if(criteria === "rating") {
       reqForDB = firestore.collection("items").doc(""+item_id)
-      .collection("reviews").startAfter(lastReviewId)
-      .orderBy("review_rating", "desc").limit(documentLimit)
+      .collection("reviews").orderBy("review_rating", "desc")
+      .startAfter(offsetValue).limit(documentLimit)
     }
     else if(criteria === "recent") {
       reqForDB = firestore.collection("items").doc(""+item_id)
-      .collection("reviews").startAfter(lastReviewId)
-      .orderBy("last_modified_time", "desc").limit(documentLimit)
+      .collection("reviews").orderBy("last_modified_time", "desc")
+      .startAfter(offsetValue)
+      .limit(documentLimit)
     }
     else if(criteria === "keyword") {
       let keyword = req.query.keyword;
       reqForDB = firestore.collection("items").doc(""+item_id)
-      .collection("reviews").where('keywords', 'array-contains', keyword).startAfter(lastReviewId)
-      .orderBy("review_rating", "desc").limit(documentLimit)
+      .collection("reviews").where('keywords', 'array-contains', keyword).orderBy("review_rating", "desc")
+      .startAfter(offsetValue).limit(documentLimit)
     }
     else {
       console.log('Error Getting Reviews', err);
@@ -84,6 +86,7 @@ router.get('/:item_id/:lastReviewId', function(req, res, next){
 
 // get top rated review
 router.get('/:item_id', function(req, res, next){
+  debugger
   let reviews = [];
   let numberOfReview = 3;
   let item_id = Number(req.params.item_id);
