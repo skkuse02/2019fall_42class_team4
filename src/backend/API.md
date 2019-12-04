@@ -23,6 +23,7 @@
 
 ### GET      /users/:user_id
 ### POST     /users/
+### PUT      /users/:user_id/                       // CHANGE the USER INFORMATION
 ### PUT      /users/:user_id/:item_id               // BUY the ITEM
 ### DELETE   /users/:user_id/:item_id               // CANCEL ITEM PURCHASE
 

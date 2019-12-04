@@ -46,7 +46,7 @@ let firestore = firebase.firestore();
 
 //find similar items in interval
 let interval = (1000*60*60) * 12 // (1000*60*60) = 1 hour 
-similarItemFInder()
+// similarItemFInder() //not used until test
 setInterval(similarItemFInder, interval);
 //router
 app.use('/', indexRouter);
