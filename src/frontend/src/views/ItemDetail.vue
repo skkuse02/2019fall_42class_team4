@@ -49,6 +49,7 @@ export default {
               }
               that.curItemReviews.push(...response.data)
               that.offsetValue = response.data.pop()[criteriaMap[that.criteria]]
+              console.log(that.offsetValue)
             }
             )
         }
@@ -64,7 +65,7 @@ export default {
       curItem: {},
       curItemReviews: [],
       offsetValue: -1,
-      criteria: 'rating',
+      criteria: 'recent',
       keyword: '',
 
       // 유사 아이템 목록과 리뷰
@@ -88,6 +89,7 @@ export default {
       }
       this.curItemReviews.push(...resR.data)
       this.offsetValue = resR.data.pop()[criteriaMap[this.criteria]]
+      console.log(this.offsetValue)
 
       // 유사 아이템 비교 목록에 현재 아이템 추가하기
       this.curItem.similar_items.unshift(this.curItem.id)

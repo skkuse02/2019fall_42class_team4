@@ -7,7 +7,7 @@
       <v-flex xs12 v-for="review of curItemReviews" :key="review.id">
         <v-divider></v-divider>
         <v-card-text>
-          <div><strong>{{review.author}}</strong> {{review.last_modified_time}}</div>
+          <div><strong>{{review.author}}</strong> {{review.timeString}}</div>
           <v-rating
             v-model="review.item_rating"
             readonly
