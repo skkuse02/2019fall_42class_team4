@@ -65,7 +65,7 @@ export default {
       curItem: {},
       curItemReviews: [],
       offsetValue: -1,
-      criteria: 'recent',
+      criteria: 'rating',
       keyword: '',
 
       // 유사 아이템 목록과 리뷰
