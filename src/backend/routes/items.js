@@ -16,6 +16,7 @@ let postprocessItems = (items) => {
   let thresholdScore;
   let numOfKeywords = 6;
   for(let item of items) {
+    absScores = []
     item.item_rating = item.total_star_sum / item.total_review_num; // derive item's rating 
     for(let k in item.total_keywords_map) {// derive item's representative keywords
       absScores.push(Math.abs(item.total_keywords_map[k]))
