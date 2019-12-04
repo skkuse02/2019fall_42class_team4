@@ -5,7 +5,7 @@
         <v-layout align-center justify-center>
           <v-flex xs4>
             <!-- 상품 사진 -->
-            <v-img :src=item.item_img_url height="300" contain></v-img>
+            <v-img :src="item.item_img_url" height="300" contain></v-img>
           </v-flex>
           <v-flex xs7>
             <v-card-title primary-title>
@@ -13,7 +13,6 @@
               <router-link :to="{name: 'ItemDetail', params: {id:item.id}}"><h2>{{item.name.join(' ')}}</h2></router-link>
             </v-card-title>
             <v-card-text>
-              <span style="color: blue;"><h3>Free Delivery</h3></span>
               <!-- 상품 키워드 -->
               <span v-for="keyword in Object.keys(item.keywordsMap)" :key="keyword">
                 <v-chip disabled v-if="item.keywordsMap[keyword] > 0" color="blue" text-color="white">{{keyword}}</v-chip>
@@ -31,7 +30,10 @@
               >
               </v-rating>
               <!-- 상품 가격 -->
-              <div><strong>Price: </strong>{{item.price}}$</div>
+              <div>
+                <span id="price"><strong>Price: </strong>{{item.price}}$</span>
+                <span id="delivery">Free Delivery</span>
+              </div>
               <div>Total Review: {{item.total_review_num}}</div>
 
               <!-- 장바구니에 표시할 항목 -->
@@ -44,8 +46,9 @@
               </template>
             </v-card-text>
           </v-flex>
+
+          <!-- 구매내역에 표시할 항목 -->
           <v-flex xs1 v-if="item.history">
-            <!-- 구매내역에 표시할 항목 -->
             <v-dialog
               v-model="dialog"
               persistent
@@ -214,5 +217,12 @@ a {
 a:hover {
   text-decoration: underline;
   color: blue;
+}
+#delivery {
+  color: blue;
+  margin-left: 20px;
+}
+#price {
+  font-size: 20px;
 }
 </style>

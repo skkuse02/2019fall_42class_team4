@@ -9,7 +9,7 @@
         </selected-item>
       </v-flex>
       <!-- 유사 상품 정보 표시할 영역 -->
-      <v-flex xs3 v-for="i in similarItems.length" :key="i">
+      <v-flex xs4 v-for="i in similarItems.length" :key="i">
         <similar-items
           v-bind:similar-items="similarItems"
           v-bind:similar-items-reviews="similarItemsReviews"
@@ -19,6 +19,7 @@
       <v-flex xs12>
         <selected-item-reviews
           v-bind:cur-item-reviews="curItemReviews"
+          @changeSortCriteria="getReview"
         >
         </selected-item-reviews>
       </v-flex>
@@ -39,7 +40,7 @@ export default {
     scroll (that) {
       window.onscroll = () => {
         let bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
-        console.log(bottomOfWindow)
+        // console.log(bottomOfWindow)
         if (bottomOfWindow) {
           that.$http.get(`/api/reviews/${that.curItem.id}/${that.offsetValue}/?criteria=${that.criteria}&keyword=${that.keyword}`)
             .then(response => {
@@ -54,6 +55,23 @@ export default {
             )
         }
       }
+    },
+    // review 정렬 기준을 바꿨을 때 리뷰 다시 가져오기
+    getReview (changeCriteria) {
+      this.curItemReviews = []
+      this.offsetValue = -1
+      this.criteria = changeCriteria.criteria
+      this.keyword = changeCriteria.setKeyword
+      this.$http.get(`/api/reviews/${this.curItem.id}/-1/?criteria=${this.criteria}&keyword=${this.keyword}`)
+        .then(response => {
+          let criteriaMap = {
+            'rating': 'review_rating',
+            'recent': 'last_modified_time',
+            'keyword': 'review_rating'
+          }
+          this.curItemReviews.push(...response.data)
+          this.offsetValue = response.data.pop()[criteriaMap[this.criteria]]
+        })
     }
   },
   mounted () {
@@ -65,7 +83,7 @@ export default {
       curItem: {},
       curItemReviews: [],
       offsetValue: -1,
-      criteria: 'rating',
+      criteria: 'recent',
       keyword: '',
 
       // 유사 아이템 목록과 리뷰
@@ -81,7 +99,7 @@ export default {
       this.curItem = res.data[0]
 
       // 현재 아이템의 리뷰 불러오기
-      let resR = await this.$http.get(`/api/reviews/${this.curItem.id}/-1/?criteria=rating`)
+      let resR = await this.$http.get(`/api/reviews/${this.curItem.id}/-1/?criteria=recent`)
       let criteriaMap = {
         'rating': 'review_rating',
         'recent': 'last_modified_time',
@@ -89,7 +107,7 @@ export default {
       }
       this.curItemReviews.push(...resR.data)
       this.offsetValue = resR.data.pop()[criteriaMap[this.criteria]]
-      console.log(this.curItemReviews)
+      // console.log(this.curItemReviews)
 
       // 유사 아이템 비교 목록에 현재 아이템 추가하기
       this.curItem.similar_items.unshift(this.curItem.id)
