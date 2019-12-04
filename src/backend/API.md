@@ -4,9 +4,11 @@
 
 ### GET      /items/?search=query
 ### GET      /items/:item_id
+### GET      /items/:item_id/:user_id
 ### POST     /items/
 ### PUT      /items/:item_id
 ### DELETE   /items/:item_id
+### DELETE   /items/:item_id/:user_id
 
 ## **reviews**
 
@@ -15,7 +17,9 @@
 ### GET      /reviews/:item_id            (getting top-rated reviews)
 ### POST     /reviews/:item_id
 ### PUT      /reviews/:item_id/:review_id
+### PUT      /reviews/:item_id/:review_id/:user_id
 ### DELETE   /reviews/:item_id/:review_id
+### DELETE   /reviews/:item_id/:review_id/:user_id
 
 ## **users**
 
