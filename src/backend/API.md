@@ -4,11 +4,9 @@
 
 ### GET      /items/?search=query       
 ### GET      /items/:item_id
-### GET      /items/:item_id/:user_id   // BUY the ITEM
 ### POST     /items/
 ### PUT      /items/:item_id
 ### DELETE   /items/:item_id
-### DELETE   /items/:item_id/:user_id
 
 ## **reviews**
 
@@ -25,6 +23,10 @@
 
 ### GET      /users/:user_id
 ### POST     /users/
-### PUT      /users/:item_id
-### DELETE   /users/:item_id
+### PUT      /users/:user_id/:item_id               // BUY the ITEM
+### DELETE   /users/:user_id/:item_id               // CANCEL ITEM PURCHASE
 
+## **login**
+
+### POST     /login
+### POST     /login/info
