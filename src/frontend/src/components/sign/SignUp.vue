@@ -130,7 +130,10 @@ export default {
           id: this.id,
           password: this.password,
           name: this.name,
-          customized_keyword: this.keywords
+          customized_keyword: this.keywords,
+          purchased_item: [],
+          posted_review: [],
+          recommended_review: []
         })
         console.log(res.data)
         alert('회원가입 완료, 로그인 하세요.')

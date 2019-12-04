@@ -6,9 +6,9 @@
     {
         user_id: "user_id"
         , password: "hashed_password"
-        , my_purchased_item: ["item_name", ...]
-        , my_posted_review: "item_id(space)review_id"
-        , my_recommended_review: ["item_id(space)review_id", ...]
+        , purchased_item: ["item_id", ...]
+        , posted_review: ["item_id(space)review_id", ...]
+        , recommended_review: ["item_id(space)review_id", ...]
     }
 ##### 설명: User의 암호는 hash된 값으로 저장된다. 
 ##### 설명: User가 구매한 상품과, 남긴 리뷰, 추천한 리뷰들의 정보는 User 안에 저장된다. . 
