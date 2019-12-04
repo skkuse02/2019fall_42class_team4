@@ -55,8 +55,8 @@ export default {
 
       // 현재 아이템의 리뷰 불러오기
       let resR = await this.$http.get(`/api/reviews/${this.curItem.id}/-1/?criteria=rating`)
-      this.curItemReviews.push(resR.data)
-      console.log(resR.data)
+      this.curItemReviews.push(...resR.data)
+      console.log(this.curItemReviews)
 
       // 유사 아이템 비교 목록에 현재 아이템 추가하기
       this.curItem.similar_items.unshift(this.curItem.id)

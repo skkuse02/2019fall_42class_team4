@@ -43,7 +43,7 @@
           <v-card-text>
             <div><strong>{{review.author}}</strong> {{(review.last_modified_time)}}</div>
             <v-rating
-              v-model="review.item_score"
+              v-model="review.item_rating"
               readonly
               small
               background-color="orange lighten-3"
