@@ -9,7 +9,7 @@
         </selected-item>
       </v-flex>
       <!-- 유사 상품 정보 표시할 영역 -->
-      <v-flex xs3 v-for="i in similarItems.length" :key="i">
+      <v-flex xs4 v-for="i in similarItems.length" :key="i">
         <similar-items
           v-bind:similar-items="similarItems"
           v-bind:similar-items-reviews="similarItemsReviews"
@@ -39,7 +39,6 @@ export default {
     scroll (that) {
       window.onscroll = () => {
         let bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
-        console.log(bottomOfWindow)
         if (bottomOfWindow) {
           that.$http.get(`/api/reviews/${that.curItem.id}/${that.offsetValue}/?criteria=${that.criteria}&keyword=${that.keyword}`)
             .then(response => {
@@ -89,7 +88,6 @@ export default {
       }
       this.curItemReviews.push(...resR.data)
       this.offsetValue = resR.data.pop()[criteriaMap[this.criteria]]
-      console.log(this.curItemReviews)
 
       // 유사 아이템 비교 목록에 현재 아이템 추가하기
       this.curItem.similar_items.unshift(this.curItem.id)
