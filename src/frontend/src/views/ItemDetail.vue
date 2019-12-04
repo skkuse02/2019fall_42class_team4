@@ -39,8 +39,10 @@ export default {
   methods: {
     scroll (that) {
       window.onscroll = () => {
+        if (that.nowFetching === true) { console.log('true') }
         let bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
         if (bottomOfWindow) {
+          that.nowFetching = true
           that.$http.get(`/api/reviews/${that.curItem.id}/${that.offsetValue}/?criteria=${that.criteria}&keyword=${that.keyword}`)
             .then(response => {
               let criteriaMap = {
@@ -50,9 +52,12 @@ export default {
               }
               that.curItemReviews.push(...response.data)
               that.offsetValue = response.data.pop()[criteriaMap[that.criteria]]
-              console.log(that.offsetValue)
+              that.nowFetching = false
             }
-            )
+            ).catch(error => {
+              that.nowFetching = false
+              console.error(error.message)
+            })
         }
       }
     },
@@ -63,16 +68,6 @@ export default {
       this.criteria = changeCriteria.criteria
       this.keyword = changeCriteria.setKeyword
       // 정렬 기준을 변경할 때 브라우저의 제일 아래로 내려가게 되어 자동으로 위의 scroll를 호출, 그래서 여기서 review를 가져올 필요가 없다.
-      // this.$http.get(`/api/reviews/${this.curItem.id}/-1/?criteria=${this.criteria}&keyword=${this.keyword}`)
-      //   .then(response => {
-      //     let criteriaMap = {
-      //       'rating': 'review_rating',
-      //       'recent': 'last_modified_time',
-      //       'keyword': 'review_rating'
-      //     }
-      //     this.curItemReviews.push(...response.data)
-      //     this.offsetValue = response.data.pop()[criteriaMap[this.criteria]]
-      //   })
     }
   },
   mounted () {
@@ -86,6 +81,9 @@ export default {
       offsetValue: -1,
       criteria: 'rating',
       keyword: '',
+
+      // 스크롤 helper
+      nowFetching: false,
 
       // 유사 아이템 목록과 리뷰
       similarItems: [],
