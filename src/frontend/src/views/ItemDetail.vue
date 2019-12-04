@@ -19,7 +19,7 @@
       <v-flex xs12>
         <selected-item-reviews
           v-bind:cur-item-reviews="curItemReviews"
-          @changeSortCriteria="getReview"
+          @changeSortCriteria="reset"
         >
         </selected-item-reviews>
       </v-flex>
@@ -57,21 +57,22 @@ export default {
       }
     },
     // review 정렬 기준을 바꿨을 때 리뷰 다시 가져오기
-    getReview (changeCriteria) {
+    reset (changeCriteria) {
       this.curItemReviews = []
       this.offsetValue = -1
       this.criteria = changeCriteria.criteria
       this.keyword = changeCriteria.setKeyword
-      this.$http.get(`/api/reviews/${this.curItem.id}/-1/?criteria=${this.criteria}&keyword=${this.keyword}`)
-        .then(response => {
-          let criteriaMap = {
-            'rating': 'review_rating',
-            'recent': 'last_modified_time',
-            'keyword': 'review_rating'
-          }
-          this.curItemReviews.push(...response.data)
-          this.offsetValue = response.data.pop()[criteriaMap[this.criteria]]
-        })
+      // 정렬 기준을 변경할 때 브라우저의 제일 아래로 내려가게 되어 자동으로 위의 scroll를 호출, 그래서 여기서 review를 가져올 필요가 없다.
+      // this.$http.get(`/api/reviews/${this.curItem.id}/-1/?criteria=${this.criteria}&keyword=${this.keyword}`)
+      //   .then(response => {
+      //     let criteriaMap = {
+      //       'rating': 'review_rating',
+      //       'recent': 'last_modified_time',
+      //       'keyword': 'review_rating'
+      //     }
+      //     this.curItemReviews.push(...response.data)
+      //     this.offsetValue = response.data.pop()[criteriaMap[this.criteria]]
+      //   })
     }
   },
   mounted () {
@@ -83,7 +84,7 @@ export default {
       curItem: {},
       curItemReviews: [],
       offsetValue: -1,
-      criteria: 'recent',
+      criteria: 'rating',
       keyword: '',
 
       // 유사 아이템 목록과 리뷰
@@ -99,7 +100,7 @@ export default {
       this.curItem = res.data[0]
 
       // 현재 아이템의 리뷰 불러오기
-      let resR = await this.$http.get(`/api/reviews/${this.curItem.id}/-1/?criteria=recent`)
+      let resR = await this.$http.get(`/api/reviews/${this.curItem.id}/-1/?criteria=rating`)
       let criteriaMap = {
         'rating': 'review_rating',
         'recent': 'last_modified_time',
