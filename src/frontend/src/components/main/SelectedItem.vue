@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-layout row wrap>
+    <v-layout align-center justify-center row wrap>
       <v-flex xs5>
         <!-- 상품 사진 -->
         <v-img :src=curItem.item_img_url height="300" contain></v-img>
@@ -11,6 +11,13 @@
             <!-- 상품 이름 -->
             <h2>{{curItem.name.join(" ")}}</h2>
           </v-card-title>
+          <!-- 상품 키워드 -->
+          <div>
+            <span v-for="keyword in Object.keys(curItem.keywordsMap)" :key="keyword">
+              <v-chip disabled v-if="curItem.keywordsMap[keyword] > 0" color="blue" text-color="white">{{keyword}}</v-chip>
+              <v-chip disabled v-else-if="curItem.keywordsMap[keyword] < 0" color="red" text-color="white">{{keyword}}</v-chip>
+            </span>
+          </div>
           <!-- 상품 별점 -->
           <v-rating
             v-model="curItem.item_rating"
@@ -21,21 +28,19 @@
             half-increments>
           </v-rating>
         </v-flex>
-        <v-divider></v-divider>
         <v-flex xs12>
+        <v-divider></v-divider>
           <!-- 상품 가격 -->
-          <div><strong>Price: </strong>{{curItem.price}}$ <span id="delivery">Free Delivery</span></div>
-          <!-- 상품 키워드 -->
           <div>
-            <span v-for="keyword in Object.keys(curItem.keywordsMap)" :key="keyword">
-              <v-chip disabled v-if="curItem.keywordsMap[keyword] > 0" color="blue" text-color="white">{{keyword}}</v-chip>
-              <v-chip disabled v-else-if="curItem.keywordsMap[keyword] < 0" color="red" text-color="white">{{keyword}}</v-chip>
-            </span>
+            <strong>Price: </strong>{{curItem.price}}$
+            <span id="delivery">Free Delivery</span>
           </div>
+          <!-- 상품 구매 개수 -->
           <span id="count_minus" @click="count > 1 ? count-- : 0">-</span>
           <span id="count">{{count}}</span>
           <span id="count_plus" @click="count++">+</span>
-          <h3 style="margin-bottom: 10px;">Total Price: {{count * curItem.price}}$</h3>
+          <!-- 상품 총 가격 -->
+          <span id="totalPrice">Total Price: {{count * curItem.price}}$</span><br>
           <v-spacer></v-spacer>
           <v-btn v-if="isCart" color="success" @click="AddCart()">Add Cart</v-btn>
           <v-btn v-else dark color="red" @click="RemoveCart()">Remove Cart</v-btn>
@@ -97,8 +102,8 @@ export default {
 <style scoped>
 #delivery {
   color: blue;
+  margin-left: 20px;
 }
-
 #count_minus, #count_plus {
   cursor: pointer;
   width: 20px;
@@ -106,11 +111,15 @@ export default {
   margin-left: 20px;
   text-align: center;
 }
-
 #count {
   width: 20px;
   line-height: 50px;
   margin-left: 20px;
   text-align: center;
+}
+#totalPrice {
+  font-weight: bold;
+  margin-left: 50px;
+  font-size: 20px;
 }
 </style>
