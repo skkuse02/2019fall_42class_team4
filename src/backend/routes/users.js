@@ -12,7 +12,8 @@ let firestore = firebase.firestore();
 
 /* GET user matching the id */
 router.get('/:user_id', function (req, res, next) {
-  firestore.collection('/users').doc(req.params.user_id).get()
+  // firestore.collection('/users').doc(req.params.user_id).get()
+  firestore.collection('/user').where('id', '==', req.params.user_id).get() // 아직 users collection이 없고, user colleciton에는 doc의 id가 랜덤이라 기존 방식으로 user를 찾았습니다.
     .then((snapshot) => {
       if (snapshot.empty) {
         throw 'No matching user documents'
@@ -27,11 +28,12 @@ router.get('/:user_id', function (req, res, next) {
 });
 
 router.post('/', function (req, res, next) {
-  firestore.collection('/users').add(req.body);
+  firestore.collection('/user').add(req.body);
   res.send('Data Post Item');
 });
 
 router.put('/:user_id', function (req, res, next) {
+  // firestore.collection('/users').doc(req.params.user_id).get()
   firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
@@ -65,36 +67,36 @@ router.put('/:user_id', function (req, res, next) {
 });
 
 router.put('/:user_id/:item_id', function (req, res, next) { // BUY the ITEM
+  // firestore.collection('/users').doc(req.params.user_id).get()
   firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
         throw 'No matching user documents'
       }
       snapshot.forEach((doc) => {
-        let hashPW = crypto.createHash('sha512').update(req.body.password).digest('base64');
-        let item_id = req.params.item_id
-        if(doc.data()["password"] == hashPW){
-          if(doc.puchased_item.includes(item_id)) { res.status(200).send("Item is already in purchased Item") }
-          else {
-            doc.puchased_item.push(item_id)
-            firestore.collection('/user').doc(doc.id).update({
-              puchased_item: doc.puchased_item
-            })
-            res.status(200).send("Item purchase Complete");
-          } 
+        let item_id = Number(req.params.item_id)  // DB에 숫자형식으로 들어가 있어서 Number로 변환
+        if (doc.data().purchased_items.includes(item_id)) {
+          res.status(202).send("Item is already in purchased Item") // frontend에서 구분하기 쉽게 status 변경
         } else {
-          console.log('PW Not Equal');
-          res.status(400).send('PW Not Equal');
+          // doc에 덮어씌우면 DB에서 업데이트가 제대로 되지 않아서 임시로 변수를 만든 후 update
+          let tmp_purchased_list = doc.data().purchased_items
+          tmp_purchased_list.push(item_id)
+          firestore.collection('/user').doc(doc.id).update({
+            purchased_items: tmp_purchased_list
+          })
+          res.status(200).send("Item purchase Complete");
         }
       });
     })
     .catch((err) => {
+      console.log(err.message)
       res.status(404).send(err.message)
     });
 });
 
 router.delete('/:user_id', function (req, res, next) {
-  firestore.collection('/users').doc(req.params.user_id).get()
+  // firestore.collection('/users').doc(req.params.user_id).get()
+  firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
         throw 'No matching documents'
@@ -109,21 +111,25 @@ router.delete('/:user_id', function (req, res, next) {
     });
 });
 
-router.delete('/:user_id/:item_id', function (req, res, next) {
-  firestore.collection('/users').doc(req.params.user_id).get()
+router.delete('/:user_id/:item_id', function (req, res, next) { // CANCEL ITEM BUY
+  // firestore.collection('/users').doc(req.params.user_id).get()
+  firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
         throw 'No matching user documents'
       }
-      let item_id = req.params.item_id
+      let item_id = Number(req.params.item_id)
       snapshot.forEach((doc) => {
-        firestore.collection('/users').doc(doc.id).update({
-          puchased_item: doc.puchased_item.filter(itemId => itemId!==item_id)
+        let tmp_purchased_list = doc.data().purchased_items.filter(itemId => itemId!==item_id)
+        // firestore.collection('/users').doc(doc.id).update({
+        firestore.collection('/user').doc(doc.id).update({
+          purchased_items: tmp_purchased_list
         })
-        .then(()=>res.send('Data Delete Item'))
+        .then(()=>res.status(200).send('Data Delete Item'))
       });
     })
     .catch((err) => {
+      console.log(err.message)
       res.status(404).send(err.message)
     });
 });
