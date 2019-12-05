@@ -17,7 +17,7 @@
 ### PUT      /reviews/:item_id/:review_id           
 ### PUT      /reviews/:item_id/:review_id/:user_id  // REVIEW RECOMMENDATION
 ### DELETE   /reviews/:item_id/:review_id
-### DELETE   /reviews/:item_id/:review_id/:user_id  // CANCEL REVIEW RECOMMENDATIN 
+### DELETE   /reviews/:item_id/:review_id/:user_id/?mode    (mode: recommendation = CANCEL REVIEW RECOMMENDATION, review = DELETE REVIEW) 
 
 ## **users**
 
