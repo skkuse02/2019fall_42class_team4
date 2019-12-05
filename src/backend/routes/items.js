@@ -129,7 +129,7 @@ router.put('/:id', function(req, res, next){
         return;
       }
       snapshot.forEach((doc) => {
-        firestore.collection('/items').doc(doc.id).set(req.body);
+        firestore.collection('/items').doc(doc.id).update(req.body);
         console.log(doc.id, '=>', doc.data());
       });
       res.status(200).send('Item Put');

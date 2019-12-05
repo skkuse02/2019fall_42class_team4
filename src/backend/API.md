@@ -21,7 +21,7 @@
 
 ## **users**
 
-### GET      /users/:user_id
+### GET      /users/:user_id/?mode                          (mode: purchased = request all the purchased items, recommend = request all the recommended reviews, undefined = request user object)
 ### POST     /users/
 ### PUT      /users/:user_id/                       // CHANGE the USER INFORMATION
 ### PUT      /users/:user_id/:item_id               // BUY the ITEM
