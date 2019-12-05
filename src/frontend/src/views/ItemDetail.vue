@@ -39,6 +39,7 @@ export default {
   },
   methods: {
     scroll (that) {
+      let debounceTempo = 1000 // ms 단위의 debounce 주기
       window.onscroll = _.debounce(() => {
         let bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
         if (bottomOfWindow) {
@@ -57,7 +58,7 @@ export default {
               console.error(error.message)
             })
         }
-      }, 1000)
+      }, debounceTempo)
     },
     // review 정렬 기준을 바꿨을 때 리뷰 다시 가져오기
     reset (changeCriteria) {
