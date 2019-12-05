@@ -144,9 +144,9 @@ router.post('/:item_id/:user_id', function(req, res, next){
             let total_review_num = item.total_review_num
             let total_star_sum = item.total_star_sum
             let reviewPostPromise = []
-            reviewPostPromise.push(firestore.collection("items").doc(""+item_id).
-            collection("reviews").doc(""+review_id).set(Object.assign({}, newReview)))// update item's metadata
-            review_id_maker++
+            reviewPostPromise.push(firestore.collection("items").doc(""+item_id)
+            .collection("reviews").doc(""+review_id).set(Object.assign({}, newReview)))
+            review_id_maker++// update item's metadata
             total_review_num++
             newReview.keywords_map.forEach(eachKey => {total_keywords_map[eachKey.name] += eachKey.score})
             total_star_sum += item_rating
@@ -181,88 +181,72 @@ router.post('/:item_id/:user_id', function(req, res, next){
 router.put('/:item_id/:review_id', function(req, res, next){
   firestore.collection('items').doc(req.params.item_id).get()
     .then((snapshot) => {
-      if(snapshot.empty){
-        firestore.collection('reviews').add(req.body);
-        console.log('No Matching Reviews & Review Post');
-        res.status(201).send('No Matching Reviews & Review Post');
-        return;
-      }
-      snapshot.forEach((doc) => {
-        if(req.params.content)  firestore.collection('reviews').doc(doc.id).update({content: req.params.content});
-        if(req.params.item_score) firestore.collection('reviews').doc(doc.id).update({content: req.params.item_score});
-        console.log(doc.id, '=>', doc.data());
-      });
-      res.status(200).send('Review Put');
-    })
-    .catch((err) => {
-      console.log('Error Getting Reviews', err);
-      res.status(400).send(err);
-  });
-});
-
-router.put('/:item_id/:review_id:user_id', function(req, res, next){
-  firestore.collection('items').doc(req.params.item_id).get()
-    .then(([snapshot]) => {
       if(!snapshot.empty){
         snapshot.forEach((doc) => {
           let item = doc.data()
           let {title, content, item_rating} = req.body
           let item_id = req.params.item_id
           let review_id = req.params.review_id
-          let user_id = req.params.user_id
-          firestore.collection('items').doc(item_id).collection('reviews').doc(review_id).get().then(([review_doc]) => {
+          firestore.collection('items').doc(item_id).collection('reviews').doc(review_id).get()
+          .then((snapshot_R) => {
+            let review_doc = snapshot_R[0]
             if(review_doc!==undefined) {
               let total_keywords_map = item.total_keywords_map
+              let total_star_sum = item.total_star_sum
               let review = review_doc.data()
               let keywords_map = review.keywords_map
               keywords_map.forEach(eachKey => {total_keywords_map[eachKey.name] -= eachKey.score})
               total_star_sum -= review.item_rating
-            } else {
-              console.log('review is not Exist');
-              res.status(404).send('review is not Exist')
+              NLP(content).then((new_keywords_map) => {// Process the content in NLP module
+                let newReview = {}
+                newReview.keywords_map = JSON.parse(new_keywords_map)
+                newReview.keywords = new_keywords_map.map(keywordObj=>keywordObj.name)
+                let reviewPutPromise = []
+                reviewPutPromise.push(firestore.collection("items").doc(""+item_id)
+                .collection("reviews").doc(""+review_id).update(Object.assign(newReview, {
+                  title: title,
+                  content: content,
+                  item_rating: item_rating,
+                  last_modified_time: Date.now()
+                })))
+                newReview.keywords_map.forEach(eachKey => {total_keywords_map[eachKey.name] += eachKey.score})
+                total_star_sum += item_rating
+                reviewPutPromise.push(firestore.collection("items").doc(""+item_id).set({
+                  total_keywords_map: total_keywords_map,
+                  total_star_sum: total_star_sum
+                }))
+                Promise.all(reviewPutPromise)
+                .then(()=>{res.status(200).send("review modification success")})
+                .catch(err=> {throw err})
+              })
             }
           })
-
-          NLP(content).then((keywords_map) => {// Process the content in NLP module
-            newReview.keywords_map = JSON.parse(keywords_map)
-            newReview.keywords = reviews[i].keywords_map.map(keywordObj=>keywordObj.name)
-            let total_keywords_map = item.total_keywords_map
-            let total_review_num = item.total_review_num
-            let total_star_sum = item.total_star_sum
-            let reviewPostPromise = []
-            reviewPostPromise.push(firestore.collection("items").doc(""+item_id).
-            collection("reviews").doc(""+review_id).set(Object.assign({}, newReview)))// update item's metadata
-            review_id_maker++
-            total_review_num++
-            newReview.keywords_map.forEach(eachKey => {total_keywords_map[eachKey.name] += eachKey.score})
-            total_star_sum += item_rating
-            reviewPostPromise.push(firestore.collection("items").doc(""+item_id).set({
-              review_id_maker: review_id_maker,
-              total_review_num: total_review_num,
-              total_keywords_map: total_keywords_map,
-              total_star_sum: total_star_sum
-            }))
-            reviewPostPromise.push(firestore.collection("user").doc(""+user_id).get())// add review to the user
-            Promise.all(reviewPostPromise)
-            .then(resultArr => {
-              let posted_reviews = resultArr[2][0].posted_reviews
-              posted_reviews.push(item_id+" "+review_id)
-              firestore.collection("user").doc(""+user_id).set({
-                posted_reviews: posted_reviews
-              }).then(res.status(200).send("review posting success"))
-            })
-          })
-        });
-      } else {
-        console.log('Item is not Exist');
-        res.status(404).send('Item is not Exist')
+        })
       }
     })
-    .catch((err) => {
-      console.log('Error Getting Reviews', err);
-      res.status(400).send(err);
-  });
-});
+  })
+
+router.put('/:item_id/:review_id/:user_id', function(req, res, next){
+  firestore.collection('user').doc(req.params.user_id).get()
+    .then((snapshot) => {
+      if(!snapshot.empty){
+        snapshot.forEach((doc) => {
+          let user = doc.data()
+          let item_id = req.params.item_id
+          let review_id = req.params.review_id
+          let recommended_reviews = user.recommended_reviews
+          if(!recommended_reviews.contains(item_id+" "+review_id)) {
+            recommended_reviews.push(item_id+" "+review_id)
+          }
+          firestore.collection('items').doc(req.params.item_id)
+          .collection('reviews').doc(req.params.review_id).update({
+            review_rating: firebase.firestore.FieldValue.increment(1)
+          }).then(()=>res.status(200).send("review recommendation success"))
+        })
+      }
+    })
+  })
+
 
 router.delete('/:item_id/:review_id', function(req, res, next){
   firestore.collection('reviews').doc(req.params.item_id).get()
