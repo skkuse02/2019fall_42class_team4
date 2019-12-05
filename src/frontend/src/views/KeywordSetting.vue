@@ -134,7 +134,7 @@ export default {
         const res = await this.$http.put('/api/users/' + this.user.id, {
           type: 'keyword_change',
           password: this.password,
-          keywords: this.keywords
+          keywords: this.keywords.sort()
         })
         console.log(res.data)
         this.user.customized_keyword = this.keywords

@@ -13,11 +13,7 @@
 
 <script>
 export default {
-  data () {
-    return {
-      user: this.$store.state.userInfo
-    }
-  },
+  props: ['user'],
   created () {
     if (this.user === null) {
       this.user = []
