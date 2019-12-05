@@ -131,7 +131,7 @@ export default {
           password: this.password,
           name: this.name,
           customized_keyword: this.keywords,
-          purchased_item: [],
+          purchased_items: [],
           posted_review: [],
           recommended_review: []
         })

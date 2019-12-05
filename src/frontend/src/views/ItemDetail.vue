@@ -31,6 +31,7 @@
 import SelectedItem from '../components/main/SelectedItem'
 import SimilarItems from '../components/main/SimilarItems'
 import SelectedItemReviews from '../components/main/selectedItemReviews'
+import _ from '../../node_modules/underscore'
 
 export default {
   components: {
@@ -38,11 +39,9 @@ export default {
   },
   methods: {
     scroll (that) {
-      window.onscroll = () => {
-        if (that.nowFetching === true) { console.log('true') }
+      window.onscroll = _.throttle(() => {
         let bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
         if (bottomOfWindow) {
-          that.nowFetching = true
           that.$http.get(`/api/reviews/${that.curItem.id}/${that.offsetValue}/?criteria=${that.criteria}&keyword=${that.keyword}`)
             .then(response => {
               let criteriaMap = {
@@ -52,14 +51,13 @@ export default {
               }
               that.curItemReviews.push(...response.data)
               that.offsetValue = response.data.pop()[criteriaMap[that.criteria]]
-              that.nowFetching = false
             }
             ).catch(error => {
               that.nowFetching = false
               console.error(error.message)
             })
         }
-      }
+      }, 1000)
     },
     // review 정렬 기준을 바꿨을 때 리뷰 다시 가져오기
     reset (changeCriteria) {
@@ -81,9 +79,6 @@ export default {
       offsetValue: -1,
       criteria: 'rating',
       keyword: '',
-
-      // 스크롤 helper
-      nowFetching: false,
 
       // 유사 아이템 목록과 리뷰
       similarItems: [],

@@ -12,20 +12,18 @@ let firestore = firebase.firestore();
 
 /* GET user matching the id */
 router.get('/:user_id', function (req, res, next) {
-  firestore.collection('/users').where('id', '==', Number(req.params.user_id)).get()
+  firestore.collection('/users').doc(req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
-        console.log('No matching documents');
-        return;
+        throw 'No matching user documents'
       }
       snapshot.forEach((doc) => {
-        console.log(doc.id, '=>', doc.data());
+        res.status(200).send(doc.data())
       });
     })
     .catch((err) => {
-      console.log('Error getting documents', err);
+      res.status(404).send(err.message)
     });
-  res.send('Data Get Item');
 });
 
 router.post('/', function (req, res, next) {
@@ -37,8 +35,7 @@ router.put('/:user_id', function (req, res, next) {
   firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
-        console.log('No matching documents');
-        return;
+        throw 'No matching user documents'
       }
       snapshot.forEach((doc) => {
         let hashPW = crypto.createHash('sha512').update(req.body.password).digest('base64');
@@ -63,60 +60,72 @@ router.put('/:user_id', function (req, res, next) {
       });
     })
     .catch((err) => {
-      console.log('Error getting documents', err);
+      res.status(404).send(err.message)
     });
 });
 
-router.put('/:user_id/:item_id', function (req, res, next) {
-  // firestore.collection('/user').where('id', '==', req.params.id).get()
-  //   .then((snapshot) => {
-  //     if (snapshot.empty) {
-  //       console.log('No matching documents');
-  //       return;
-  //     }
-  //     snapshot.forEach((doc) => {
-  //       let hashPW = crypto.createHash('sha512').update(req.body.password).digest('base64');
-  //       if(doc.data()["password"] == hashPW){
-  //         if(req.body.type === "keyword_change") {
-  //           console.log("keyword change")
-  //           firestore.collection('/user').doc(doc.id).update({
-  //             customized_keyword: req.body.keywords
-  //           })
-  //         } else {
-  //           console.log("password change")
-  //           const change = crypto.createHash('sha512').update(req.body.changePassword).digest('base64')
-  //           firestore.collection('/user').doc(doc.id).update({
-  //             password: change
-  //           })
-  //         }
-  //         res.status(200).send("Modify Success");
-  //       } else {
-  //         console.log('PW Not Equal');
-  //         res.status(400).send('PW Not Equal');
-  //       }
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     console.log('Error getting documents', err);
-  //   });
-});
-
-router.delete('/:id', function (req, res, next) {
-  firestore.collection('/users').where('id', '==', Number(req.params.id)).get()
+router.put('/:user_id/:item_id', function (req, res, next) { // BUY the ITEM
+  firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
-        console.log('No matching documents');
-        return;
+        throw 'No matching user documents'
       }
       snapshot.forEach((doc) => {
-        firestore.collection('/users').doc(doc.id).delete();
-        console.log(doc.id, '=>', doc.data());
+        let hashPW = crypto.createHash('sha512').update(req.body.password).digest('base64');
+        let item_id = req.params.item_id
+        if(doc.data()["password"] == hashPW){
+          if(doc.puchased_item.includes(item_id)) { res.status(200).send("Item is already in purchased Item") }
+          else {
+            doc.puchased_item.push(item_id)
+            firestore.collection('/user').doc(doc.id).update({
+              puchased_item: doc.puchased_item
+            })
+            res.status(200).send("Item purchase Complete");
+          } 
+        } else {
+          console.log('PW Not Equal');
+          res.status(400).send('PW Not Equal');
+        }
       });
     })
     .catch((err) => {
-      console.log('Error getting documents', err);
+      res.status(404).send(err.message)
     });
-  res.send('Data Delete Item');
+});
+
+router.delete('/:user_id', function (req, res, next) {
+  firestore.collection('/users').doc(req.params.user_id).get()
+    .then((snapshot) => {
+      if (snapshot.empty) {
+        throw 'No matching documents'
+      }
+      snapshot.forEach((doc) => {
+        firestore.collection('/users').doc(doc.id).delete()
+        .then(()=>res.send('Data Delete Item'))
+      });
+    })
+    .catch((err) => {
+      res.status(404).send(err.message)
+    });
+});
+
+router.delete('/:user_id/:item_id', function (req, res, next) {
+  firestore.collection('/users').doc(req.params.user_id).get()
+    .then((snapshot) => {
+      if (snapshot.empty) {
+        throw 'No matching user documents'
+      }
+      let item_id = req.params.item_id
+      snapshot.forEach((doc) => {
+        firestore.collection('/users').doc(doc.id).update({
+          puchased_item: doc.puchased_item.filter(itemId => itemId!==item_id)
+        })
+        .then(()=>res.send('Data Delete Item'))
+      });
+    })
+    .catch((err) => {
+      res.status(404).send(err.message)
+    });
 });
 
 module.exports = router;

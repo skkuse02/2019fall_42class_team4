@@ -127,6 +127,7 @@ const firestore = firebase.firestore();
 //   let nameArr = nameStringArr[i].toLowerCase().replace(/-|,|\(|\)/g," ").split(" ").filter(c=>c!=="")
 //   promisesOfItemPosting.push(docPointer.set({
 //     id: i
+//     review_id_maker: 0
 //     , item_img_url: item_img_url_arr[i]
 //     , desc_img_url: desc_img_url_arr[i]
 //     , last_modified_time: new Date()
@@ -271,33 +272,33 @@ const firestore = firebase.firestore();
 
 // start of module
 
-// only using price for the similarity factor. 
-// there can be clustering, cosine-similarity, user-history, data mining technique... for determining the similar items 
-// numOfSimilarItem : 2
-firestore.collection('items').orderBy('price').get()
-.then(snapshot => {
-  let itemLists = []
-  snapshot.forEach(doc => itemLists.push(doc))
-  let promisesForSimilarItem = []
-  let prevId, nowId, nextId
-  lengthOfItems = itemLists.length
-  // first item's similarItems
-  promisesForSimilarItem.push(firestore.collection('items').doc(''+itemLists[0].id).update({similar_items:[itemLists[1].id,itemLists[2].id]}))
-  prevId = itemLists[0].id
-  nowId = itemLists[1].id
-  nextId = itemLists[2].id
-  for(let i=1 ; i<lengthOfItems-1 ; i++) {
-    nowId = nextId
-    nextId = itemLists[i+1].id
-    promisesForSimilarItem.push(firestore.collection('items').doc(''+nowId).update({similar_items:[prevId,nextId]}))
-    prevId = nowId
-  }
-  nowId = nextId
-  // last item's similarItems
-  promisesForSimilarItem.push(firestore.collection('items').doc(''+nowId).update({similar_items:[itemLists[lengthOfItems-3].id,itemLists[lengthOfItems-2].id]}))
-  Promise.all(promisesForSimilarItem)
-  .then(res=>{console.log("SIMILAR ITEM FINDING FINISHED")})
-  .catch(err=>console.error(err.message))
-})
+// // only using price for the similarity factor. 
+// // there can be clustering, cosine-similarity, user-history, data mining technique... for determining the similar items 
+// // numOfSimilarItem : 2
+// firestore.collection('items').orderBy('price').get()
+// .then(snapshot => {
+//   let itemLists = []
+//   snapshot.forEach(doc => itemLists.push(doc))
+//   let promisesForSimilarItem = []
+//   let prevId, nowId, nextId
+//   lengthOfItems = itemLists.length
+//   // first item's similarItems
+//   promisesForSimilarItem.push(firestore.collection('items').doc(''+itemLists[0].id).update({similar_items:[itemLists[1].id,itemLists[2].id]}))
+//   prevId = itemLists[0].id
+//   nowId = itemLists[1].id
+//   nextId = itemLists[2].id
+//   for(let i=1 ; i<lengthOfItems-1 ; i++) {
+//     nowId = nextId
+//     nextId = itemLists[i+1].id
+//     promisesForSimilarItem.push(firestore.collection('items').doc(''+nowId).update({similar_items:[prevId,nextId]}))
+//     prevId = nowId
+//   }
+//   nowId = nextId
+//   // last item's similarItems
+//   promisesForSimilarItem.push(firestore.collection('items').doc(''+nowId).update({similar_items:[itemLists[lengthOfItems-3].id,itemLists[lengthOfItems-2].id]}))
+//   Promise.all(promisesForSimilarItem)
+//   .then(res=>{console.log("SIMILAR ITEM FINDING FINISHED")})
+//   .catch(err=>console.error(err.message))
+// })
     
 // end of module
