@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     scroll (that) {
-      window.onscroll = _.throttle(() => {
+      window.onscroll = _.debounce(() => {
         let bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
         if (bottomOfWindow) {
           that.$http.get(`/api/reviews/${that.curItem.id}/${that.offsetValue}/?criteria=${that.criteria}&keyword=${that.keyword}`)
