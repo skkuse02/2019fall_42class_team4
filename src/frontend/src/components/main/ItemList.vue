@@ -174,14 +174,6 @@ export default {
     run()
     */
   },
-  // 첫 번째 페이지의 검색 결과 업데이트에 사용되는 함수
-  updated () {
-    const searchResult = JSON.parse(sessionStorage.getItem('searchResult'))
-    if (searchResult) {
-      this.items = searchResult
-      sessionStorage.removeItem('searchResult')
-    }
-  },
   methods: {
     RemoveCart (item) {
       this.$store.commit('REMOVECART', item)
