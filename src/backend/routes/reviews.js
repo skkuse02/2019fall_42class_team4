@@ -125,6 +125,10 @@ router.get('/:item_id', function (req, res, next) {
     });
 });
 
+router.get('/:item_id/:review_id', function (req, res, next) {
+
+})
+
 router.post('/:item_id/:user_id', function (req, res, next) {
   firestore.collection('items').doc(req.params.item_id).get()
     .then((snapshot) => {

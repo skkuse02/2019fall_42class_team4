@@ -43,106 +43,89 @@
                 <div>Quantity: {{item.quantity}}</div>
                 <h2>Total Price: {{item.quantity * item.price}}</h2>
                 <v-btn dark color="red" @click="RemoveCart(item)">Remove Cart</v-btn>
-                <v-btn color="success">Buy</v-btn>
+                <v-btn color="success" @click="Buy(item)">Buy</v-btn>
               </template>
             </v-card-text>
           </v-flex>
 
           <!-- 구매내역에 표시할 항목 -->
           <v-flex xs1 v-if="item.history">
-            <v-btn icon @click="CancelPurchased(item)"><v-icon>mdi-close-box</v-icon></v-btn>
-            <v-dialog
-              v-model="dialog"
-              persistent
-              max-width="700px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-btn icon v-on="on"><v-icon>mdi-comment-plus-outline</v-icon></v-btn>
-              </template>
-              <v-card>
-                <v-card-title>
-                  <span class="headline">Reviews</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container grid-list-md>
-                    <v-layout wrap>
-                      <v-flex xs4>
-                        <v-text-field
-                          v-model="user.id"
-                          disabled
-                          label="author"
-                          box
-                        >
-                        </v-text-field>
-                      </v-flex>
-                      <v-flex xs8>
-                        <v-text-field
-                          v-model="date"
-                          disabled
-                          label="date"
-                          box
-                        >
-                        </v-text-field>
-                      </v-flex>
-                      <!-- <v-flex xs12>
-                        <v-text-field
-                          v-model="item.review.title"
-                          label="title"
-                          box
-                        >
-                        </v-text-field>
-                      </v-flex>
-                      <v-flex xs12>
-                        <v-textarea
-                          v-model="item.review.content"
-                          label="content"
-                          auto-grow
-                          box
-                        >
-                        </v-textarea>
-                      </v-flex>
-                      <v-flex xs12>
-                        <v-rating
-                          v-model="item.review.item_rating"
-                          background-color="orange lighten-3"
-                          color="orange"
-                          half-increments
-                        >
-                        </v-rating>
-                      </v-flex> -->
-                      <v-flex xs12>
-                        <v-text-field
-                          label="title"
-                          box
-                        >
-                        </v-text-field>
-                      </v-flex>
-                      <v-flex xs12>
-                        <v-textarea
-                          label="content"
-                          auto-grow
-                          box
-                        >
-                        </v-textarea>
-                      </v-flex>
-                      <v-flex xs12>
-                        <v-rating
-                          background-color="orange lighten-3"
-                          color="orange"
-                          half-increments
-                        >
-                        </v-rating>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
-                  <v-btn color="blue darken-1" flat @click="Save(item)">Save</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            <v-flex xs12>
+              <v-btn icon @click="CancelPurchased(item)"><v-icon>mdi-close-box</v-icon></v-btn>
+            </v-flex>
+            <v-flex xs12>
+              <v-dialog
+                v-model="dialog"
+                persistent
+                max-width="700px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on" @click="LoadReview(item)"><v-icon>mdi-comment-plus-outline</v-icon></v-btn>
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">Reviews</span>
+                    <v-spacer></v-spacer>
+                    <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-container grid-list-md>
+                      <v-layout wrap>
+                        <v-flex xs4>
+                          <v-text-field
+                            v-model="user.id"
+                            disabled
+                            label="author"
+                            box
+                          >
+                          </v-text-field>
+                        </v-flex>
+                        <v-flex xs8>
+                          <v-text-field
+                            v-model="date"
+                            disabled
+                            label="date"
+                            box
+                          >
+                          </v-text-field>
+                        </v-flex>
+                        <v-flex xs12>
+                          <v-text-field
+                            v-model="reviewTitle"
+                            label="title"
+                            box
+                          >
+                          </v-text-field>
+                        </v-flex>
+                        <v-flex xs12>
+                          <v-textarea
+                            v-model="reviewContent"
+                            label="content"
+                            auto-grow
+                            box
+                          >
+                          </v-textarea>
+                        </v-flex>
+                        <v-flex xs12>
+                          <v-rating
+                            v-model="reviewItemRating"
+                            background-color="orange lighten-3"
+                            color="orange"
+                            half-increments
+                          >
+                          </v-rating>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" flat @click="Delete(item)">Delete</v-btn>
+                    <v-btn color="blue darken-1" flat @click="Save(item)">Save</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-flex>
           </v-flex>
         </v-layout>
       </v-card>
@@ -157,57 +140,105 @@ export default {
     return {
       dialog: false,
       user: this.$store.state.userInfo,
-      date: new Date()
+      date: new Date(),
+      reviewTitle: '',
+      reviewContent: '',
+      reviewItemRating: 0,
+      isReview: false
     }
-  },
-  created () {
-    // backend에 review 요청
-    /*
-    위의 vue 코드에서는 items를 v-for로 반복하기 때문에 처음 데이터를 받아올 때 item들의 review를 요청해서 미리 저장
-    const run = async () => {
-      for(item of items) {
-        const res = await this.$http.get('/api/review/' + item.id)
-        item.review = res.data
-        if (item.review) item.isReview = true // 기존 review 존재 시
-        else item.isReview = false
-      }
-    }
-    run()
-    */
   },
   methods: {
+    // 장바구니에서 필요한 함수들
     RemoveCart (item) {
       this.$store.commit('REMOVECART', item)
       this.items = this.$store.state.inCart
     },
-    Save (item) {
-      this.dialog = false
+    async Buy (item) {
+      const res = await this.$http.put('/api/users/' + this.user.id + '/' + item.id)
+      if (res.status === 202) {
+        alert('이미 구매한 항목입니다.')
+      } else if (res.status === 200) {
+        // 업데이트된 유저정보를 다시 받아서 vuex의 정보 업데이트
+        const resU = await this.$http.get('/api/users/' + this.user.id)
+        this.$store.commit('MODIFY', resU.data)
+        this.$store.commit('REMOVECART', item)
+        this.items = this.$store.state.inCart
+        alert('구매 완료')
+        this.$router.push({ name: 'History' })
+      }
+    },
+
+    // 구매내역에서 필요한 함수들
+    async CancelPurchased (item) {
+      let result = confirm('정말 구매를 취소하시겠습니까?')
+      if (result) {
+        const res = await this.$http.delete('/api/users/' + this.user.id + '/' + item.id)
+        if (res.status === 200) {
+          // 업데이트된 유저정보를 다시 받아서 vuex의 정보 업데이트
+          const resU = await this.$http.get('/api/users/' + this.user.id)
+          this.$store.commit('MODIFY', resU.data)
+          alert('취소 완료')
+          this.$router.go() // 페이지 새로고침
+        }
+      }
+    },
+    async LoadReview (item) {
+      // 구입한 item의 review보기 버튼을 클릭하면 해당 item에 리뷰가 존재하는지 확인
+      /*
+      const postedReview = this.user.postedReview
+      if (postedReview에 현재 구입한 item이 존재) {
+        const res = await this.$http.get('/api/reviews/' + item.id + '/' + postedReview.split()[1])
+        this.reviewTitle = res.data.title
+        this.reviewContent = res.data.content
+        this.reviewItemRating = res.data.item_rating
+        this.isReview = true
+      } else {
+        this.reviewTitle = ''
+        this.reviewContent = ''
+        this.reviewItemRating = 0
+        this.isReview = false
+      }
+      */
+    },
+    async Save (item) {
       // backend에 review 생성/수정 요청
       /*
-      if (item.isReview) {  // 기존 review 존재 시
-        delete item.review.isReview
-        this.$http.put('/api/review/', {
-          review: item.review
+      if (this.isReview) {  // 기존 review 존재 시
+        const review_id = this.user.postedReview에서 review_id 찾기
+        this.$http.put('/api/review/ + item.id + '/' + review_id', {
+          title: this.reviewTitle,
+          content: this.reviewContent,
+          item_rating: this.reviewItemRating
         })
         alert('리뷰 수정 완료')
-      } else {  // 기존 리뷰 존재 시
-        delete item.review.isReview
-        this.$http.post('/api/review/', {
-          review: item.review
+      } else {  // 기존 review 존재하지 않을 시
+        const res = await this.$http.post('/api/review/' + item.id + '/' + this.user.id, {
+          title: this.reviewTitle,
+          content: this.reviewContent,
+          item_rating: this.reviewItemRating
         })
         alert('리뷰 등록 완료')
       }
       */
+      this.dialog = false
     },
-    async CancelPurchased (item) {
-      const res = await this.$http.delete('/api/users/' + this.user.id + '/' + item.id)
-      if (res.status === 200) {
-        // 업데이트된 유저정보를 다시 받아서 vuex의 정보 업데이트
-        const resU = await this.$http.get('/api/users/' + this.user.id)
-        this.$store.commit('MODIFY', resU.data)
-        alert('취소 완료')
-        this.$router.go() // 페이지 새로고침
+    async Delete (item) {
+      // backend에 review 삭제 요청
+      /*
+### DELETE   /reviews/:item_id/:review_id/:user_id/?mode    (mode: recommendation = CANCEL REVIEW RECOMMENDATION, review = DELETE REVIEW)
+      if (this.isReview) {
+        let result = confirm('정말 리뷰를 삭제하시겠습니까?')
+        if (result) {
+          const review_id = this.user.postedReview에서 review_id 찾기
+          const res = await this.$http.delete('/api/reviews/' + item.id + '/' + review_id + '/' + this.user.id + '/?review')
+          console.log(res.status, res.data)
+          alert('리뷰 삭제 성공')
+          this.dialog = false
+        }
+      } else {
+        alert('삭제할 리뷰가 없습니다.')
       }
+      */
     }
   }
 }
