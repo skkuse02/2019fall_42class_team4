@@ -6,7 +6,7 @@
         <v-layout align-center justify-center>
           <v-flex xs4>
             <!-- 상품 사진 -->
-            <v-img :src="item.item_img_url" height="300" contain></v-img>
+            <router-link :to="{name: 'ItemDetail', params: {id:item.id}}"><v-img :src="item.item_img_url" height="300" contain></v-img></router-link>
           </v-flex>
           <v-flex xs7>
             <v-card-title primary-title>
@@ -225,7 +225,6 @@ export default {
     async Delete (item) {
       // backend에 review 삭제 요청
       /*
-### DELETE   /reviews/:item_id/:review_id/:user_id/?mode    (mode: recommendation = CANCEL REVIEW RECOMMENDATION, review = DELETE REVIEW)
       if (this.isReview) {
         let result = confirm('정말 리뷰를 삭제하시겠습니까?')
         if (result) {

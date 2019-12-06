@@ -4,7 +4,7 @@
       <v-flex xs12>
         <v-card flat>
           <!-- 상품 사진 -->
-          <v-img :src="similarItems[i-1].item_img_url" height="300" contain></v-img>
+          <span style="cursor: pointer;" @click="pageReload(similarItems[i-1].id)"><v-img :src="similarItems[i-1].item_img_url" height="300" contain></v-img></span>
           <div id="cardTitle">
             <v-card-title primary-title>
               <!-- 상품 이름 -->

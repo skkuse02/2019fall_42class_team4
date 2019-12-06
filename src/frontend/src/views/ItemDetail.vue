@@ -18,6 +18,7 @@
       </v-flex>
       <v-flex xs12>
         <selected-item-reviews
+          v-bind:cur-item="curItem"
           v-bind:cur-item-reviews="curItemReviews"
           @changeSortCriteria="reset"
         >

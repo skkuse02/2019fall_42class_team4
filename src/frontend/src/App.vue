@@ -47,6 +47,12 @@
             </v-list-tile-action>
             <v-list-tile-title>Purchased Items</v-list-tile-title>
           </v-list-tile>
+          <v-list-tile :to="{name: 'Recommend'}">
+            <v-list-tile-action>
+              <v-icon>mdi-thumb-up-outline</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>Recommended Reviews</v-list-tile-title>
+          </v-list-tile>
         </v-list-group>
       </v-list>
     </v-navigation-drawer>
