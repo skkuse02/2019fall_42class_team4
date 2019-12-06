@@ -115,15 +115,14 @@ router.put('/:user_id/:item_id', function (req, res, next) { // BUY the ITEM
       }
       snapshot.forEach((doc) => {
         console.log(doc.data())
-        let item_id = Number(req.params.item_id)  // DB에 숫자형식으로 들어가 있어서 Number로 변환
+        let item_id = Number(req.params.item_id)
         if (doc.data().purchased_items.includes(item_id)) {
-          res.status(202).send("Item is already in purchased Item") // frontend에서 구분하기 쉽게 status 변경
+          res.status(202).send("Item is already in purchased Item")
         } else {
-          // doc에 덮어씌우면 DB에서 업데이트가 제대로 되지 않아서 임시로 변수를 만든 후 update
-          let tmp_purchased_list = doc.data().purchased_items
-          tmp_purchased_list.push(item_id)
+          let purchased_items = doc.data().purchased_items
+          purchased_items.push(item_id)
           firestore.collection('/user').doc(doc.id).update({
-            purchased_items: tmp_purchased_list
+            purchased_items: purchased_items
           })
           res.status(200).send("Item purchase Complete");
         }
