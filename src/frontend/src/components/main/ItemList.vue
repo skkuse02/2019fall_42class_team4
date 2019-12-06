@@ -183,13 +183,24 @@ export default {
     },
     async LoadReview (item) {
       // 구입한 item의 review보기 버튼을 클릭하면 해당 item에 리뷰가 존재하는지 확인
-      /*
-      const postedReview = this.user.postedReview
-      if (postedReview에 현재 구입한 item이 존재) {
-        const res = await this.$http.get('/api/reviews/' + item.id + '/' + postedReview.split()[1])
-        this.reviewTitle = res.data.title
-        this.reviewContent = res.data.content
-        this.reviewItemRating = res.data.item_rating
+      let user = await this.$http.get('/api/users/' + this.user.id)
+      user = user.data
+      this.user = user // save user's data
+      let itemId = item.id
+      let postedReviews = user.posted_reviews
+      let postMap = {}
+      this.postMap = postMap // postMap => key: item_id, value: review_id
+      postedReviews.forEach((itemIdReviewId) => {
+        let kvPair = itemIdReviewId.split(' ')
+        postMap[kvPair[0]] = kvPair[1]
+      })
+      const isPosted = postMap[itemId] !== undefined
+      if (isPosted) {
+        let review = await this.$http.get('/api/reviews/' + itemId + '/' + postMap[itemId] + '/1')
+        review = review.data
+        this.reviewTitle = review.title || ''
+        this.reviewContent = review.content || ''
+        this.reviewItemRating = review.item_rating || 0
         this.isReview = true
       } else {
         this.reviewTitle = ''
@@ -197,38 +208,37 @@ export default {
         this.reviewItemRating = 0
         this.isReview = false
       }
-      */
     },
-    async Save (item) {
+    async Save (item) { // before Save run, LoadReview always run to provide proper value: this.isReview, this.postMap
       // backend에 review 생성/수정 요청
-      /*
-      if (this.isReview) {  // 기존 review 존재 시
-        const review_id = this.user.postedReview에서 review_id 찾기
-        this.$http.put('/api/review/ + item.id + '/' + review_id', {
+      let itemId = item.id
+      if (this.isReview) { // 기존 review 존재 시
+        let reviewId = this.postMap[itemId]
+        await this.$http.put('/api/reviews/' + itemId + '/' + reviewId, {
           title: this.reviewTitle,
           content: this.reviewContent,
           item_rating: this.reviewItemRating
         })
         alert('리뷰 수정 완료')
-      } else {  // 기존 review 존재하지 않을 시
-        const res = await this.$http.post('/api/review/' + item.id + '/' + this.user.id, {
+      } else { // 기존 review 존재하지 않을 시
+        const res = await this.$http.post('/api/reviews/' + itemId + '/' + this.user.id, {
           title: this.reviewTitle,
           content: this.reviewContent,
           item_rating: this.reviewItemRating
         })
-        alert('리뷰 등록 완료')
+        alert('리뷰 등록 완료', res)
+        this.dialog = false
       }
-      */
-      this.dialog = false
     },
-    async Delete (item) {
+    async Delete (item) { // before Delete run, LoadReview always run to provide proper value: this.isReview, this.postMap
       // backend에 review 삭제 요청
-      /*
       if (this.isReview) {
+        let itemId = item.id
         let result = confirm('정말 리뷰를 삭제하시겠습니까?')
         if (result) {
-          const review_id = this.user.postedReview에서 review_id 찾기
-          const res = await this.$http.delete('/api/reviews/' + item.id + '/' + review_id + '/' + this.user.id + '/?review')
+          let reviewId = this.postMap[itemId]
+          console.log(reviewId)
+          let res = await this.$http.delete('/api/reviews/' + itemId + '/' + reviewId + '/' + this.user.id + '/?mode=review')
           console.log(res.status, res.data)
           alert('리뷰 삭제 성공')
           this.dialog = false
@@ -236,7 +246,6 @@ export default {
       } else {
         alert('삭제할 리뷰가 없습니다.')
       }
-      */
     }
   }
 }

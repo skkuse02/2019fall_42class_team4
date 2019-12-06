@@ -14,6 +14,8 @@ npm install firebase
 1. firebaseConfig.json<br>
     backend/firebaseConfig.json 만들고 내용입력
 
+1. NLP 폴더의 README를 읽고 지시대로 실행해주세요
+
 ### 프로젝트 실행
 
 ```
