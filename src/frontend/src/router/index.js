@@ -45,6 +45,12 @@ const routes = [
     beforeEnter: requireSignIn()
   },
   {
+    path: '/Mypag/Recommend',
+    name: 'Recommend',
+    component: () => import('../views/RecommendReview.vue'),
+    beforeEnter: requireSignIn()
+  },
+  {
     path: '/ItemDetail/:id',
     name: 'ItemDetail',
     component: () => import('../views/ItemDetail.vue')

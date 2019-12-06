@@ -43,7 +43,7 @@ export default {
       this.$http.get('/api/items?search=' + this.searchCriteria)
         .then((res) => {
           // 불러온 아이템을 선호 키워드 순으로 정렬후 보여주기
-          console.log(res.data)
+          // console.log(res.data)
           sessionStorage.setItem('searchResult', JSON.stringify(res.data))
           this.$router.push({ name: 'Home' }).then().catch(e => {
             window.location.reload()

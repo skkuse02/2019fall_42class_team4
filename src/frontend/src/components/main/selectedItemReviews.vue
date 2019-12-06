@@ -69,7 +69,7 @@
 
 <script>
 export default {
-  props: ['curItemReviews'],
+  props: ['curItem', 'curItemReviews'],
   data () {
     return {
       keywordsList: [
