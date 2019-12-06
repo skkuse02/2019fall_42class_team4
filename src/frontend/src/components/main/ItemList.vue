@@ -210,11 +210,10 @@ export default {
         this.isReview = false
       }
     },
-    async Save (item) {
+    async Save (item) { // before Save run, LoadReview always run to provide proper value: this.isReview, this.postMap
       // backend에 review 생성/수정 요청
       let itemId = item.id
       if (this.isReview) { // 기존 review 존재 시
-        console.log(this.postMap)
         let reviewId = this.postMap[itemId]
         await this.$http.put('/api/reviews/' + itemId + '/' + reviewId, {
           title: this.reviewTitle,
@@ -232,14 +231,15 @@ export default {
         this.dialog = false
       }
     },
-    async Delete (item) {
+    async Delete (item) { // before Delete run, LoadReview always run to provide proper value: this.isReview, this.postMap
       // backend에 review 삭제 요청
-      /*
       if (this.isReview) {
+        let itemId = item.id
         let result = confirm('정말 리뷰를 삭제하시겠습니까?')
         if (result) {
-          const review_id = this.user.postedReview에서 review_id 찾기
-          const res = await this.$http.delete('/api/reviews/' + item.id + '/' + review_id + '/' + this.user.id + '/?review')
+          let reviewId = this.postMap[itemId]
+          console.log(reviewId)
+          let res = await this.$http.delete('/api/reviews/' + itemId + '/' + reviewId + '/' + this.user.id + '/?mode=review')
           console.log(res.status, res.data)
           alert('리뷰 삭제 성공')
           this.dialog = false
@@ -247,7 +247,6 @@ export default {
       } else {
         alert('삭제할 리뷰가 없습니다.')
       }
-      */
     }
   }
 }

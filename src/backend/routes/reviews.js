@@ -207,9 +207,9 @@ router.put('/:item_id/:review_id', function (req, res, next) {
         let item_id = req.params.item_id
         let review_id = req.params.review_id
         firestore.collection('items').doc(item_id).collection('reviews').doc(review_id).get()
-        .then((snapshot_R) => {
-          if (!snapshot_R.empty) {
-            let review = snapshot_R.data()
+          .then((snapshot_R) => {
+            if (snapshot_R.exists()) {
+              let review = snapshot_R.data()
               let keywords_map = review.keywords_map
               keywords_map.forEach(eachKey => { total_keywords_map[eachKey.name] -= eachKey.score })
               total_star_sum -= review.item_rating
@@ -235,6 +235,9 @@ router.put('/:item_id/:review_id', function (req, res, next) {
                   .then(() => { res.status(200).send("review modification success") })
                   .catch(err => { throw err })
               })
+            }
+            else {
+              res.status(400).send("review doesn't exist")
             }
           })
       }
@@ -266,46 +269,47 @@ router.put('/:item_id/:review_id/:user_id', function (req, res, next) {
     })
 })
 
-
-router.delete('/:item_id/:review_id', function (req, res, next) {
-  firestore.collection('items').doc(req.params.item_id).get()
-    .then((snapshot) => {
-      if (!snapshot.empty) {
-        snapshot.forEach((doc) => {
-          let item = doc.data()
-          let item_id = req.params.item_id
-          let review_id = req.params.review_id
-          firestore.collection('items').doc(item_id).collection('reviews').doc(review_id).get()
-            .then((snapshot_R) => {
-              let review_doc = snapshot_R[0]
-              if (review_doc !== undefined) {
-                let total_keywords_map = item.total_keywords_map
-                let total_star_sum = item.total_star_sum
-                let review = review_doc.data()
-                let keywords_map = review.keywords_map
-                keywords_map.forEach(eachKey => { total_keywords_map[eachKey.name] -= eachKey.score })
-                total_star_sum -= review.item_rating
-                firestore.collection("items").doc("" + item_id)
-                  .collection("reviews").doc("" + review_id).delete()
-                  .then(() => {
-                    firestore.collection("items").doc("" + item_id).update({
-                      total_keywords_map: total_keywords_map,
-                      total_star_sum: total_star_sum
-                    })
-                      .then(() => res.status(204).send("review deletion success"))
-                  })
-              }
-            })
-        })
-      }
-    })
-    .catch(err => {
-      console.error(err.message)
-      res.status(500).send(err.message)
-    })
-});
+// 현재는 사용하지 않음
+// router.delete('/:item_id/:review_id', function (req, res, next) {
+//   firestore.collection('items').doc(req.params.item_id).get()
+//     .then((snapshot) => {
+//       if (!snapshot.empty) {
+//         snapshot.forEach((doc) => {
+//           let item = doc.data()
+//           let item_id = req.params.item_id
+//           let review_id = req.params.review_id
+//           firestore.collection('items').doc(item_id).collection('reviews').doc(review_id).get()
+//             .then((snapshot_R) => {
+//               let review_doc = snapshot_R[0]
+//               if (review_doc !== undefined) {
+//                 let total_keywords_map = item.total_keywords_map
+//                 let total_star_sum = item.total_star_sum
+//                 let review = review_doc.data()
+//                 let keywords_map = review.keywords_map
+//                 keywords_map.forEach(eachKey => { total_keywords_map[eachKey.name] -= eachKey.score })
+//                 total_star_sum -= review.item_rating
+//                 firestore.collection("items").doc("" + item_id)
+//                   .collection("reviews").doc("" + review_id).delete()
+//                   .then(() => {
+//                     firestore.collection("items").doc("" + item_id).update({
+//                       total_keywords_map: total_keywords_map,
+//                       total_star_sum: total_star_sum
+//                     })
+//                       .then(() => res.status(204).send("review deletion success"))
+//                   })
+//               }
+//             })
+//         })
+//       }
+//     })
+//     .catch(err => {
+//       console.error(err.message)
+//       res.status(500).send(err.message)
+//     })
+// });
 
 router.delete('/:item_id/:review_id/:user_id', function (req, res, next) {
+  debugger
   if (req.query.mode === 'recommendation') {
     let item_id = req.params.item_id
     let review_id = req.params.review_id
@@ -313,23 +317,21 @@ router.delete('/:item_id/:review_id/:user_id', function (req, res, next) {
     firestore.collection('user').doc(user_id).get()
       .then((snapshot) => {
         if (!snapshot.empty) {
-          snapshot.forEach((doc) => {
-            let user = doc.data()
-            let recommended_reviews = user.recommended_reviews
-            recommended_reviews = recommended_reviews.filter(eachVal => eachVal !== item_id + " " + user_id)
-            let disableRecommendationPromise = []
-            disableRecommendationPromise.push(
-              firestore.collection('items').doc(item_id).collection('reviews').doc(review_id).update({
-                review_rating: firebase.firestore.FieldValue.increment(-1)
-              }))
-            disableRecommendationPromise.push(
-              firestore.collection('user').doc(user_id).update({
-                recommended_reviews: recommended_reviews
-              })
-            )
-            Promise.all(disableRecommendationPromise)
-              .then(() => res.status(204).send("disable recommendation success"))
-          })
+          let user = snapshot.data()
+          let recommended_reviews = user.recommended_reviews
+          recommended_reviews = recommended_reviews.filter(eachVal => eachVal !== item_id + " " + user_id)
+          let disableRecommendationPromise = []
+          disableRecommendationPromise.push(
+            firestore.collection('items').doc(item_id).collection('reviews').doc(review_id).update({
+              review_rating: firebase.firestore.FieldValue.increment(-1)
+            }))
+          disableRecommendationPromise.push(
+            firestore.collection('user').doc(user_id).update({
+              recommended_reviews: recommended_reviews
+            })
+          )
+          Promise.all(disableRecommendationPromise)
+            .then(() => res.status(204).send("disable recommendation success"))
         }
       })
       .catch(err => {
@@ -340,49 +342,46 @@ router.delete('/:item_id/:review_id/:user_id', function (req, res, next) {
   else if (req.query.mode === 'review') {
     firestore.collection('items').doc(req.params.item_id).get()
       .then((snapshot) => {
-        if (!snapshot.empty) {
-          snapshot.forEach((doc) => {
-            let item = doc.data()
-            let item_id = req.params.item_id
-            let review_id = req.params.review_id
-            let user_id = req.params.user_id
-            firestore.collection('items').doc(item_id).collection('reviews').doc(review_id).get()
-              .then((snapshot_R) => {
-                let review_doc = snapshot_R[0]
-                if (review_doc !== undefined) {
-                  let total_keywords_map = item.total_keywords_map
-                  let total_star_sum = item.total_star_sum
-                  let review = review_doc.data()
-                  let keywords_map = review.keywords_map
-                  keywords_map.forEach(eachKey => { total_keywords_map[eachKey.name] -= eachKey.score })
-                  total_star_sum -= review.item_rating
-                  let reviewDeletePromise = []
-                  reviewDeletePromise.push(firestore.collection("items").doc("" + item_id)
-                    .collection("reviews").doc("" + review_id).delete())
-                  reviewDeletePromise.push(firestore.collection("items").doc("" + item_id).update({
-                    total_keywords_map: total_keywords_map,
-                    total_star_sum: total_star_sum
-                  }))
-                  Promise.all(reviewDeletePromise)
-                    .then(() => {
-                      firestore.collection('user').doc(user_id).get()
-                        .then((snapshot_U) => {
-                          let user_doc = snapshot_U[0]
-                          if (user_doc !== undefined) {
-                            let user = user_doc.data()
-                            posted_reviews = user.posted_reviews
-                            posted_reviews.filter(eachVal => eachVal !== item_id + " " + user_id)
-                            firestore.collection('user').doc(user_id).update({
-                              posted_reviews: posted_reviews
-                            })
-                              .then(() => res.status(204).send("review deletion success"))
-                          }
-                        })
-                    })
-                    .catch(err => { throw err })
-                }
-              })
-          })
+        let item = snapshot.data()
+        if (!!item) {// item exists
+          let item_id = req.params.item_id
+          let review_id = req.params.review_id
+          let user_id = req.params.user_id
+          firestore.collection('items').doc(item_id).collection('reviews').doc(review_id).get()
+          .then((snapshot_R) => {
+            let review = snapshot_R.data()
+              if (!!review) {// review exists
+                let total_keywords_map = item.total_keywords_map
+                let total_star_sum = item.total_star_sum
+                let keywords_map = review.keywords_map
+                keywords_map.forEach(eachKey => { total_keywords_map[eachKey.name] -= eachKey.score })
+                total_star_sum -= review.item_rating
+                let reviewDeletePromise = []
+                reviewDeletePromise.push(firestore.collection("items").doc("" + item_id)
+                  .collection("reviews").doc("" + review_id).delete())
+                reviewDeletePromise.push(firestore.collection("items").doc("" + item_id).update({
+                  total_keywords_map: total_keywords_map,
+                  total_star_sum: total_star_sum
+                }))
+                Promise.all(reviewDeletePromise)
+                  .then(() => {
+                    firestore.collection('user').where("id", "==", user_id).get()
+                      .then((snapshot_U) => {
+                        let doc = snapshot_U.docs[0]
+                        let user = doc.data()
+                        if (!!user) {// user exists
+                          posted_reviews = user.posted_reviews
+                          posted_reviews = posted_reviews.filter(eachVal => eachVal !== item_id + " " + review_id)
+                          firestore.collection('user').doc(doc.id).update({
+                            posted_reviews: posted_reviews
+                          })
+                            .then(() => res.status(204).send("review deletion success"))
+                        }
+                      })
+                  })
+                  .catch(err => { throw err })
+              }
+            })
         }
       })
       .catch(err => {
