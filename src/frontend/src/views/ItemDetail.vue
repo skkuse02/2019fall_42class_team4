@@ -41,7 +41,7 @@ export default {
     scroll (that) {
       let debounceTempo = 1000 // ms 단위의 debounce 주기
       window.onscroll = _.debounce(() => {
-        let bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
+        let bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 100
         if (bottomOfWindow) {
           that.$http.get(`/api/reviews/${that.curItem.id}/${that.offsetValue}/?criteria=${that.criteria}&keyword=${that.keyword}`)
             .then(response => {
