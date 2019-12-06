@@ -27,6 +27,7 @@ class oneReview {
 }
 
 router.get('/:item_id/:offsetValue', function (req, res, next) {
+  debugger
   let criteria = req.query.criteria;
   let reqForDB;
   let offsetValue = req.params.offsetValue;
@@ -152,7 +153,7 @@ router.post('/:item_id/:user_id', function (req, res, next) {
         let review_id_maker = item.review_id_maker
         let review_id = review_id_maker
         let user_id = req.params.user_id
-        let newReview = new oneReview(review_id, req.params.user_id, title, Date.now(), content, item_rating, 0)
+        let newReview = new oneReview(review_id, req.params.user_id, title, new Date(Date.now()), content, item_rating, 0)
         NLP(content)
           .then((keywords_map) => {// Process the content in NLP module
             newReview.keywords_map = JSON.parse(keywords_map)
@@ -225,13 +226,14 @@ router.put('/:item_id/:review_id', function (req, res, next) {
                     title: title,
                     content: content,
                     item_rating: item_rating,
-                    last_modified_time: Date.now()
+                    last_modified_time: new Date(Date.now())
                   })))
                 newReview.keywords_map.forEach(eachKey => { total_keywords_map[eachKey.name] += eachKey.score })
                 total_star_sum += item_rating
                 reviewPutPromise.push(firestore.collection("items").doc("" + item_id).update({
                   total_keywords_map: total_keywords_map,
-                  total_star_sum: total_star_sum
+                  total_star_sum: total_star_sum,
+                  total_review_num: firebase.firestore.FieldValue.increment(1)
                 }))
                 Promise.all(reviewPutPromise)
                   .then(() => { res.status(200).send("review modification success") })
@@ -305,7 +307,8 @@ router.put('/:item_id/:review_id/:user_id', function (req, res, next) {
 //                   .then(() => {
 //                     firestore.collection("items").doc("" + item_id).update({
 //                       total_keywords_map: total_keywords_map,
-//                       total_star_sum: total_star_sum
+//                       total_star_sum: total_star_sum,
+//                       total_review_num: firebase.firestore.FieldValue.increment(-1)
 //                     })
 //                       .then(() => res.status(204).send("review deletion success"))
 //                   })
@@ -380,7 +383,8 @@ router.delete('/:item_id/:review_id/:user_id', function (req, res, next) {
                   .collection("reviews").doc("" + review_id).delete())
                 reviewDeletePromise.push(firestore.collection("items").doc("" + item_id).update({
                   total_keywords_map: total_keywords_map,
-                  total_star_sum: total_star_sum
+                  total_star_sum: total_star_sum,
+                  total_review_num: firebase.firestore.FieldValue.increment(-1)
                 }))
                 Promise.all(reviewDeletePromise)
                   .then(() => {
