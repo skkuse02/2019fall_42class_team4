@@ -73,7 +73,7 @@ router.post('/', function (req, res, next) {
 });
 
 router.put('/:user_id', function (req, res, next) {
-  // firestore.collection('/user').doc(req.params.user_id).get()
+  debugger
   firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {

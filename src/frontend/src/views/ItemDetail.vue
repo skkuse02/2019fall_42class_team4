@@ -75,7 +75,10 @@ export default {
   data () {
     return {
       // 현재 아이템과 리뷰
-      curItem: {},
+      curItem: {
+        name: [''],
+        keywordsMap: {}
+      },
       curItemReviews: [],
       offsetValue: -1,
       criteria: 'rating',
