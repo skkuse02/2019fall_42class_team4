@@ -3,7 +3,7 @@
     <!-- 상단 툴바 -->
     <toolbar @changeDrawer="drawer = !drawer"></toolbar>
     <!-- 왼쪽 네비게이션 바 -->
-    <v-navigation-drawer v-model="drawer" absolute temporary>
+    <v-navigation-drawer v-model="drawer" app temporary>
       <v-toolbar flat>
         <v-btn flat v-if="$store.state.userInfo" @click="Logout()"><v-toolbar-title><v-icon>mdi-logout-variant</v-icon>Logout</v-toolbar-title></v-btn>
         <v-btn flat v-else @click="Login()"><v-toolbar-title><v-icon>mdi-login-variant</v-icon>Login</v-toolbar-title></v-btn>

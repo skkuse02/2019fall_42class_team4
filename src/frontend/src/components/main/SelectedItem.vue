@@ -107,6 +107,7 @@ export default {
         // console.log(resU)
         this.$store.commit('MODIFY', resU.data)
         alert('구매 완료')
+        this.$router.push({ name: 'History' })
       }
     }
   }

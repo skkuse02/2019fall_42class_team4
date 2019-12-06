@@ -127,14 +127,13 @@ router.get('/:item_id', function (req, res, next) {
 
 router.get('/:item_id/:review_id/1', function (req, res, next) {
   firestore.collection('items').doc(req.params.item_id).collection('reviews').doc(req.params.review_id).get()
-    .then((snapshot) => {
-      if (!snapshot.empty) {
-        snapshot.forEach((doc) => {
-          let review = doc.data()
-          res.status(200).send(review)
-        })
+    .then((doc) => {
+      if (!doc.empty) {
+        let review = doc.data()
+        res.status(200).send(review)
+        }
       }
-    })
+    )
     .catch((err) => {
       console.log('Error Getting Review', err);
       res.status(400).send(err);
@@ -247,7 +246,7 @@ router.put('/:item_id/:review_id', function (req, res, next) {
 })
 
 router.put('/:item_id/:review_id/:user_id', function (req, res, next) {
-  firestore.collection('user').doc(req.params.user_id).get()
+  firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (!snapshot.empty) {
         snapshot.forEach((doc) => {
@@ -255,15 +254,25 @@ router.put('/:item_id/:review_id/:user_id', function (req, res, next) {
           let item_id = req.params.item_id
           let review_id = req.params.review_id
           let recommended_reviews = user.recommended_reviews
-          if (!recommended_reviews.contains(item_id + " " + review_id)) {
+
+          if (!recommended_reviews.includes(item_id + " " + review_id)) {
             recommended_reviews.push(item_id + " " + review_id)
+            firestore.collection('/user').doc(doc.id).update({
+              recommended_reviews: recommended_reviews
+            }).then(() => {
+              firestore.collection('items').doc(req.params.item_id)
+                .collection('reviews').doc(req.params.review_id).update({
+                  review_rating: firebase.firestore.FieldValue.increment(1)
+                }).then(() => res.status(200).send("review recommendation success"))
+            })
+          } else {
+            res.status(202).send("already recommendation review")
           }
-          firestore.collection('items').doc(req.params.item_id)
-            .collection('reviews').doc(req.params.review_id).update({
-              review_rating: firebase.firestore.FieldValue.increment(1)
-            }).then(() => res.status(200).send("review recommendation success"))
         })
       }
+    }).catch(err => {
+      console.error(err.message)
+      res.status(500).send(err.message)
     })
 })
 
@@ -311,25 +320,30 @@ router.delete('/:item_id/:review_id/:user_id', function (req, res, next) {
     let item_id = req.params.item_id
     let review_id = req.params.review_id
     let user_id = req.params.user_id
-    firestore.collection('user').doc(user_id).get()
+    firestore.collection('/user').where('id', '==', req.params.user_id).get()
       .then((snapshot) => {
         if (!snapshot.empty) {
           snapshot.forEach((doc) => {
             let user = doc.data()
             let recommended_reviews = user.recommended_reviews
-            recommended_reviews = recommended_reviews.filter(eachVal => eachVal !== item_id + " " + user_id)
-            let disableRecommendationPromise = []
-            disableRecommendationPromise.push(
-              firestore.collection('items').doc(item_id).collection('reviews').doc(review_id).update({
-                review_rating: firebase.firestore.FieldValue.increment(-1)
-              }))
-            disableRecommendationPromise.push(
-              firestore.collection('user').doc(user_id).update({
-                recommended_reviews: recommended_reviews
-              })
-            )
-            Promise.all(disableRecommendationPromise)
-              .then(() => res.status(204).send("disable recommendation success"))
+            if (recommended_reviews.includes(item_id + " " + review_id)) {
+              recommended_reviews.splice(recommended_reviews.indexOf(item_id + " " + review_id), 1)
+              console.log(recommended_reviews)
+              let disableRecommendationPromise = []
+              disableRecommendationPromise.push(
+                firestore.collection('items').doc(item_id).collection('reviews').doc(review_id).update({
+                  review_rating: firebase.firestore.FieldValue.increment(-1)
+                }))
+              disableRecommendationPromise.push(
+                firestore.collection('user').doc(doc.id).update({
+                  recommended_reviews: recommended_reviews
+                })
+              )
+              Promise.all(disableRecommendationPromise)
+                .then(() => res.status(204).send("disable recommendation success"))
+            } else {
+              res.status(202).send("already cancel recommendation")
+            }
           })
         }
       })
@@ -392,6 +406,7 @@ router.delete('/:item_id/:review_id/:user_id', function (req, res, next) {
       })
   }
   else {
+    console.log("mode is not valid")
     res.status(400).send("mode is not valid")
   }
 });
