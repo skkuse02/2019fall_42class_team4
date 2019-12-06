@@ -14,7 +14,7 @@
 ###                                                    (when criteria = "keyword", additional query : keyword = "requestedKeyword")
 ### GET      /reviews/:item_id            (getting top-rated reviews)
 ### POST     /reviews/:item_id/:user_id             // user가 가지고 있는 기존 review 정보를 주기 위한 api
-### GET      /reviews/:item_id/:review_id/1         // 특정 item의 특정 review를 1개 가져온다.
+### GET      /reviews/:item_id/:review_id/1         // 특정 item의 특정 review를 1개 가져온다. (정확한 notation은 아니지만 offsetValue와의 충돌을 피하려고 /1을 추가했다.)
 ### PUT      /reviews/:item_id/:review_id           
 ### PUT      /reviews/:item_id/:review_id/:user_id  // REVIEW RECOMMENDATION
 ### DELETE   /reviews/:item_id/:review_id
