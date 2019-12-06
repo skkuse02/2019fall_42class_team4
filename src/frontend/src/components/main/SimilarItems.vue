@@ -71,7 +71,11 @@
             <div>{{review.content}}</div>
             <br>
             <!-- 리뷰 평점 -->
-          <div><div id="cardTextReviewRating">{{review.review_rating}}</div><v-btn icon @click="Like(review)"><v-icon>mdi-thumb-up-outline</v-icon></v-btn></div>
+            <div>
+              <div id="cardTextReviewRating">{{review.review_rating}}</div>
+              <v-btn icon @click="Like(similarItems[i-1].id, review)"><v-icon>mdi-thumb-up-outline</v-icon></v-btn>
+              <v-btn icon @click="UnLike(similarItems[i-1].id, review)"><v-icon>mdi-thumb-down-outline</v-icon></v-btn>
+            </div>
           </v-card-text>
         </v-flex>
       </v-card>
@@ -86,13 +90,49 @@ export default {
     'similarItemsReviews': Array,
     'i': Number
   },
+  data () {
+    return {
+      user: this.$store.state.userInfo
+    }
+  },
   methods: {
     pageReload (id) {
       this.$router.replace('/ItemDetail/' + id)
       window.location.reload()
     },
-    Like (review) {
+    async Like (itemId, review) {
+      if (this.user === null) {
+        alert('추천은 로그인 후 이용해 주세요.')
+        return
+      }
 
+      const res = await this.$http.put('/api/reviews/' + itemId + '/' + review.id + '/' + this.user.id)
+      if (res.status === 200) {
+        // 업데이트된 유저정보를 다시 받아서 vuex의 정보 업데이트
+        const resU = await this.$http.get('/api/users/' + this.user.id)
+        this.$store.commit('MODIFY', resU.data)
+        alert('추천 완료')
+        window.location.reload()
+      } else if (res.status === 202) {
+        alert('이미 추천한 리뷰입니다.')
+      }
+    },
+    async UnLike (itemId, review) {
+      if (this.user === null) {
+        alert('추천은 로그인 후 이용해 주세요.')
+        return
+      }
+
+      const res = await this.$http.delete('/api/reviews/' + itemId + '/' + review.id + '/' + this.user.id + '/?mode=recommendation')
+      if (res.status === 204) {
+        // 업데이트된 유저정보를 다시 받아서 vuex의 정보 업데이트
+        const resU = await this.$http.get('/api/users/' + this.user.id)
+        this.$store.commit('MODIFY', resU.data)
+        alert('추천 취소')
+        window.location.reload()
+      } else if (res.status === 202) {
+        alert('추천한 적이 없습니다.')
+      }
     }
   }
 }

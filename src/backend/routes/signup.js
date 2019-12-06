@@ -25,8 +25,8 @@ router.post('/', function(req, res, next) {
   loginInfo['name'] = req.body["name"];
   loginInfo['customized_keyword'] = req.body["customized_keyword"];
   loginInfo['purchased_items'] = req.body["purchased_items"];
-  loginInfo['posted_review'] = req.body["posted_review"];
-  loginInfo['recommended_review'] = req.body["recommended_review"];
+  loginInfo['posted_reviews'] = req.body["posted_reviews"];
+  loginInfo['recommended_reviews'] = req.body["recommended_reviews"];
 
   firestore.collection('/user').where('id', '==', req.body["id"]).get()
   .then((snapshot) => {

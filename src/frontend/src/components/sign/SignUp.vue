@@ -132,8 +132,8 @@ export default {
           name: this.name,
           customized_keyword: this.keywords,
           purchased_items: [],
-          posted_review: [],
-          recommended_review: []
+          posted_reviews: [],
+          recommended_reviews: []
         })
         console.log(res.data)
         alert('회원가입 완료, 로그인 하세요.')

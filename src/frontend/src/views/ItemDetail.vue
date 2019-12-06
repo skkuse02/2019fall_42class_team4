@@ -38,6 +38,25 @@ export default {
   components: {
     SelectedItem, SimilarItems, SelectedItemReviews
   },
+  data () {
+    return {
+      user: this.$store.state.userInfo,
+
+      // 현재 아이템과 리뷰
+      curItem: {
+        name: [''],
+        keywordsMap: {}
+      },
+      curItemReviews: [],
+      offsetValue: -1,
+      criteria: 'rating',
+      keyword: '',
+
+      // 유사 아이템 목록과 리뷰
+      similarItems: [],
+      similarItemsReviews: []
+    }
+  },
   methods: {
     scroll (that) {
       let debounceTempo = 500 // ms 단위의 debounce 주기
@@ -73,23 +92,6 @@ export default {
   mounted () {
     setTimeout(() => { this.scroll(this) }, 1000)// fixed bug : initial scrolling can cause double request of review
   },
-  data () {
-    return {
-      // 현재 아이템과 리뷰
-      curItem: {
-        name: [''],
-        keywordsMap: {}
-      },
-      curItemReviews: [],
-      offsetValue: -1,
-      criteria: 'rating',
-      keyword: '',
-
-      // 유사 아이템 목록과 리뷰
-      similarItems: [],
-      similarItemsReviews: []
-    }
-  },
   created () {
     const run = async () => {
       // 현재 아이템 불러오기
@@ -106,6 +108,7 @@ export default {
       }
       this.curItemReviews.push(...resR.data)
       this.offsetValue = resR.data.pop()[criteriaMap[this.criteria]]
+
       // 유사 아이템 비교 목록에 현재 아이템 추가하기
       this.curItem.similar_items.unshift(this.curItem.id)
       // 유사 아이템 불러오기
