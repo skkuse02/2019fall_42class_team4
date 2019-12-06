@@ -44,7 +44,7 @@
           <v-spacer></v-spacer>
           <v-btn v-if="isCart" color="success" @click="AddCart()">Add Cart</v-btn>
           <v-btn v-else dark color="red" @click="RemoveCart()">Remove Cart</v-btn>
-          <v-btn color="success">Buy</v-btn>
+          <v-btn color="success" @click="Buy()">Buy</v-btn>
         </v-flex>
       </v-flex>
       <v-flex xs12>
@@ -62,6 +62,7 @@ export default {
   props: ['curItem'],
   data () {
     return {
+      user: this.$store.state.userInfo,
       count: 1,
       isCart: true
     }
@@ -94,6 +95,19 @@ export default {
     RemoveCart () {
       this.$store.commit('REMOVECART', this.curItem)
       this.IsCart()
+    },
+    async Buy () {
+      const res = await this.$http.put('/api/users/' + this.user.id + '/' + this.curItem.id)
+      // console.log(res)
+      if (res.status === 202) {
+        alert('이미 구매한 항목입니다.')
+      } else if (res.status === 200) {
+        // 업데이트된 유저정보를 다시 받아서 vuex의 정보 업데이트
+        const resU = await this.$http.get('/api/users/' + this.user.id)
+        // console.log(resU)
+        this.$store.commit('MODIFY', resU.data)
+        alert('구매 완료')
+      }
     }
   }
 }

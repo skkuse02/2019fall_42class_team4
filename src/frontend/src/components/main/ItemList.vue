@@ -50,6 +50,7 @@
 
           <!-- 구매내역에 표시할 항목 -->
           <v-flex xs1 v-if="item.history">
+            <v-btn icon @click="CancelPurchased(item)"><v-icon>mdi-close-box</v-icon></v-btn>
             <v-dialog
               v-model="dialog"
               persistent
@@ -197,6 +198,16 @@ export default {
         alert('리뷰 등록 완료')
       }
       */
+    },
+    async CancelPurchased (item) {
+      const res = await this.$http.delete('/api/users/' + this.user.id + '/' + item.id)
+      if (res.status === 200) {
+        // 업데이트된 유저정보를 다시 받아서 vuex의 정보 업데이트
+        const resU = await this.$http.get('/api/users/' + this.user.id)
+        this.$store.commit('MODIFY', resU.data)
+        alert('취소 완료')
+        this.$router.go() // 페이지 새로고침
+      }
     }
   }
 }

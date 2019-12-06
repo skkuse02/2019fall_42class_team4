@@ -131,14 +131,14 @@ export default {
 
       // backend에 개인정보 수정 요청
       try {
-        const res = await this.$http.put('/api/users/' + this.user.id, {
+        await this.$http.put('/api/users/' + this.user.id, {
           type: 'keyword_change',
           password: this.password,
           keywords: this.keywords.sort()
         })
-        console.log(res.data)
-        this.user.customized_keyword = this.keywords
-        this.$store.commit('MODIFY', this.user)
+        // 업데이트된 유저정보를 다시 받아서 vuex의 정보 업데이트
+        const resU = await this.$http.get('/api/users/' + this.user.id)
+        this.$store.commit('MODIFY', resU)
         this.$router.push('/')
       } catch (e) {
         let stateCode = e.message

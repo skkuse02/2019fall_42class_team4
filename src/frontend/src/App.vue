@@ -45,7 +45,7 @@
             <v-list-tile-action>
               <v-icon>mdi-history</v-icon>
             </v-list-tile-action>
-            <v-list-tile-title>History</v-list-tile-title>
+            <v-list-tile-title>Purchased Items</v-list-tile-title>
           </v-list-tile>
         </v-list-group>
       </v-list>
