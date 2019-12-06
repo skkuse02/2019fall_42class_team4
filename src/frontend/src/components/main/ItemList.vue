@@ -202,24 +202,22 @@ export default {
     },
     async Save (item) {
       // backend에 review 생성/수정 요청
-      /*
-      if (this.isReview) {  // 기존 review 존재 시
-        const review_id = this.user.postedReview에서 review_id 찾기
-        this.$http.put('/api/review/ + item.id + '/' + review_id', {
-          title: this.reviewTitle,
-          content: this.reviewContent,
-          item_rating: this.reviewItemRating
-        })
-        alert('리뷰 수정 완료')
-      } else {  // 기존 review 존재하지 않을 시
-        const res = await this.$http.post('/api/review/' + item.id + '/' + this.user.id, {
-          title: this.reviewTitle,
-          content: this.reviewContent,
-          item_rating: this.reviewItemRating
-        })
-        alert('리뷰 등록 완료')
-      }
-      */
+      // if (this.isReview) {  // 기존 review 존재 시
+      //   const review_id = this.user.postedReview에서 review_id 찾기
+      //   this.$http.put('/api/review/ + item.id + '/' + review_id', {
+      //     title: this.reviewTitle,
+      //     content: this.reviewContent,
+      //     item_rating: this.reviewItemRating
+      //   })
+      //   alert('리뷰 수정 완료')
+      // } else {  // 기존 review 존재하지 않을 시
+      const res = await this.$http.post('/api/reviews/' + item.id + '/' + this.user.id, {
+        title: this.reviewTitle,
+        content: this.reviewContent,
+        item_rating: this.reviewItemRating
+      })
+      alert('리뷰 등록 완료', res)
+      // }
       this.dialog = false
     },
     async Delete (item) {

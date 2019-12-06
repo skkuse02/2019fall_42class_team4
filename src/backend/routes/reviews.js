@@ -142,47 +142,50 @@ router.get('/:item_id/:review_id/1', function (req, res, next) {
 })
 
 router.post('/:item_id/:user_id', function (req, res, next) {
+  debugger
   firestore.collection('items').doc(req.params.item_id).get()
     .then((snapshot) => {
       if (!snapshot.empty) {
-        snapshot.forEach((doc) => {
-          let item = doc.data()
-          let { title, content, item_rating } = req.body
-          let item_id = req.params.item_id
-          let review_id_maker = item.review_id_maker
-          let review_id = review_id_maker
-          let user_id = req.params.user_id
-          let newReview = new oneReview(review_id, req.params.user_id, title, Date.now(), content, item_rating, 0)
-          NLP(content).then((keywords_map) => {// Process the content in NLP module
-            newReview.keywords_map = JSON.parse(keywords_map)
-            newReview.keywords = reviews[i].keywords_map.map(keywordObj => keywordObj.name)
-            let total_keywords_map = item.total_keywords_map
-            let total_review_num = item.total_review_num
-            let total_star_sum = item.total_star_sum
-            let reviewPostPromise = []
-            reviewPostPromise.push(firestore.collection("items").doc("" + item_id)
-              .collection("reviews").doc("" + review_id).set(Object.assign({}, newReview)))
-            review_id_maker++// update item's metadata
-            total_review_num++
-            newReview.keywords_map.forEach(eachKey => { total_keywords_map[eachKey.name] += eachKey.score })
-            total_star_sum += item_rating
-            reviewPostPromise.push(firestore.collection("items").doc("" + item_id).update({
-              review_id_maker: review_id_maker,
-              total_review_num: total_review_num,
-              total_keywords_map: total_keywords_map,
-              total_star_sum: total_star_sum
-            }))
-            reviewPostPromise.push(firestore.collection("user").doc("" + user_id).get())// add review to the user
-            Promise.all(reviewPostPromise)
-              .then(resultArr => {
-                let posted_reviews = resultArr[2][0].posted_reviews
-                posted_reviews.push(item_id + " " + review_id)
-                firestore.collection("user").doc("" + user_id).update({
-                  posted_reviews: posted_reviews
-                }).then(res.status(200).send("review posting success"))
-              })
-          })
-        });
+        let item = snapshot.data()
+        let { title, content, item_rating } = req.body
+        let item_id = req.params.item_id
+        let review_id_maker = item.review_id_maker
+        let review_id = review_id_maker
+        let user_id = req.params.user_id
+        let newReview = new oneReview(review_id, req.params.user_id, title, Date.now(), content, item_rating, 0)
+        NLP(content)
+        .then((keywords_map) => {// Process the content in NLP module
+          newReview.keywords_map = JSON.parse(keywords_map)
+          newReview.keywords = newReview.keywords_map.map(keywordObj => keywordObj.name)
+          let total_keywords_map = item.total_keywords_map
+          let total_review_num = item.total_review_num
+          let total_star_sum = item.total_star_sum
+          let reviewPostPromise = []
+          reviewPostPromise.push(firestore.collection("items").doc("" + item_id)
+            .collection("reviews").doc("" + review_id).set(Object.assign({}, newReview)))
+          review_id_maker++// update item's metadata
+          total_review_num++
+          newReview.keywords_map.forEach(eachKey => { total_keywords_map[eachKey.name] += eachKey.score })
+          total_star_sum += item_rating
+          reviewPostPromise.push(firestore.collection("items").doc("" + item_id).update({
+            review_id_maker: review_id_maker,
+            total_review_num: total_review_num,
+            total_keywords_map: total_keywords_map,
+            total_star_sum: total_star_sum
+          }))
+          reviewPostPromise.push(firestore.collection("user").where("id","==", user_id).get())// add review to the user
+          Promise.all(reviewPostPromise)
+            .then(resultArr => {
+              let doc = resultArr[2].docs[0]
+              let user = doc.data()
+              let posted_reviews = user.posted_reviews
+              posted_reviews.push(item_id + " " + review_id)
+              firestore.collection("user").doc(doc.id).update({
+                posted_reviews: posted_reviews
+              }).then(res.status(200).send("review posting success"))
+            })
+        })
+      .catch(err=>{throw err})
       } else {
         console.log('Item is not Exist');
         res.status(404).send('Item is not Exist')
@@ -376,7 +379,7 @@ router.delete('/:item_id/:review_id/:user_id', function (req, res, next) {
                             firestore.collection('user').doc(user_id).update({
                               posted_reviews: posted_reviews
                             })
-                            .then(()=>res.status(204).send("review deletion success"))
+                              .then(() => res.status(204).send("review deletion success"))
                           }
                         })
                     })
