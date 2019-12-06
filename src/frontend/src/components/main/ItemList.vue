@@ -162,7 +162,6 @@ export default {
         const resU = await this.$http.get('/api/users/' + this.user.id)
         this.$store.commit('MODIFY', resU.data)
         this.$store.commit('REMOVECART', item)
-        this.items = this.$store.state.inCart
         alert('구매 완료')
         this.$router.push({ name: 'History' })
       }
