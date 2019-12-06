@@ -71,7 +71,7 @@ export default {
     }
   },
   mounted () {
-    this.scroll(this)
+    setTimeout(() => { this.scroll(this) }, 1000)// fixed bug : initial scrolling can cause double request of review
   },
   data () {
     return {
