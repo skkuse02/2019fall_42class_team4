@@ -10,21 +10,60 @@ if (!firebase.apps.length) {
 }
 let firestore = firebase.firestore();
 
-/* GET user matching the id */
 router.get('/:user_id', function (req, res, next) {
-  // firestore.collection('/users').doc(req.params.user_id).get()
-  firestore.collection('/user').where('id', '==', req.params.user_id).get() // 아직 users collection이 없고, user colleciton에는 doc의 id가 랜덤이라 기존 방식으로 user를 찾았습니다.
-    .then((snapshot) => {
-      if (snapshot.empty) {
-        throw 'No matching user documents'
-      }
-      snapshot.forEach((doc) => {
-        res.status(200).send(doc.data())
+  let mode = req.query.mode
+  let user_id = req.params.user_id
+  firestore.collection('users').doc(user_id).get()
+      .then((snapshot) => {
+        if (snapshot.empty) {
+          throw 'No matching user documents'
+        }
+        snapshot.forEach((doc) => {
+          let user = doc.data()
+          if(mode === "purchased") {
+            let purchasedPromise = []
+            let purchased_items = user.purchased_items
+            purchased_items.forEach((item_id)=>{
+              purchasedPromise.push(firestore.collection('items').doc(item_id).get())
+            })
+            Promise.allSettled(purchasedPromise)
+            .then(resArr=>{
+              let result = []
+              resArr.forEach(resObj => {
+                if(resObj.status === "fulfilled") {
+                  result.push(resObj)
+                }
+              })
+              console.log(result)
+              res.status(200).send(result)})
+          }
+          else if(mode === "recommend") {
+            let recommendPromise = []
+            let recommended_reviews = user.recommended_reviews
+            recommended_reviews.forEach((item_review_id)=>{
+              [item_id, review_id] = item_review_id.split(" ")
+              recommendPromise.push(firestore.collection('items').doc(item_id)
+              .collection('reviews').doc(review_id).get())
+            })
+            Promise.allSettled(recommendPromise)
+            .then(resArr=>{
+              let result = []
+              resArr.forEach(resObj => {
+                if(resObj.status === "fulfilled") {
+                  result.push(resObj)
+                }
+              })
+              console.log(result)
+              res.status(200).send(result)})
+          }
+          else {
+            res.status(200).send(doc.data())
+          }
+        });
+      })
+      .catch((err) => {
+        res.status(404).send(err.message)
       });
-    })
-    .catch((err) => {
-      res.status(404).send(err.message)
-    });
 });
 
 router.post('/', function (req, res, next) {

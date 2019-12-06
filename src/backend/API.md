@@ -17,11 +17,11 @@
 ### PUT      /reviews/:item_id/:review_id           
 ### PUT      /reviews/:item_id/:review_id/:user_id  // REVIEW RECOMMENDATION
 ### DELETE   /reviews/:item_id/:review_id
-### DELETE   /reviews/:item_id/:review_id/:user_id  // CANCEL REVIEW RECOMMENDATIN 
+### DELETE   /reviews/:item_id/:review_id/:user_id/?mode    (mode: recommendation = CANCEL REVIEW RECOMMENDATION, review = DELETE REVIEW) 
 
 ## **users**
 
-### GET      /users/:user_id
+### GET      /users/:user_id/?mode                          (mode: purchased = request all the purchased items, recommend = request all the recommended reviews, undefined = request user object)
 ### POST     /users/
 ### PUT      /users/:user_id/                       // CHANGE the USER INFORMATION
 ### PUT      /users/:user_id/:item_id               // BUY the ITEM
