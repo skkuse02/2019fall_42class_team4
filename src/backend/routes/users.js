@@ -11,9 +11,10 @@ if (!firebase.apps.length) {
 let firestore = firebase.firestore();
 
 router.get('/:user_id', function (req, res, next) {
+  debugger
   let mode = req.query.mode
   let user_id = req.params.user_id
-  firestore.collection('users').doc(user_id).get()
+  firestore.collection('/user').where("id","==",user_id).get()
       .then((snapshot) => {
         if (snapshot.empty) {
           throw 'No matching user documents'
@@ -24,7 +25,7 @@ router.get('/:user_id', function (req, res, next) {
             let purchasedPromise = []
             let purchased_items = user.purchased_items
             purchased_items.forEach((item_id)=>{
-              purchasedPromise.push(firestore.collection('items').doc(item_id).get())
+              purchasedPromise.push(firestore.collection('/items').doc(item_id).get())
             })
             Promise.allSettled(purchasedPromise)
             .then(resArr=>{
@@ -42,8 +43,8 @@ router.get('/:user_id', function (req, res, next) {
             let recommended_reviews = user.recommended_reviews
             recommended_reviews.forEach((item_review_id)=>{
               [item_id, review_id] = item_review_id.split(" ")
-              recommendPromise.push(firestore.collection('items').doc(item_id)
-              .collection('reviews').doc(review_id).get())
+              recommendPromise.push(firestore.collection('/items').doc(item_id)
+              .collection('/reviews').doc(review_id).get())
             })
             Promise.allSettled(recommendPromise)
             .then(resArr=>{
@@ -72,7 +73,7 @@ router.post('/', function (req, res, next) {
 });
 
 router.put('/:user_id', function (req, res, next) {
-  // firestore.collection('/users').doc(req.params.user_id).get()
+  // firestore.collection('/user').doc(req.params.user_id).get()
   firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
@@ -106,7 +107,7 @@ router.put('/:user_id', function (req, res, next) {
 });
 
 router.put('/:user_id/:item_id', function (req, res, next) { // BUY the ITEM
-  // firestore.collection('/users').doc(req.params.user_id).get()
+  // firestore.collection('/user').doc(req.params.user_id).get()
   firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
@@ -134,14 +135,14 @@ router.put('/:user_id/:item_id', function (req, res, next) { // BUY the ITEM
 });
 
 router.delete('/:user_id', function (req, res, next) {
-  // firestore.collection('/users').doc(req.params.user_id).get()
+  // firestore.collection('/user').doc(req.params.user_id).get()
   firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
         throw 'No matching documents'
       }
       snapshot.forEach((doc) => {
-        firestore.collection('/users').doc(doc.id).delete()
+        firestore.collection('/user').doc(doc.id).delete()
         .then(()=>res.send('Data Delete Item'))
       });
     })
@@ -151,7 +152,7 @@ router.delete('/:user_id', function (req, res, next) {
 });
 
 router.delete('/:user_id/:item_id', function (req, res, next) { // CANCEL ITEM BUY
-  // firestore.collection('/users').doc(req.params.user_id).get()
+  // firestore.collection('/user').doc(req.params.user_id).get()
   firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
@@ -160,7 +161,7 @@ router.delete('/:user_id/:item_id', function (req, res, next) { // CANCEL ITEM B
       let item_id = Number(req.params.item_id)
       snapshot.forEach((doc) => {
         let tmp_purchased_list = doc.data().purchased_items.filter(itemId => itemId!==item_id)
-        // firestore.collection('/users').doc(doc.id).update({
+        // firestore.collection('/user').doc(doc.id).update({
         firestore.collection('/user').doc(doc.id).update({
           purchased_items: tmp_purchased_list
         })

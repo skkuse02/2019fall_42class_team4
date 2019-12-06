@@ -39,9 +39,9 @@ export default {
   },
   methods: {
     scroll (that) {
-      let debounceTempo = 1000 // ms 단위의 debounce 주기
+      let debounceTempo = 500 // ms 단위의 debounce 주기
       window.onscroll = _.debounce(() => {
-        let bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 100
+        let bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 100 // 밑에서 100만큼 거리부터 trigger됨. 확인코드: console.log(window.innerHeight, window.pageYOffset, document.body.offsetHeight)
         if (bottomOfWindow) {
           that.$http.get(`/api/reviews/${that.curItem.id}/${that.offsetValue}/?criteria=${that.criteria}&keyword=${that.keyword}`)
             .then(response => {

@@ -138,7 +138,7 @@ export default {
         })
         // 업데이트된 유저정보를 다시 받아서 vuex의 정보 업데이트
         const resU = await this.$http.get('/api/users/' + this.user.id)
-        this.$store.commit('MODIFY', resU)
+        this.$store.commit('MODIFY', resU.data)
         this.$router.push('/')
       } catch (e) {
         let stateCode = e.message
