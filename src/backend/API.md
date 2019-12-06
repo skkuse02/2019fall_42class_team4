@@ -13,8 +13,8 @@
 ### GET      /reviews/:item_id/:offsetValue/?criteria   (lastReviewId = -1 when first page, criteria = "rating", "recent", "keyword"
 ###                                                    (when criteria = "keyword", additional query : keyword = "requestedKeyword")
 ### GET      /reviews/:item_id            (getting top-rated reviews)
-### GET      /reviews/:item_id/:review_id           // user가 가지고 있는 기존 review 정보를 주기 위한 api
-### POST     /reviews/:item_id/:user_id
+### POST     /reviews/:item_id/:user_id             // user가 가지고 있는 기존 review 정보를 주기 위한 api
+### GET      /reviews/:item_id/:review_id/1         // 특정 item의 특정 review를 1개 가져온다.
 ### PUT      /reviews/:item_id/:review_id           
 ### PUT      /reviews/:item_id/:review_id/:user_id  // REVIEW RECOMMENDATION
 ### DELETE   /reviews/:item_id/:review_id

@@ -125,8 +125,20 @@ router.get('/:item_id', function (req, res, next) {
     });
 });
 
-router.get('/:item_id/:review_id', function (req, res, next) {
-
+router.get('/:item_id/:review_id/1', function (req, res, next) {
+  firestore.collection('items').doc(req.params.item_id).collection('reviews').doc(req.params.review_id).get()
+    .then((snapshot) => {
+      if (!snapshot.empty) {
+        snapshot.forEach((doc) => {
+          let review = doc.data()
+          res.status(200).send(review)
+        })
+      }
+    })
+    .catch((err) => {
+      console.log('Error Getting Review', err);
+      res.status(400).send(err);
+    });
 })
 
 router.post('/:item_id/:user_id', function (req, res, next) {

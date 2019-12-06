@@ -11,7 +11,7 @@ let firestore = firebase.firestore();
 
 // utility function : postprocess items 
 let postprocessItems = (items) => {
-  //postprocess for items
+  //postprocess for items : find representative keywords and average item score 
   let absScores = []
   let thresholdScore;
   let numOfKeywords = 6;
@@ -35,7 +35,7 @@ let postprocessItems = (items) => {
 // get all items
 router.get('/', function(req, res, next){
   let items = []
-  if(req.query.search === undefined) {
+  if(req.query.search === undefined) {// get all items
     firestore.collection('/items').get()
     .then((snapshot) => {
       if(snapshot.empty){
@@ -44,7 +44,7 @@ router.get('/', function(req, res, next){
         return;
       }
       snapshot.forEach((doc) => {
-        console.log(doc.id, '=>', doc.data());
+        // console.log(doc.id, '=>', doc.data()); // monitoring data flow
         items.push(doc.data())
       });
       postprocessItems(items)
@@ -55,7 +55,7 @@ router.get('/', function(req, res, next){
       res.status(400).send(err);
   });
   }
-  else {
+  else {// search the items by querystring
     firestore.collection('/items').where("name", "array-contains-any", req.query.search.toLowerCase().split(" ")).get()
     .then((snapshot) => {
       if(snapshot.empty){
@@ -64,7 +64,7 @@ router.get('/', function(req, res, next){
         return;
       }
       snapshot.forEach((doc) => {
-        // console.log(doc.id, '=>', doc.data());
+        // console.log(doc.id, '=>', doc.data()); // monitoring data flow
         items.push(doc.data())
       });
       postprocessItems(items)
@@ -88,7 +88,7 @@ router.get('/:id', function(req, res, next){
         return;
       }
       snapshot.forEach((doc) => {
-        console.log(doc.id, '=>', doc.data());
+        // console.log(doc.id, '=>', doc.data()); // monitoring data flow
         items.push(doc.data())
       });
       postprocessItems(items)
