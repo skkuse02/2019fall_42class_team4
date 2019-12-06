@@ -394,7 +394,7 @@ router.delete('/:item_id/:review_id/:user_id', function (req, res, next) {
                           firestore.collection('user').doc(doc.id).update({
                             posted_reviews: posted_reviews
                           })
-                            .then(() => res.status(204).send("review deletion success"))
+                          .then(() => res.status(204).send("review deletion success"))
                         }
                       })
                   })

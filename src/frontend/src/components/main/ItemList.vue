@@ -228,6 +228,7 @@ export default {
         })
         alert('리뷰 등록 완료', res)
         this.dialog = false
+        this.isReview = false // prevent double review posting
       }
     },
     async Delete (item) { // before Delete run, LoadReview always run to provide proper value: this.isReview, this.postMap
@@ -235,16 +236,16 @@ export default {
       if (this.isReview) {
         let itemId = item.id
         let result = confirm('정말 리뷰를 삭제하시겠습니까?')
+        let reviewId = this.postMap[itemId]
         if (result) {
-          let reviewId = this.postMap[itemId]
-          console.log(reviewId)
-          let res = await this.$http.delete('/api/reviews/' + itemId + '/' + reviewId + '/' + this.user.id + '/?mode=review')
-          console.log(res.status, res.data)
-          alert('리뷰 삭제 성공')
-          this.dialog = false
+          if (reviewId) {
+            await this.$http.delete('/api/reviews/' + itemId + '/' + reviewId + '/' + this.user.id + '/?mode=review')
+            alert('리뷰 삭제 성공')
+            this.dialog = false
+          } else {
+            alert('삭제할 리뷰가 없습니다.')
+          }
         }
-      } else {
-        alert('삭제할 리뷰가 없습니다.')
       }
     }
   }
