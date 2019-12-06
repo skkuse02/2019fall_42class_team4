@@ -107,13 +107,14 @@ router.put('/:user_id', function (req, res, next) {
 });
 
 router.put('/:user_id/:item_id', function (req, res, next) { // BUY the ITEM
-  // firestore.collection('/user').doc(req.params.user_id).get()
+  debugger
   firestore.collection('/user').where('id', '==', req.params.user_id).get()
     .then((snapshot) => {
       if (snapshot.empty) {
         throw 'No matching user documents'
       }
       snapshot.forEach((doc) => {
+        console.log(doc.data())
         let item_id = Number(req.params.item_id)  // DB에 숫자형식으로 들어가 있어서 Number로 변환
         if (doc.data().purchased_items.includes(item_id)) {
           res.status(202).send("Item is already in purchased Item") // frontend에서 구분하기 쉽게 status 변경
