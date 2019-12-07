@@ -218,16 +218,16 @@ export default {
       if (this.isReview) { // 기존 review 존재 시
         let reviewId = this.postMap[itemId]
         await this.$http.put('/api/reviews/' + itemId + '/' + reviewId, {
-          title: this.reviewTitle,
-          content: this.reviewContent,
-          item_rating: this.reviewItemRating
+          title: this.reviewTitle.trim(),
+          content: this.reviewContent.trim(),
+          item_rating: this.reviewItemRating.trim()
         })
         alert('리뷰 수정 완료')
       } else { // 기존 review 존재하지 않을 시
         const res = await this.$http.post('/api/reviews/' + itemId + '/' + this.user.id, {
-          title: this.reviewTitle,
-          content: this.reviewContent,
-          item_rating: this.reviewItemRating
+          title: this.reviewTitle.trim(),
+          content: this.reviewContent.trim(),
+          item_rating: this.reviewItemRating.trim()
         })
         alert('리뷰 등록 완료', res)
         this.isReview = false // prevent double review posting
