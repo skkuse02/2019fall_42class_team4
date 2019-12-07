@@ -79,6 +79,13 @@ user, item, review json data format은 [**/src/prepareTest/DATA_STRUCTURE.md**](
 | DELETE | /users/:user_id          | user_id          |          |       |          | DB에서 User 삭제 |
 | DELETE | /users/:user_id/:item_id | user_id, item_id |          |       |          | Item 구매시 user data에 저장 |
 
+#### GET /users/:user_id/?mode
+
+1. mode
+- purchased : 유저가 구매한 item_id list 
+- recommend : 유저가 추천한 review_id list 반환
+- *undefined* : 지정된 유저 json data 반환
+
 #### POST /users
 
 1. body json
@@ -107,12 +114,6 @@ user, item, review json data format은 [**/src/prepareTest/DATA_STRUCTURE.md**](
   changePassword: (string)
 }
 ```
-#### GET /users/:user_id/?mode
-
-1. mode
-- purchased : 유저가 구매한 item_id list 
-- recommend : 유저가 추천한 review_id list 반환
-- *undefined* : 지정된 유저 json data 반환
 
 ## **login**
 
