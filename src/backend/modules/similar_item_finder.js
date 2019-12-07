@@ -21,8 +21,8 @@ function similarItemFinder() {
             // first item's similarItems
             promisesForSimilarItem.push(firestore.collection('items').doc('' + itemLists[0].id).update({ similar_items: [itemLists[1].id, itemLists[2].id] }))
             prevId = itemLists[0].id
-            nowId = itemLists[1].id
-            nextId = itemLists[2].id
+            nowId = itemLists[0].id
+            nextId = itemLists[1].id
             for (let i = 1; i < lengthOfItems - 1; i++) {
                 nowId = nextId
                 nextId = itemLists[i + 1].id
