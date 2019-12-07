@@ -34,9 +34,7 @@
             <!-- 리뷰 평점 -->
             <div>
               <div id="cardTextReviewRating">{{review.review_rating}}</div>
-            <v-btn v-if="review.isRecommended !== null" icon @click="Like(review)"><v-icon>mdi-thumb-up</v-icon></v-btn>
-            <v-btn v-else icon @click="Like(review)"><v-icon>mdi-thumb-up-outline</v-icon></v-btn>
-              <v-btn icon @click="UnLike(review)"><v-icon>mdi-thumb-down-outline</v-icon></v-btn>
+              <v-btn icon @click="UnLike(review)"><v-icon>mdi-thumb-up</v-icon></v-btn>
             </div>
           </v-card-text>
         </v-flex>
@@ -57,27 +55,15 @@ export default {
     const recommendedReview = this.user.recommended_reviews
 
     // 추천한 review 가져오기
-    let idx = 0
     for (let review of recommendedReview) {
       const itemId = review.split(' ')[0]
       const reviewId = review.split(' ')[1]
       const res = await this.$http.get('/api/reviews/' + itemId + '/' + reviewId + '/1')
       res.data.itemId = itemId
-      res.data.index = idx
-      idx++
       this.userReviews.push(res.data)
     }
   },
   methods: {
-    async Like (review) {
-      const res = await this.$http.put('/api/reviews/' + review.itemId + '/' + review.id + '/' + this.user.id)
-      if (res.status === 200) {
-        alert('추천 완료')
-        review.review_rating++
-      } else if (res.status === 202) {
-        alert('이미 추천한 리뷰입니다.')
-      }
-    },
     async UnLike (review) {
       const res = await this.$http.delete('/api/reviews/' + review.itemId + '/' + review.id + '/' + this.user.id + '/?mode=recommendation')
       if (res.status === 204) {

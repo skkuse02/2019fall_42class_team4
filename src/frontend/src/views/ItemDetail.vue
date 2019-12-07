@@ -41,6 +41,7 @@ export default {
   data () {
     return {
       user: this.$store.state.userInfo,
+      recommendMap: {},
 
       // 현재 아이템과 리뷰
       curItem: {
@@ -102,18 +103,20 @@ export default {
     const run = async () => {
       const itemId = this.$route.params.id
 
-      this.recommendMap = {}// 유저가 추천한 리뷰id에 true를 mapping하는 recommendMap 생성
+      this.recommendMap = {} // 유저가 추천한 리뷰id에 true를 mapping하는 recommendMap 생성
       this.user = this.user || {
         recommended_reviews: []
       }
       let recommendMap = this.recommendMap
       this.user.recommended_reviews.forEach((itemIdReviewId) => {
         let kvPair = itemIdReviewId.split(' ')
+        // kvPair[0]: item_id, kvPair[1]: review_id
         if (recommendMap[kvPair[0]] === undefined) {
           recommendMap[kvPair[0]] = {}
         }
         recommendMap[kvPair[0]][kvPair[1]] = true
       })
+
       // 현재 아이템 불러오기
       const res = await this.$http.get('/api/items/' + itemId)
       this.curItem = res.data[0]
@@ -133,6 +136,7 @@ export default {
         }
       })
       this.offsetValue = resR.data.pop()[criteriaMap[this.criteria]]
+
       // 유사 아이템 비교 목록에 현재 아이템 추가하기
       this.curItem.similar_items.unshift(this.curItem.id)
       // 유사 아이템 불러오기

@@ -73,9 +73,8 @@
             <!-- 리뷰 평점 -->
             <div>
               <div id="cardTextReviewRating">{{review.review_rating}}</div>
-              <v-btn v-if="similarItems[i-1].isRecommended !== undefined" icon @click="Like(similarItems[i-1].id, review)"><v-icon>mdi-thumb-up</v-icon></v-btn>
+              <v-btn v-if="review.isRecommended === true" icon @click="UnLike(similarItems[i-1].id, review)"><v-icon>mdi-thumb-up</v-icon></v-btn>
               <v-btn v-else icon @click="Like(similarItems[i-1].id, review)"><v-icon>mdi-thumb-up-outline</v-icon></v-btn>
-              <v-btn icon @click="UnLike(similarItems[i-1].id, review)"><v-icon>mdi-thumb-down-outline</v-icon></v-btn>
             </div>
           </v-card-text>
         </v-flex>
