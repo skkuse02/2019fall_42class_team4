@@ -110,7 +110,7 @@ router.post('/', function(req, res, next){
         return;
       } else {
         console.log('Item Already Exist');
-        res.status(400).send('Item Already Exist')
+        res.status(400).send('Item Already Exist');
       }
     })
     .catch((err) => {
@@ -123,7 +123,7 @@ router.put('/:id', function(req, res, next){
   firestore.collection('/items').where('id', '==', Number(req.params.id)).get()
     .then((snapshot) => {
       if(snapshot.empty){
-        firestore.collection('/items').add(req.body);
+        firestore.collection('/items').doc(String(req.body.id)).set(req.body);
         console.log('No matching Items & Review Post');
         res.status(201).send('No matching Items & Review Post');
         return;
