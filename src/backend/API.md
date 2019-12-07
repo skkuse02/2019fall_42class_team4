@@ -10,13 +10,13 @@ user, item, review json data format은 [**/src/prepareTest/DATA_STRUCTURE.md**](
 
 ## **items**
 
-| Method | Adress               | Params      | Body | Query      | Return       | Remarks |
-| :-:    | :-                   | :-:         | :-:  | :-:        | :-:          | :-      |
-| GET    | /items/?search=query |             |      | **string** | {(item1),..} | name에 **string**이 포함된 item 반환 |
-| GET    | /items/:item_id      | **item_id** |      |            | {(item)}     | id가 **item_id**와 동일한 item 반환 |
-| POST   | /items               |             |      |            |              | DB에 item 등록 |
-| PUT    | /items/:item_id      | **item_id** |      |            |              | id가 **item_id**와 동일한 item 수정 |
-| DELETE | /items/:item_id      | **item_id** |      |            |              | id가 **item_id**와 동일한 item 삭제 |
+| Method | Adress               | Params      | Body     | Query      | Return       | Remarks |
+| :-:    | :-                   | :-:         | :-:      | :-:        | :-:          | :-      |
+| GET    | /items/?search=query |             |          | **string** | {(item1),..} | name에 **string**이 포함된 item 반환 |
+| GET    | /items/:item_id      | **item_id** |          |            | {(item)}     | id가 **item_id**와 동일한 item 반환 |
+| POST   | /items               |             | {(item)} |            |              | DB에 item 등록 |
+| PUT    | /items/:item_id      | **item_id** | {(item)} |            |              | id가 **item_id**와 동일한 item 수정 |
+| DELETE | /items/:item_id      | **item_id** |          |            |              | id가 **item_id**와 동일한 item 삭제 |
 
 ## **reviews**
 
