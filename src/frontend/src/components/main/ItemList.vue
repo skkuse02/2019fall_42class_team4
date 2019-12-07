@@ -120,8 +120,8 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" flat @click="Delete(item)">Delete</v-btn>
-                    <v-btn color="blue darken-1" flat @click="Save(item)">Save</v-btn>
+                    <v-btn color="blue darken-1" flat @click="Delete()">Delete</v-btn>
+                    <v-btn color="blue darken-1" flat @click="Save()">Save</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -144,7 +144,9 @@ export default {
       reviewTitle: '',
       reviewContent: '',
       reviewItemRating: 0,
-      isReview: false
+      isReview: false,
+      postMap: {},
+      selectedItem: [] // prevent dialog bug
     }
   },
   methods: {
@@ -182,21 +184,21 @@ export default {
       }
     },
     async LoadReview (item) {
+      this.selectedItem = item
       // 구입한 item의 review보기 버튼을 클릭하면 해당 item에 리뷰가 존재하는지 확인
       let user = await this.$http.get('/api/users/' + this.user.id)
       user = user.data
       this.user = user // save user's data
       let itemId = item.id
       let postedReviews = user.posted_reviews
-      let postMap = {}
-      this.postMap = postMap // postMap => key: item_id, value: review_id
+      this.postMap = {} // postMap => key: item_id, value: review_id
       postedReviews.forEach((itemIdReviewId) => {
         let kvPair = itemIdReviewId.split(' ')
-        postMap[kvPair[0]] = kvPair[1]
+        this.postMap[kvPair[0]] = kvPair[1]
       })
-      const isPosted = postMap[itemId] !== undefined
+      const isPosted = this.postMap[itemId] !== undefined
       if (isPosted) {
-        let review = await this.$http.get('/api/reviews/' + itemId + '/' + postMap[itemId] + '/1')
+        let review = await this.$http.get('/api/reviews/' + itemId + '/' + this.postMap[itemId] + '/1')
         review = review.data
         this.reviewTitle = review.title || ''
         this.reviewContent = review.content || ''
@@ -209,8 +211,9 @@ export default {
         this.isReview = false
       }
     },
-    async Save (item) { // before Save run, LoadReview always run to provide proper value: this.isReview, this.postMap
+    async Save () { // before Save run, LoadReview always run to provide proper value: this.isReview, this.postMap
       // backend에 review 생성/수정 요청
+      let item = this.selectedItem
       let itemId = item.id
       if (this.isReview) { // 기존 review 존재 시
         let reviewId = this.postMap[itemId]
@@ -227,12 +230,14 @@ export default {
           item_rating: this.reviewItemRating
         })
         alert('리뷰 등록 완료', res)
-        this.dialog = false
         this.isReview = false // prevent double review posting
       }
+      this.dialog = false
+      window.location.reload()
     },
-    async Delete (item) { // before Delete run, LoadReview always run to provide proper value: this.isReview, this.postMap
+    async Delete () { // before Delete run, LoadReview always run to provide proper value: this.isReview, this.postMap
       // backend에 review 삭제 요청
+      let item = this.selectedItem
       if (this.isReview) {
         let itemId = item.id
         let result = confirm('정말 리뷰를 삭제하시겠습니까?')
@@ -242,10 +247,11 @@ export default {
             await this.$http.delete('/api/reviews/' + itemId + '/' + reviewId + '/' + this.user.id + '/?mode=review')
             alert('리뷰 삭제 성공')
             this.dialog = false
-          } else {
-            alert('삭제할 리뷰가 없습니다.')
+            window.location.reload()
           }
         }
+      } else {
+        alert('리뷰가 존재하지 않습니다!')
       }
     }
   }
