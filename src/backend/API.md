@@ -25,8 +25,8 @@ user, item, review json data format은 [**/src/prepareTest/DATA_STRUCTURE.md**](
 | GET    | /reviews/:item_id<br>/:offsetValue/?criteria    | item_id, offsetValue        |            | criteria | {(review1),..} | 정렬된 리뷰 중 offset page에 포함된 리뷰 반환 |
 | GET    | /reviews/:item_id                               | item_id                     |            |          | {(review1),..} | 높게 평가된 리뷰 3개 반환 |
 | GET    | /reviews/:item_id/:review_id/1                  | item_id, review_id          |            |          | {(review)}     | 지정된 리뷰 반환 | 
-| POST   | /reviews/:item_id/:user_id                      | item_id, user_id            | {(review)} |          |                | 새로운 리뷰 등록 |
-| PUT    | /reviews/:item_id/:review_id                    | item_id, review_id          | {(review)} |          |                | 리뷰 수정 |
+| POST   | /reviews/:item_id/:user_id                      | item_id, user_id            | {(json)} |          |                | 새로운 리뷰 등록 |
+| PUT    | /reviews/:item_id/:review_id                    | item_id, review_id          | {(json)} |          |                | 리뷰 수정 |
 | PUT    | /reviews/:item_id<br>/:review_id/:user_id       | item_id, review_id, user_id |            |          |                | 리뷰 추천 |
 | DELETE | /reviews/:item_id<br>/:review_id/:user_id/?mode | item_id, review_id, user_id |            | mode     |                | mode에 따라 리뷰 삭제, 리뷰 추천 취소 |   
 
@@ -40,6 +40,28 @@ user, item, review json data format은 [**/src/prepareTest/DATA_STRUCTURE.md**](
 2. offsetValuse
 - -1 인 경우 첫번째 페이지, 다른 숫자의 경우 그 페이지에 포함된 10개의 리뷰를 반환한다.
 
+####  POST /reviews/:item_id/:user_id
+
+1. body json
+```
+{
+  title: (String),
+  content: (String),
+  item_rating: (Number)
+}
+```
+
+#### PUT /reviews/:item_id/:review_id
+
+1. body json
+```
+{
+  title: (String),
+  content: (String),
+  item_rating: (Number)
+}
+```
+
 #### DELETE /reviews/:item_id/:review_id/:user_id/?mode 
 
 1. mode
@@ -51,12 +73,40 @@ user, item, review json data format은 [**/src/prepareTest/DATA_STRUCTURE.md**](
 | Method | Adress                   | Params           | Body     | Query | Return   | Remarks |
 | :-:    | :-                       | :-:              | :-:      | :-:   | :-:      | :- |
 | GET    | /users/:user_id/?mode    | user_id          |          | mode  | {(user)} | mode에 따라 {(user)}, 구매한 item_id, 추천한 review_id 반환 |
-| POST   | /users                   |                  | {(user)} |       |          | BD에 user 등록 |
-| PUT    | /users/:user_id          | user_id          | {(user)} |       |          | User keyword, PW 변경 |
+| POST   | /users                   |                  | {(json)} |       |          | BD에 user 등록 |
+| PUT    | /users/:user_id          | user_id          | {(json)} |       |          | User keyword, PW 변경 |
 | PUT    | /users/:user_id/:item_id | user_id, item_id |          |       |          | Item 구매시 user data에 저장 |
 | DELETE | /users/:user_id          | user_id          |          |       |          | DB에서 User 삭제 |
 | DELETE | /users/:user_id/:item_id | user_id, item_id |          |       |          | Item 구매시 user data에 저장 |
 
+#### POST /users
+
+1. body json
+```
+{
+  id: (string),
+  password: (string),
+  name: (string)
+}
+```
+
+#### PUT /users/:user_id
+
+1. body json (type == keyword_change)
+```
+{
+  type: "keyword_change",
+  keywords: [(string1), ...]
+}
+```
+
+2. body json (type == keyword_change)
+```
+{
+  type: "password_change",
+  changePassword: (string)
+}
+```
 #### GET /users/:user_id/?mode
 
 1. mode
