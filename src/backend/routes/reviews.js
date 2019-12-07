@@ -211,7 +211,7 @@ router.put('/:item_id/:review_id', function (req, res, next) {
         let review_id = req.params.review_id
         firestore.collection('items').doc(item_id).collection('reviews').doc(review_id).get()
           .then((snapshot_R) => {
-            if (snapshot_R.exists()) {
+            if (!snapshot_R.empty) {
               let review = snapshot_R.data()
               let keywords_map = review.keywords_map
               keywords_map.forEach(eachKey => { total_keywords_map[eachKey.name] -= eachKey.score })
@@ -384,7 +384,8 @@ router.delete('/:item_id/:review_id/:user_id', function (req, res, next) {
                 reviewDeletePromise.push(firestore.collection("items").doc("" + item_id).update({
                   total_keywords_map: total_keywords_map,
                   total_star_sum: total_star_sum,
-                  total_review_num: firebase.firestore.FieldValue.increment(-1)
+                  total_review_num: firebase.firestore.FieldValue.increment(-1),
+                  review_id_maker: firebase.firestore.FieldValue.increment(-1)
                 }))
                 Promise.all(reviewDeletePromise)
                   .then(() => {
