@@ -155,7 +155,7 @@ export default {
       } else if (res.status === 202) {
         alert('추천한 적이 없습니다.')
       }
-    },
+    }
   }
 }
 </script>
