@@ -68,8 +68,24 @@ router.get('/:user_id', function (req, res, next) {
 });
 
 router.post('/', function (req, res, next) {
-  firestore.collection('/user').add(req.body);
-  res.send('Data Post Item');
+  firestore.collection('/user').where('id', '==', req.body.id).get()
+    .then((snapshot) => {
+      if (snapshot.empty) {
+        hashPW = crypto.createHash('sha512').update(req.body.password).digest('base64');
+        req.body.password = hashPW;
+        firestore.collection('/user').add(req.body);
+        res.status(201).send('Data Post Item');
+        return;
+      }
+      else {
+        console.log('Item Already Exist');
+        res.status(400).send('Item Already Exist')
+      }
+    })
+    .catch((err) => {
+      console.log('Error Getting Users', err);
+      res.status(400).send(err);
+    })
 });
 
 router.put('/:user_id', function (req, res, next) {
@@ -143,7 +159,7 @@ router.delete('/:user_id', function (req, res, next) {
       }
       snapshot.forEach((doc) => {
         firestore.collection('/user').doc(doc.id).delete()
-        .then(()=>res.send('Data Delete Item'))
+        .then(()=>res.status(200).send('Data Delete Item'))
       });
     })
     .catch((err) => {
