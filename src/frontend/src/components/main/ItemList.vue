@@ -233,7 +233,7 @@ export default {
         this.isReview = false // prevent double review posting
       }
       this.dialog = false
-      window.location.reload()
+      this.$router.go()
     },
     async Delete () { // before Delete run, LoadReview always run to provide proper value: this.isReview, this.postMap
       // backend에 review 삭제 요청
@@ -247,7 +247,7 @@ export default {
             await this.$http.delete('/api/reviews/' + itemId + '/' + reviewId + '/' + this.user.id + '/?mode=review')
             alert('리뷰 삭제 성공')
             this.dialog = false
-            window.location.reload()
+            this.$router.go()
           }
         }
       } else {

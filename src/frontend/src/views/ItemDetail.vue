@@ -130,7 +130,6 @@ export default {
         }
       })
       this.offsetValue = resR.data.pop()[criteriaMap[this.criteria]]
-
       // 유사 아이템 비교 목록에 현재 아이템 추가하기
       this.curItem.similar_items.unshift(this.curItem.id)
       // 유사 아이템 불러오기

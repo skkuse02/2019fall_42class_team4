@@ -40,13 +40,14 @@ export default {
   methods: {
     Search () {
       // 아이템 전체 목록 불러오기
-      this.$http.get('/api/items?search=' + this.searchCriteria)
+      this.searchCriteria = this.searchCriteria || ''
+      this.$http.get('/api/items?search=' + escape(this.searchCriteria.trim()))// input processing escape & trim
         .then((res) => {
           // 불러온 아이템을 선호 키워드 순으로 정렬후 보여주기
           // console.log(res.data)
           sessionStorage.setItem('searchResult', JSON.stringify(res.data))
           this.$router.push({ name: 'Home' }).then().catch(e => {
-            window.location.reload()
+            this.$router.go()
           })
         })
         .catch(e => {
@@ -54,7 +55,7 @@ export default {
           if (stateCode.includes('404')) {
             alert('검색 결과가 없습니다.\n전체 아이템을 출력합니다.')
             this.$router.push({ name: 'Home' }).then().catch(e => {
-              window.location.reload()
+              this.$router.go()
             })
           } else {
             alert('알 수 없는 에러가 발생했습니다.' + e)
@@ -63,7 +64,7 @@ export default {
     },
     GoHome () {
       this.$router.push({ name: 'Home' }).then().catch(e => {
-        window.location.reload()
+        this.$router.go()
       })
     }
   }

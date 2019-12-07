@@ -83,9 +83,9 @@ export default {
 
       // backend에 로그인 요청
       try {
-        const res = await this.$http.post('/api/login', {
-          ID: this.id,
-          PW: this.password
+        const res = await this.$http.post('/api/login', {// input processing: trim & escape
+          ID: escape(this.id.trim()),
+          PW: escape(this.password.trim())
         })
         // console.log(res.data)
         this.$store.commit('LOGIN', res.data.userInfo)

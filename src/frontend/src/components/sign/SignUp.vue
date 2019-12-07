@@ -126,10 +126,10 @@ export default {
 
       // backend에 회원가입 요청
       try {
-        const res = await this.$http.post('/api/signup', {
-          id: this.id,
-          password: this.password,
-          name: this.name,
+        const res = await this.$http.post('/api/signup', {// input processing: trim & escape
+          id: escape(this.id.trim()),
+          password: escape(this.password.trim()),
+          name: escape(this.name.trim()),
           customized_keyword: this.keywords,
           purchased_items: [],
           posted_reviews: [],

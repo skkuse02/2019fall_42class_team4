@@ -62,7 +62,7 @@
           <!-- 리뷰 평점 -->
           <div>
             <div id="cardTextReviewRating">{{review.review_rating}}</div>
-            <v-btn v-if="review.IsRecommended === true" icon @click="Like(review)"><v-icon>mdi-thumb-up</v-icon></v-btn>
+            <v-btn v-if="review.isRecommended === true" icon @click="Like(review)"><v-icon>mdi-thumb-up</v-icon></v-btn>
             <v-btn v-else icon @click="Like(review)"><v-icon>mdi-thumb-up-outline</v-icon></v-btn>
             <v-btn icon @click="UnLike(review)"><v-icon>mdi-thumb-down-outline</v-icon></v-btn>
           </div>
@@ -134,7 +134,7 @@ export default {
         const resU = await this.$http.get('/api/users/' + this.user.id)
         this.$store.commit('MODIFY', resU.data)
         alert('추천 완료')
-        window.location.reload()
+        this.$router.go()
       } else if (res.status === 202) {
         alert('이미 추천한 리뷰입니다.')
       }
@@ -151,7 +151,7 @@ export default {
         const resU = await this.$http.get('/api/users/' + this.user.id)
         this.$store.commit('MODIFY', resU.data)
         alert('추천 취소')
-        window.location.reload()
+        this.$router.go()
       } else if (res.status === 202) {
         alert('추천한 적이 없습니다.')
       }

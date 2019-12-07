@@ -9,21 +9,6 @@
   </v-layout>
 </template>
 
-<script>
-export default {
-  data () {
-    return {
-      searchCriteria: ''
-    }
-  },
-  methods: {
-    Search () {
-      console.log(this.searchCriteria)
-    }
-  }
-}
-</script>
-
 <style scoped>
 input#search{
     background: #EEEEEE;
