@@ -70,7 +70,13 @@ export default {
                 'recent': 'last_modified_time',
                 'keyword': 'review_rating'
               }
-              that.curItemReviews.push(...response.data)
+              let newReviews = response.data
+              newReviews.forEach(review => { // 유저가 추천한 리뷰에 표시
+                if (that.recommendMap[review.id] !== undefined) {
+                  review.isRecommended = true
+                }
+              })
+              that.curItemReviews.push(...newReviews)
               that.offsetValue = response.data.pop()[criteriaMap[that.criteria]]
             }
             ).catch(error => {
@@ -80,7 +86,7 @@ export default {
         }
       }, debounceTempo)
     },
-    // review 정렬 기준을 바꿨을 때 리뷰 다시 가져오기
+    // review 정렬 기준을 바꿨을 때
     reset (changeCriteria) {
       this.curItemReviews = []
       this.offsetValue = -1
@@ -94,8 +100,18 @@ export default {
   },
   created () {
     const run = async () => {
-      // 현재 아이템 불러오기
       const itemId = this.$route.params.id
+
+      this.recommendMap = {}
+      if (this.user !== undefined) { // 유저가 추천한 리뷰id에 true를 mapping하는 recommendMap 생성
+        this.user.recommended_reviews.forEach((itemIdReviewId) => {
+          let kvPair = itemIdReviewId.split(' ')
+          if (kvPair[0] === itemId) {
+            this.recommendMap[kvPair[1]] = true
+          }
+        })
+      }
+      // 현재 아이템 불러오기
       const res = await this.$http.get('/api/items/' + itemId)
       this.curItem = res.data[0]
 
@@ -107,6 +123,11 @@ export default {
         'keyword': 'review_rating'
       }
       this.curItemReviews.push(...resR.data)
+      this.curItemReviews.forEach(review => { // 유저가 추천한 리뷰에 표시
+        if (this.recommendMap[review.id] !== undefined) {
+          review.isRecommended = true
+        }
+      })
       this.offsetValue = resR.data.pop()[criteriaMap[this.criteria]]
 
       // 유사 아이템 비교 목록에 현재 아이템 추가하기
@@ -122,6 +143,12 @@ export default {
         const res = await this.$http.get('/api/reviews/' + itemId)
         this.similarItemsReviews.push(res.data)
       }
+
+      this.similarItemsReviews.forEach(review => { // 유저가 추천한 리뷰에 표시
+        if (this.recommendMap[review.id] !== undefined) {
+          review.isRecommended = true
+        }
+      })
     }
 
     run()
