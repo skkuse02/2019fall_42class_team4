@@ -6,7 +6,7 @@
           <v-toolbar dark color="primary">
             <v-toolbar-title>Sign In Form</v-toolbar-title>
             <v-spacer></v-spacer>
-            <a @click="$emit('changeShow')">Sgin Up</a>
+            <a @click="$emit('changeShow')">sign Up</a>
           </v-toolbar>
           <v-card-text>
             <v-form
