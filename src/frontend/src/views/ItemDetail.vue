@@ -102,15 +102,16 @@ export default {
     const run = async () => {
       const itemId = this.$route.params.id
 
-      this.recommendMap = {}
-      if (this.user !== undefined) { // 유저가 추천한 리뷰id에 true를 mapping하는 recommendMap 생성
-        this.user.recommended_reviews.forEach((itemIdReviewId) => {
-          let kvPair = itemIdReviewId.split(' ')
-          if (kvPair[0] === itemId) {
-            this.recommendMap[kvPair[1]] = true
-          }
-        })
+      this.recommendMap = {}// 유저가 추천한 리뷰id에 true를 mapping하는 recommendMap 생성
+      this.user = this.user || {
+        recommended_reviews: []
       }
+      this.user.recommended_reviews.forEach((itemIdReviewId) => {
+        let kvPair = itemIdReviewId.split(' ')
+        if (kvPair[0] === itemId) {
+          this.recommendMap[kvPair[1]] = true
+        }
+      })
       // 현재 아이템 불러오기
       const res = await this.$http.get('/api/items/' + itemId)
       this.curItem = res.data[0]
