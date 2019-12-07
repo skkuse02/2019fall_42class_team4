@@ -100,7 +100,7 @@ user, item, review json data format은 [**/src/prepareTest/DATA_STRUCTURE.md**](
 }
 ```
 
-2. body json (type == keyword_change)
+2. body json (type == password_change)
 ```
 {
   type: "password_change",
