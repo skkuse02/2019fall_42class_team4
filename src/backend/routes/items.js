@@ -101,10 +101,10 @@ router.get('/:id', function(req, res, next){
 });
 
 router.post('/', function(req, res, next){
-  firestore.collection('/items').where('id', '==', Number(req.params.id)).get()
+  firestore.collection('/items').where('id', '==', Number(req.body.id)).get()
     .then((snapshot) => {
       if(snapshot.empty){
-        firestore.collection('/items').add(req.body);
+        firestore.collection('/items').doc(String(req.body.id)).set(req.body);
         console.log('Item Post');
         res.status(201).send('Item Post');
         return;
