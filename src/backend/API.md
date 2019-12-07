@@ -77,7 +77,8 @@ user, item, review json data format은 [**/src/prepareTest/DATA_STRUCTURE.md**](
 | PUT    | /users/:user_id          | user_id          | {(json)} |       |          | User keyword, PW 변경 |
 | PUT    | /users/:user_id/:item_id | user_id, item_id |          |       |          | Item 구매시 user data에 저장 |
 | DELETE | /users/:user_id          | user_id          |          |       |          | DB에서 User 삭제 |
-| DELETE | /users/:user_id/:item_id | user_id, item_id |          |       |          | Item 구매시 user data에 저장 |
+| DELETE | /users/:user_id/:item_id | user_id, item_id |          |       |          | Item 구매 취소시 user data에서 삭제 |
+
 
 #### GET /users/:user_id/?mode
 
