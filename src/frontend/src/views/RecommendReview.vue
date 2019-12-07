@@ -34,7 +34,7 @@
             <!-- 리뷰 평점 -->
             <div>
               <div id="cardTextReviewRating">{{review.review_rating}}</div>
-            <v-btn v-if="IsRecommended(review)" icon @click="Like(review)"><v-icon>mdi-thumb-up</v-icon></v-btn>
+            <v-btn v-if="review.isRecommended !== null" icon @click="Like(review)"><v-icon>mdi-thumb-up</v-icon></v-btn>
             <v-btn v-else icon @click="Like(review)"><v-icon>mdi-thumb-up-outline</v-icon></v-btn>
               <v-btn icon @click="UnLike(review)"><v-icon>mdi-thumb-down-outline</v-icon></v-btn>
             </div>
@@ -82,20 +82,13 @@ export default {
       const res = await this.$http.delete('/api/reviews/' + review.itemId + '/' + review.id + '/' + this.user.id + '/?mode=recommendation')
       if (res.status === 204) {
         alert('추천 취소')
-        this.userReviews.splice(review.index, 1)
+        this.userReviews = this.userReviews.filter(eachReview => eachReview.id !== review.id)
         // 업데이트된 유저정보를 다시 받아서 vuex의 정보 업데이트
         const resU = await this.$http.get('/api/users/' + this.user.id)
         this.$store.commit('MODIFY', resU.data)
       } else if (res.status === 202) {
         alert('추천한 적이 없습니다.')
       }
-    },
-    IsRecommended (review) {
-      let userReco = this.user.recommended_reviews
-      const itemId = review.itemId
-      const reviewId = review.id
-
-      return userReco.includes(itemId + ' ' + reviewId)
     }
   }
 }
