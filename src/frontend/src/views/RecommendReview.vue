@@ -5,7 +5,7 @@
         <v-card-title primary-title>
           <h2>Review List</h2>
         </v-card-title>
-        <v-flex xs12 v-for="review of userReviews" :key="review.id">
+        <v-flex xs12 v-for="review of userReviews" :key="review.itemId + ' ' + review.id">
           <v-divider></v-divider>
           <v-card-text>
             <!-- 리뷰 작성자, 시간 -->
@@ -34,7 +34,8 @@
             <!-- 리뷰 평점 -->
             <div>
               <div id="cardTextReviewRating">{{review.review_rating}}</div>
-              <v-btn icon @click="Like(review)"><v-icon>mdi-thumb-up-outline</v-icon></v-btn>
+            <v-btn v-if="IsRecommended(review)" icon @click="Like(review)"><v-icon>mdi-thumb-up</v-icon></v-btn>
+            <v-btn v-else icon @click="Like(review)"><v-icon>mdi-thumb-up-outline</v-icon></v-btn>
               <v-btn icon @click="UnLike(review)"><v-icon>mdi-thumb-down-outline</v-icon></v-btn>
             </div>
           </v-card-text>
@@ -88,6 +89,13 @@ export default {
       } else if (res.status === 202) {
         alert('추천한 적이 없습니다.')
       }
+    },
+    IsRecommended (review) {
+      let userReco = this.user.recommended_reviews
+      const itemId = review.itemId
+      const reviewId = review.id
+
+      return userReco.includes(itemId + ' ' + reviewId)
     }
   }
 }
