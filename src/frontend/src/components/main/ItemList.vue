@@ -156,16 +156,20 @@ export default {
       this.items = this.$store.state.inCart
     },
     async Buy (item) {
-      const res = await this.$http.put('/api/users/' + this.user.id + '/' + item.id)
-      if (res.status === 202) {
-        alert('이미 구매한 항목입니다.')
-      } else if (res.status === 200) {
-        // 업데이트된 유저정보를 다시 받아서 vuex의 정보 업데이트
-        const resU = await this.$http.get('/api/users/' + this.user.id)
-        this.$store.commit('MODIFY', resU.data)
-        this.$store.commit('REMOVECART', item)
-        alert('구매 완료')
-        this.$router.push({ name: 'History' })
+      if (this.user === null) {
+        alert('로그인 후 구매해 주세요.')
+      } else {
+        const res = await this.$http.put('/api/users/' + this.user.id + '/' + item.id)
+        if (res.status === 202) {
+          alert('이미 구매한 항목입니다.')
+        } else if (res.status === 200) {
+          // 업데이트된 유저정보를 다시 받아서 vuex의 정보 업데이트
+          const resU = await this.$http.get('/api/users/' + this.user.id)
+          this.$store.commit('MODIFY', resU.data)
+          this.$store.commit('REMOVECART', item)
+          alert('구매 완료')
+          this.$router.push({ name: 'History' })
+        }
       }
     },
 
