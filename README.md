@@ -15,6 +15,15 @@
 
 # DEMO VIDEO #
 
+### DEMONSTRATION:
+
+Reference 사이트인 AMAZON과 비교한 ReviewRevolution의 쇼핑 편의성 
+### :> 상품과 리뷰에 키워드 tag가 붙어서 한눈에 보기 쉽다.
+### :> 상품을 비교하는 부분에서, 단순 SPEC만이 아닌, 사용자들의 경험에서 나온 느낌들을 리뷰와 키워드를 통해 비교할 수 있다.
+- **AMAZON**
+![](./demoVideos/amazon.gif)
+- **REVIEW REVOLUTION**
+![](./demoVideos/reviewRevolution.gif)
 ### SCENARIO: 
 
 1. 회원가입
@@ -35,14 +44,7 @@
 ![](./demoVideos/reviewPostPutDelete.gif)
 9. 리뷰 추천, 추천 취소 + 내가 추천한 리뷰 목록 보기 
 ![](./demoVideos/reviewRecommendation.gif)
-### DEMONSTRATION:
 
-Reference 사이트인 AMAZON과 ReviewRevolution의 리뷰 탐색 편의성 비교 
-
-- **AMAZON**
-![](./demoVideos/amazon.gif)
-- **REVIEW REVOLUTION**
-![](./demoVideos/reviewRevolution.gif)
 
 
 ### 진행상황 
