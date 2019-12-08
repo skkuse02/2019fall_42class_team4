@@ -69,59 +69,66 @@
                     <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
                   </v-card-title>
                   <v-card-text>
-                    <v-container grid-list-md>
-                      <v-layout wrap>
-                        <v-flex xs4>
-                          <v-text-field
-                            v-model="user.id"
-                            disabled
-                            label="author"
-                            box
-                          >
-                          </v-text-field>
-                        </v-flex>
-                        <v-flex xs8>
-                          <v-text-field
-                            v-model="date"
-                            disabled
-                            label="date"
-                            box
-                          >
-                          </v-text-field>
-                        </v-flex>
-                        <v-flex xs12>
-                          <v-text-field
-                            v-model="reviewTitle"
-                            label="title"
-                            box
-                          >
-                          </v-text-field>
-                        </v-flex>
-                        <v-flex xs12>
-                          <v-textarea
-                            v-model="reviewContent"
-                            label="content"
-                            auto-grow
-                            box
-                          >
-                          </v-textarea>
-                        </v-flex>
-                        <v-flex xs12>
-                          <v-rating
-                            v-model="reviewItemRating"
-                            background-color="orange lighten-3"
-                            color="orange"
-                            half-increments
-                          >
-                          </v-rating>
-                        </v-flex>
-                      </v-layout>
-                    </v-container>
+                    <v-form
+                      v-model="valid"
+                      ref="form"
+                    >
+                      <v-container fluid grid-list-md>
+                        <v-layout row wrap>
+                          <v-flex xs4>
+                            <v-text-field
+                              v-model="user.id"
+                              disabled
+                              label="author"
+                            >
+                            </v-text-field>
+                          </v-flex>
+                          <v-flex xs8>
+                            <v-text-field
+                              v-model="date"
+                              disabled
+                              label="date"
+                            >
+                            </v-text-field>
+                          </v-flex>
+                          <v-flex xs12>
+                            <v-text-field
+                              v-model="reviewTitle"
+                                :counter="60"
+                              label="title"
+                              :rules="[rule.required, rule.maxLength(60)]"
+                              required
+                            >
+                            </v-text-field>
+                          </v-flex>
+                          <v-flex xs12>
+                            <v-textarea
+                              v-model="reviewContent"
+                                :counter="500"
+                              label="content"
+                              auto-grow
+                              :rules="[rule.required, rule.maxLength(500)]"
+                              required
+                            >
+                            </v-textarea>
+                          </v-flex>
+                          <v-flex xs12>
+                            <v-rating
+                              v-model="reviewItemRating"
+                              background-color="orange lighten-3"
+                              color="orange"
+                              half-increments
+                            >
+                            </v-rating>
+                          </v-flex>
+                        </v-layout>
+                      </v-container>
+                    </v-form>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" flat @click="Delete()">Delete</v-btn>
-                    <v-btn color="blue darken-1" flat @click="Save()">Save</v-btn>
+                    <v-btn color="blue darken-1" flat @click="Save()" :disabled="!valid">Save</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -146,11 +153,16 @@ export default {
       reviewItemRating: 0,
       isReview: false,
       postMap: {},
-      selectedItem: [] // prevent dialog bug
+      selectedItem: [], // prevent dialog bug
+      rule: {
+        required: v => !!v || '필수 항목입니다.',
+        maxLength: length => v => v.length <= length || length + '자 이하로 입력해 주세요'
+      },
+      valid: false
     }
   },
   methods: {
-    // 장바구니에서 필요한 함수들
+    // 장바구니(Cart.vue)에서 필요한 함수들
     RemoveCart (item) {
       this.$store.commit('REMOVECART', item)
       this.items = this.$store.state.inCart
@@ -173,7 +185,7 @@ export default {
       }
     },
 
-    // 구매내역에서 필요한 함수들
+    // 구매내역(History.vue)에서 필요한 함수들
     async CancelPurchased (item) {
       let result = confirm('정말 구매를 취소하시겠습니까?')
       if (result) {
@@ -216,6 +228,11 @@ export default {
       }
     },
     async Save () { // before Save run, LoadReview always run to provide proper value: this.isReview, this.postMap
+      if (!this.$refs.form.validate()) {
+        alert('입력을 올바르게 해주세요!')
+        return
+      }
+
       // backend에 review 생성/수정 요청
       let item = this.selectedItem
       let itemId = item.id
