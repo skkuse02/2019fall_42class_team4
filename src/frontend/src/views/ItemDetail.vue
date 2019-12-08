@@ -76,6 +76,10 @@ export default {
                 if (that.recommendMap[itemId][review.id] !== undefined) {
                   review.isRecommended = true
                 }
+                review.id = unescape(review.id) // escape 했던 string을 복원한다.
+                review.author = unescape(review.author)
+                review.title = unescape(review.title)
+                review.content = unescape(review.content)
               })
               that.curItemReviews.push(...newReviews)
               that.offsetValue = response.data.pop()[criteriaMap[that.criteria]]
@@ -116,7 +120,6 @@ export default {
         }
         recommendMap[kvPair[0]][kvPair[1]] = true
       })
-      // console.log(this.recommendMap)
       // 현재 아이템 불러오기
       const res = await this.$http.get('/api/items/' + itemId)
       this.curItem = res.data[0]
@@ -134,6 +137,10 @@ export default {
         if (recommendMap[itemId][review.id]) {
           review.isRecommended = true
         }
+        review.id = unescape(review.id) // escape 했던 string을 복원한다.
+        review.author = unescape(review.author)
+        review.title = unescape(review.title)
+        review.content = unescape(review.content)
       })
       this.offsetValue = resR.data.pop()[criteriaMap[this.criteria]]
 
@@ -154,6 +161,10 @@ export default {
           if (recommendMap[similarItemId][review.id]) {
             review.isRecommended = true
           }
+          review.id = unescape(review.id) // escape 했던 string을 복원한다.
+          review.author = unescape(review.author)
+          review.title = unescape(review.title)
+          review.content = unescape(review.content)
         })
         this.similarItemsReviews.push(reviews)
       }
