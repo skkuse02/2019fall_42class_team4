@@ -132,6 +132,7 @@ router.get('/:item_id/:review_id/1', function (req, res, next) {
     .then((doc) => {
       let review = doc.data()
       if (!!review) {
+        review.timeString = review.last_modified_time.toDate().toLocaleDateString()
         res.status(200).send(review)
         }
       }

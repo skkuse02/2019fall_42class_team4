@@ -22,7 +22,7 @@ async function items() {
 					password : "qwer1234",
 					posted_reviews : [],
 					purchased_items : [],
-					recommended_review : []
+					recommended_reviews : []
 				})
 				.end(function(err, res) {
 	                expect(err).to.be.null;
