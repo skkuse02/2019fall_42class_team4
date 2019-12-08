@@ -125,6 +125,6 @@ user, item, review json data format은 [**/src/prepareTest/DATA_STRUCTURE.md**](
 
 ## **logout**
 
-| Method | Adress | Params | Body   | Query | Return  | Remarks |
-| :-:    | :-     | :-:    | :-:    | :-:   | :-:     | :- |
-| DELETE | /      |        |        |       |         | 현재 세션 삭제 |
+| Method | Adress  | Params | Body   | Query | Return  | Remarks |
+| :-:    | :-      | :-:    | :-:    | :-:   | :-:     | :- |
+| DELETE | /logout |        |        |       |         | 현재 세션 삭제 |
