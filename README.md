@@ -13,6 +13,38 @@
 ## - 유종현
 ## - 김진태
 
+# DEMO VIDEO #
+
+### SCENARIO: 
+
+1. 회원가입
+![](./demoVideos/register.gif)
+2. 로그인
+![](./demoVideos/login.gif)
+3. 개인정보 변경 (키워드 변경, 비밀번호 변경)
+![](./demoVideos/keywordChange.gif)
+4. 상품 검색
+![](./demoVideos/itemSearch.gif)
+5. 유사 상품 비교, 선택
+![](./demoVideos/similarItemComparison.gif)
+6. 리뷰 Navigation (평점순, 최신순, 키워드 포함 조건)
+![](./demoVideos/reviewNavigation.gif)
+7. 상품 구매 + 내가 구매한 상품 목록 보기 + 상품 삭제
+![](./demoVideos/itemPurchase.gif)
+8. 리뷰 작성 + 리뷰 삭제
+![](./demoVideos/reviewPostPutDelete.gif)
+9. 리뷰 추천, 추천 취소 + 내가 추천한 리뷰 목록 보기 
+![](./demoVideos/reviewRecommendation.gif)
+### DEMONSTRATION:
+
+Reference 사이트인 AMAZON과 ReviewRevolution의 리뷰 탐색 편의성 비교 
+
+- **AMAZON**
+![](./demoVideos/amazon.gif)
+- **REVIEW REVOLUTION**
+![](./demoVideos/reviewRevolution.gif)
+
+
 ### 진행상황 
 ### - 구현 완료, 백엔드는 AWS EC2, 프론트엔드는 AWS S3에 배포 완료. (2019/12/8)
 ### - 프론트엔드 접속 주소 : http://review-revolution-client.s3-website-us-east-1.amazonaws.com (2019/12/8 기준)

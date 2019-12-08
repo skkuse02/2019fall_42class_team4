@@ -14,12 +14,6 @@
 
 Reference 사이트인 AMAZON과 ReviewRevolution의 리뷰 탐색 편의성 비교 
 
-
-
-
-
-
-
 # Automized 테스트 실행 방법
 npm i 입력 후
 npm test 입력
