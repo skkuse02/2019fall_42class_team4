@@ -104,10 +104,10 @@
                           <v-flex xs12>
                             <v-textarea
                               v-model="reviewContent"
-                                :counter="500"
+                                :counter="3000"
                               label="content"
                               auto-grow
-                              :rules="[rule.required, rule.maxLength(500)]"
+                              :rules="[rule.required, rule.maxLength(3000)]"
                               required
                             >
                             </v-textarea>
