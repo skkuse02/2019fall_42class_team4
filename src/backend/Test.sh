@@ -1,8 +1,8 @@
-print "\nTesting item API\n"
+echo "Testing item API"
 mocha test/test_item.js --timeout 30000
-print "\nTesting user API\n"
+echo "Testing user API"
 mocha test/test_user.js --timeout 30000
-print "\nTesting review API\n"
+echo "Testing review API"
 mocha test/test_review.js --timeout 30000
-print "\nTesting login & logout API\n"
+echo "Testing login & logout API"
 mocha test/test_loginout.js --timeout 30000
