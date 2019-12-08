@@ -30,6 +30,7 @@ router.post('/', (req, res) => {
         console.log('PW Equal');
         session = req.session;
         // session.username = loginInfo["ID"];
+        console.log(session);
         session.userInfo = doc.data(); // user object 전송
         console.log('LOGIN Success', session.userInfo)
         res.status(200).json(session);
@@ -46,7 +47,7 @@ router.post('/', (req, res) => {
 });
 
 router.get('/info', (req, res) => {
-   return res.json(req.session);
+   return res.status(200).json(req.session);
 });
 
 module.exports = router;
