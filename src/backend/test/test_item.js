@@ -5,7 +5,7 @@ var chai = require('chai');
 var chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
-const baseUrl = 'http://localhost:3000/api/';
+const baseUrl = 'http://34.239.13.251:3000/api/';
 
 async function items() {
 	url = baseUrl + 'items';
@@ -33,7 +33,7 @@ async function items() {
 					price : 50.5,
 					total_keywords_map : [],
 					total_review : 0,
-					total_star_sum : 0
+					total_star_sum : 0,
 					review_id_maker : 0
 				})
 				.end(function(err, res) {
