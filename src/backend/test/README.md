@@ -12,7 +12,7 @@
 
 # DEMONSTRATION:
 
-Reference 사이트인 AMAZON과 ReviewRevolution의 상품 검색, 리뷰 탐색 편의성 비교 
+Reference 사이트인 AMAZON과 ReviewRevolution의 리뷰 탐색 편의성 비교 
 
 
 
