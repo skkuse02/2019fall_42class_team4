@@ -26,7 +26,7 @@ async function items() {
 	await describe('POST item id : 99', function () {
 	    it('statusCode = 201', function (done) {
 	        chai.request(url)
-				.post('99/skian')
+				.post('')
 				.send({
 					id:99,
 					name : ["dummy"],
@@ -34,6 +34,7 @@ async function items() {
 					total_keywords_map : [],
 					total_review : 0,
 					total_star_sum : 0
+					review_id_maker : 0
 				})
 				.end(function(err, res) {
 	                expect(err).to.be.null;
@@ -80,7 +81,7 @@ async function items() {
 	})
 
 	await describe('GET item id : 99', function () {
-	    it('GET response item  200, field value are checked', function (done) {
+	    it('GET response 200, field value are checked', function (done) {
 	        chai.request(url)
 				.get('/99')
 				.end(function(err, res) {
