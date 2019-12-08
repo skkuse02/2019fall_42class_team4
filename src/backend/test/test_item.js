@@ -23,7 +23,7 @@ async function items() {
 	    })
 	})
 
-	await describe('POST item id : 99', function () {
+	await describe('POST item id : 99 (item insertion)', function () {
 	    it('statusCode = 201', function (done) {
 	        chai.request(url)
 				.post('')
@@ -45,7 +45,7 @@ async function items() {
 	    })
 	})
 	
-	await describe('GET item id : 99', function () {
+	await describe('GET item id : 99 (check item insertion)', function () {
 	    it('GET response 200, item attributes are checked', function (done) {
 	        chai.request(url)
 				.get('/99')
@@ -62,7 +62,7 @@ async function items() {
 	    })
 	})
 
-	await describe('PUT item id : 99', function () {
+	await describe('PUT item id : 99 (modify item attributes)', function () {
 	    it('PUT response 200', function (done) {
 	        chai.request(url)
 				.put('/99')
@@ -80,7 +80,7 @@ async function items() {
 	    })
 	})
 
-	await describe('GET item id : 99', function () {
+	await describe('GET item id : 99 (check modification)', function () {
 	    it('GET response 200, field value are checked', function (done) {
 	        chai.request(url)
 				.get('/99')
@@ -97,7 +97,7 @@ async function items() {
 	    })
 	})
 
-	await describe('DELETE item id : 99', function () {
+	await describe('DELETE item id : 99 (delete item)', function () {
 	    it('statusCode = 200', function (done) {
 	        chai.request(url)
 				.delete('/99')
@@ -109,7 +109,7 @@ async function items() {
 	    })
 	})
 
-	await describe('GET item id : 99', function () {
+	await describe('GET item id : 99 (check deletion)', function () {
 	    it('statusCode = 404', function (done) {
 			chai.request(url)
 				.get('/99')
@@ -131,3 +131,9 @@ items();
 ### PUT      /items/:item_id
 ### DELETE   /items/:item_id
 */
+
+
+ mocha test/test_item.js
+ mocha test/test_user.js
+ mocha test/test_review.js --timeout 30000
+ mocha test/test_loginout.js

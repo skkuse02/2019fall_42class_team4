@@ -12,7 +12,7 @@ const baseUrl = 'http://34.239.13.251:3000/api/';
 async function setuser() {
 	url1 = baseUrl + 'users';
 
-	await describe('POST user id : skian', function () {
+	await describe('POST user id : skian (make new user)', function () {
 	    it('statusCode = 201', function (done) {
 	        chai.request(url1)
 				.post('')
@@ -38,7 +38,7 @@ async function setuser() {
 async function deleteuser() {
 	url1 = baseUrl + 'users';
 
-	await describe('DELETE user id : skian', function () {
+	await describe('DELETE user id : skian (delete user)', function () {
 	    it('statusCode = 200', function (done) {
 	        chai.request(url1)
 				.delete('/skian')
@@ -54,7 +54,7 @@ async function deleteuser() {
 async function insertitem() {
 	url2 = baseUrl + 'items';
 
-	await describe('POST item id : 99', function () {
+	await describe('POST item id : 99 (insert dummy item)', function () {
 	    it('statusCode = 201, GET response item id = 99', function (done) {
 	        chai.request(url2)
 				.post('')
@@ -80,7 +80,7 @@ async function insertitem() {
 async function deleteitem() {
 	url2 = baseUrl + 'items';
 
-	await describe('DELETE item id : 99', function () {
+	await describe('DELETE item id : 99 (delete dummy item)', function () {
 	    it('statusCode = 200', function (done) {
 	        chai.request(url2)
 				.delete('/99')
@@ -96,7 +96,7 @@ async function deleteitem() {
 async function reviews() {
 	url = baseUrl + 'reviews'
 
-	await describe('GET review of item 99', function () {
+	await describe('GET review of item 99 (check dummy review doesn\'t exist)', function () {
 	    it('statusCode = 404', function (done) {
 	        chai.request(url)
 				.get('/99')
@@ -108,8 +108,8 @@ async function reviews() {
 	    })
 	})
 
-	await describe('POST review', function () {
-	    it('statusCode = 201', function (done) {
+	await describe('POST review (insert dummy review)', function () {
+	    it('statusCode = 200', function (done) {
 	        chai.request(url)
 				.post('/99/skian')
 				.send({
@@ -125,8 +125,8 @@ async function reviews() {
 	    })
 	})
 
-	await describe('GET review of item 99', function () {
-	    it('statusCode = 404, # of reviews = 1, field attributes are checked', function (done) {
+	await describe('GET all review of item 99 (check insertion)', function () {
+	    it('statusCode = 200, # of reviews = 1, field attributes are checked', function (done) {
 	        chai.request(url)
 				.get('/99')
 				.end(function(err, res) {
@@ -143,7 +143,7 @@ async function reviews() {
 	    })
 	})
 
-	await describe('GET review id : 0', function () {
+	await describe('GET review id : 0 (check insertion)', function () {
 	    it('GET response 200, review attributes are checked', function (done) {
 	        chai.request(url)
 				.get('/99/0/1')
@@ -160,7 +160,7 @@ async function reviews() {
 	    })
 	})
 
-	await describe('PUT review id : 0', function () {
+	await describe('PUT review id : 0 (review modification)', function () {
 	    it('PUT response 200', function (done) {
 	        chai.request(url)
 				.put('/99/0')
@@ -178,7 +178,7 @@ async function reviews() {
 	    })
 	})
 
-	await describe('GET review id : 0', function () {
+	await describe('GET review id : 0 (check modification)', function () {
 	    it('GET response 200, field value are checked', function (done) {
 	        chai.request(url)
 				.get('/99/0/1')
@@ -195,7 +195,7 @@ async function reviews() {
 	    })
 	})
 
-	await describe('PUT review recommend userid : skian review id : 0', function () {
+	await describe('PUT review recommend userid : skian review id : 0\n(review recommendation)', function () {
 	    it('PUT response 200', function (done) {
 	        chai.request(url)
 				.put('/99/0/skian')
@@ -208,7 +208,7 @@ async function reviews() {
 	    })
 	})
 
-	await describe('GET review id : 0', function () {
+	await describe('GET review id : 0 (check recommendation)', function () {
 	    it('GET response 200, field value are checked', function (done) {
 	        chai.request(url)
 				.get('/99/0/1')
@@ -226,7 +226,7 @@ async function reviews() {
 	})
 
 	//check user data
-	await describe('GET user id : skian', function () {
+	await describe('GET user id : skian (check userdata modified)', function () {
 	    it('GET response item  200, original value doesn\'t modified\n posted_reviews & recommended_reviews are modified', function (done) {
 	        chai.request(baseUrl+"users")
 				.get('/skian')
@@ -245,7 +245,7 @@ async function reviews() {
 	})
 
 	//check item data
-	await describe('GET item id : 99', function () {
+	await describe('GET item id : 99 (check item data modified', function () {
 	    it('GET response 200, original value doesn\'t modified\n review_id_maker & total_review & total_star_sum are modified', function (done) {
 	        chai.request(baseUrl+"items")
 				.get('/99')
@@ -263,7 +263,7 @@ async function reviews() {
 	    })
 	})
 
-	await describe('DELETE review id : 0\'s recommendation', function () {
+	await describe('DELETE review id : 0\'s recommendation (cancel recommendation)', function () {
 	    it('DELETE response 204, field value are checked', function (done) {
 	        chai.request(url)
 				.delete('/99/0/skian/')
@@ -276,7 +276,7 @@ async function reviews() {
 	    })
 	})
 
-	await describe('GET review id : 0', function () {
+	await describe('GET review id : 0 (check cancel)', function () {
 	    it('GET response 200, field value are checked', function (done) {
 	        chai.request(url)
 				.get('/99/0/1')
@@ -294,7 +294,7 @@ async function reviews() {
 	})
 
 	//what whould be if other person attempt to delete?
-	await describe('DELETE item id : 99', function () {
+	await describe('DELETE item id : 99, review id : 0 (remove review)', function () {
 	    it('statusCode = 204', function (done) {
 	        chai.request(url)
 				.delete('/99/0/skian/')
@@ -307,7 +307,7 @@ async function reviews() {
 	    })
 	})
 
-	await describe('GET item id : 99', function () {
+	await describe('GET item id : 99 (check removal', function () {
 	    it('statusCode = 404', function (done) {
 			chai.request(url)
 				.get('/99')

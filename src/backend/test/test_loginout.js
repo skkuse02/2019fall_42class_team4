@@ -11,7 +11,7 @@ const baseUrl = 'http://34.239.13.251:3000/api/';
 async function loginLogout() {
 	var session = {}
 
-	await describe('POST user id : skian', function () {
+	await describe('POST user id : skian (signup new user)', function () {
 	    it('statusCode = 201', function (done) {
 	        chai.request(baseUrl + "signup")
 				.post('')
@@ -33,7 +33,7 @@ async function loginLogout() {
 	    })
 	})
 
-	await describe('GET user id : skian', function () {
+	await describe('GET user id : skian (check signup)', function () {
 	    it('GET response 200, user attributes are checked', function (done) {
 	        chai.request(baseUrl + 'users')
 				.get('/skian')
@@ -49,7 +49,7 @@ async function loginLogout() {
 	    })
 	})
 
-	await describe('POST user id : skian again', function () {
+	await describe('POST user id : skian again (attempt to signup with exist id)', function () {
 	    it('statusCode = 400', function (done) {
 	        chai.request(baseUrl + "signup")
 				.post('')
@@ -71,7 +71,7 @@ async function loginLogout() {
 	    })
 	})
 
-	await describe('POST user id to login but password wrong', function () {
+	await describe('POST user id to login but password wrong (login failure)', function () {
 	    it('statusCode = 400', function (done) {
 	        chai.request(baseUrl + "login")
 				.post('')
@@ -88,8 +88,8 @@ async function loginLogout() {
 	    })
 	})
 
-	await describe('POST user id to login but ID wrong', function () {
-	    it('statusCode = 400', function (done) {
+	await describe('POST user id to login but ID wrong (login failure)', function () {
+	    it('statusCode = 404', function (done) {
 	        chai.request(baseUrl + "login")
 				.post('')
 				.send({
@@ -105,8 +105,8 @@ async function loginLogout() {
 	    })
 	})
 
-	await describe('POST user id to login', function () {
-	    it('statusCode = 400', function (done) {
+	await describe('POST user id to login (successive login)', function () {
+	    it('statusCode = 200', function (done) {
 	        chai.request(baseUrl + "login")
 				.post('')
 				.send({
@@ -127,7 +127,7 @@ async function loginLogout() {
 	    })
 	})
 
-	await describe('GET session information', function () {
+	await describe('GET session information (check login)', function () {
 	    it('statusCode = 200', function (done) {
 	        chai.request(baseUrl + "login")
 				.get('/info')
@@ -140,8 +140,8 @@ async function loginLogout() {
 	    })
 	})
 
-	await describe('DELETE user id to login', function () {
-	    it('statusCode = 400', function (done) {
+	await describe('DELETE user id to login (log out)', function () {
+	    it('statusCode = 200', function (done) {
 	        chai.request(baseUrl + "logout")
 				.delete('')
 				.end(function(err, res) {

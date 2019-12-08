@@ -11,7 +11,7 @@ const baseUrl = 'http://34.239.13.251:3000/api/';
 async function items() {
 	url = baseUrl + 'users'
 
-	await describe('POST item id : 99', function () {
+	await describe('POST item id : 99 (insert dummy item)', function () {
 	    it('statusCode = 201', function (done) {
 	        chai.request(baseUrl + "items")
 				.post('')
@@ -33,7 +33,7 @@ async function items() {
 	    })
 	})
 
-	await describe('POST user id : skian', function () {
+	await describe('POST user id : skian (make new user)', function () {
 	    it('statusCode = 201', function (done) {
 	        chai.request(url)
 				.post('')
@@ -55,7 +55,7 @@ async function items() {
 	    })
 	})
 	
-	await describe('GET user id : skian', function () {
+	await describe('GET user id : skian (check new user)', function () {
 	    it('GET response 200, user attributes are checked', function (done) {
 	        chai.request(url)
 				.get('/skian')
@@ -71,7 +71,7 @@ async function items() {
 	    })
 	})
 
-	await describe('PUT user id : skian', function () {
+	await describe('PUT user id : skian (modify user\' customized keyword)', function () {
 	    it('PUT response 200', function (done) {
 	        chai.request(url)
 				.put('/skian')
@@ -88,7 +88,7 @@ async function items() {
 	    })
 	})
 
-	await describe('GET user id : skian', function () {
+	await describe('GET user id : skian (check customized keyword modification)', function () {
 	    it('GET response item  200, field values are checked', function (done) {
 	        chai.request(url)
 				.get('/skian')
@@ -104,7 +104,7 @@ async function items() {
 	    })
 	})
 
-	await describe('PUT user id : skian', function () {
+	await describe('PUT user id : skian (modify user\'s password)', function () {
 	    it('PUT response 200', function (done) {
 	        chai.request(url)
 				.put('/skian')
@@ -121,7 +121,7 @@ async function items() {
 	    })
 	})	
 
-	await describe('GET user id : skian', function () {
+	await describe('GET user id : skian (check password modification)', function () {
 	    it('GET response item  200, field values are checked', function (done) {
 	        chai.request(url)
 				.get('/skian')
@@ -137,7 +137,7 @@ async function items() {
 	    })
 	})
 
-	await describe('PUT user id : skian, item id : 99', function () {
+	await describe('PUT user id : skian, item id : 99 (purchase item)', function () {
 	    it('PUT response 200', function (done) {
 	        chai.request(url)
 				.put('/skian/99')
@@ -149,7 +149,7 @@ async function items() {
 	    })
 	})
 
-	await describe('GET user id : skian', function () {
+	await describe('GET user id : skian (check purchase)', function () {
 	    it('GET response item  200, field values are checked', function (done) {
 	        chai.request(url)
 				.get('/skian')
@@ -164,8 +164,8 @@ async function items() {
 	    })
 	})
 
-	await describe('PUT user id : skian, item id : 99', function () {
-	    it('PUT response 200', function (done) {
+	await describe('PUT user id : skian, item id : 99 (attempt to purchase purchased item)', function () {
+	    it('PUT response 202', function (done) {
 	        chai.request(url)
 				.put('/skian/99')
 				.end(function(err, res) {
@@ -176,7 +176,7 @@ async function items() {
 	    })
 	})
 
-	await describe('DELETE user id : skian, item id : 99', function () {
+	await describe('DELETE user id : skian, item id : 99 (purchase cancel)', function () {
 	    it('statusCode 200', function (done) {
 	        chai.request(url)
 				.delete('/skian/99')
@@ -188,7 +188,7 @@ async function items() {
 	    })
 	})
 
-	await describe('GET user id : skian', function () {
+	await describe('GET user id : skian (check cancel)', function () {
 	    it('GET response item  200, field values are checked', function (done) {
 	        chai.request(url)
 				.get('/skian')
@@ -204,7 +204,7 @@ async function items() {
 	})
 
 
-	await describe('DELETE user id : skian', function () {
+	await describe('DELETE user id : skian (delete user)', function () {
 	    it('statusCode = 200', function (done) {
 	        chai.request(url)
 				.delete('/skian')
@@ -216,7 +216,7 @@ async function items() {
 	    })
 	})
 
-	await describe('GET user id : skian', function () {
+	await describe('GET user id : skian (check deletion)', function () {
 	    it('statusCode = 404', function (done) {
 			chai.request(url)
 				.get('/skian')
@@ -228,7 +228,7 @@ async function items() {
 	    })
 	})
 
-	await describe('DELETE item id : 99', function () {
+	await describe('DELETE item id : 99 (remove dummy item)', function () {
 	    it('statusCode = 200', function (done) {
 	        chai.request(baseUrl + "items")
 				.delete('/99')
