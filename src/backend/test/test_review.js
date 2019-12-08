@@ -7,6 +7,7 @@ chai.use(chaiHttp);
 let crypto = require('crypto');
 
 const baseUrl = 'http://34.239.13.251:3000/api/';
+// const baseUrl = 'http://localhost:3000/api/';
 
 
 async function setuser() {
