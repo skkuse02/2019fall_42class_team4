@@ -4,6 +4,7 @@ var express = require('express');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 chai.use(chaiHttp);
+let crypto = require('crypto');
 
 const baseUrl = 'http://localhost:3000/api/';
 
@@ -50,10 +51,6 @@ async function deleteuser() {
 	})
 }
 
-async function usercheck() {
-	url1 = baseUrl + 'users';
-}
-
 async function insertitem() {
 	url2 = baseUrl + 'items';
 
@@ -66,7 +63,7 @@ async function insertitem() {
 					name : ["dummy"],
 					price : 50.5,
 					total_keywords_map : [],
-					total_review : 0,
+					total_review_num : 0,
 					total_star_sum : 0,
 					review_id_maker : 0
 				})
@@ -228,7 +225,43 @@ async function reviews() {
 	    })
 	})
 
-	//await usercheck();
+	//check user data
+	await describe('GET user id : skian', function () {
+	    it('GET response item  200, original value doesn\'t modified\n posted_reviews & recommended_reviews are modified', function (done) {
+	        chai.request(baseUrl+"users")
+				.get('/skian')
+				.end(function(err, res) {
+	                expect(err).to.be.null;
+					expect(res.statusCode).to.equal(200);
+					expect(res.body.id).to.equal("skian");
+					expect(res.body.name).to.equal("Yoo");
+					expect(res.body.password).to.equal(crypto.createHash('sha512').update("qwer1234").digest('base64'));
+					expect(res.body.customized_keyword.length).to.equal(0);
+					expect(res.body.posted_reviews[0]).to.equal("99 0");
+					expect(res.body.recommended_reviews[0]).to.equal("99 0");
+	                done();
+	        });
+	    })
+	})
+
+	//check item data
+	await describe('GET item id : 99', function () {
+	    it('GET response 200, original value doesn\'t modified\n review_id_maker & total_review & total_star_sum are modified', function (done) {
+	        chai.request(baseUrl+"items")
+				.get('/99')
+				.end(function(err, res) {
+	                expect(err).to.be.null;
+					expect(res.statusCode).to.equal(200);
+					expect(res.body[0].id).to.equal(99);
+					expect(res.body[0].name[0]).to.equal("dummy");
+					expect(res.body[0].total_star_sum).to.equal(1.5);
+					expect(res.body[0].total_review_num).to.equal(1);
+					expect(res.body[0].review_id_maker).to.equal(1);
+					expect(res.body[0].price).to.equal(50.5);
+	                done();                              
+	        });
+	    })
+	})
 
 	await describe('DELETE review id : 0\'s recommendation', function () {
 	    it('DELETE response 204, field value are checked', function (done) {

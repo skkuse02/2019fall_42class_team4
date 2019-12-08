@@ -232,8 +232,7 @@ router.put('/:item_id/:review_id', function (req, res, next) {
                 total_star_sum += item_rating
                 reviewPutPromise.push(firestore.collection("items").doc("" + item_id).update({
                   total_keywords_map: total_keywords_map,
-                  total_star_sum: total_star_sum,
-                  total_review_num: firebase.firestore.FieldValue.increment(1)
+                  total_star_sum: total_star_sum
                 }))
                 Promise.all(reviewPutPromise)
                   .then(() => { res.status(200).send("review modification success") })
