@@ -33,7 +33,7 @@ async function items() {
 					price : 50.5,
 					total_keywords_map : [],
 					total_review : 0,
-					total_star_sum : 0
+					total_star_sum : 0,
 					review_id_maker : 0
 				})
 				.end(function(err, res) {
