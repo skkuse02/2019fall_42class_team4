@@ -4,7 +4,7 @@ npm i chai-http
 mocha --timeout 35000
 
 
-# manual 테스트 루틴 : 
+# manual 테스트 루틴 :
 
 1. 첫화면
 - 아이템 리스트 확인
@@ -54,3 +54,8 @@ mocha --timeout 35000
 
 10. Password Change 페이지
 - password 변경이 잘 되는지 확인
+
+# SCENARIO: 
+
+
+# DEMONSTRATION:
