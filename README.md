@@ -14,6 +14,8 @@
 ## - 김진태
 
 ### 진행상황 
+### - 구현 완료, 백엔드는 AWS EC2, 프론트엔드는 AWS S3에 배포 완료. (2019/12/8)
+### - 프론트엔드 접속 주소 : http://review-revolution-client.s3-website-us-east-1.amazonaws.com (2019/12/8 기준)
 ### - design specification 완료 (2019/11/12)
 ### - design specification 4차 checkpoint : Testing Plan, State Diagram, Package Diagram 보완 (2019/11/12)
 ### - design specification 3차 checkpoint : Protocol, Database Design 작성 (2019/11/09)

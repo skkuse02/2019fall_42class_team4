@@ -59,7 +59,7 @@ export default {
     }
   },
   methods: {
-    scroll (that) {
+    scroll (that, itemId) {
       let debounceTempo = 500 // ms 단위의 debounce 주기
       window.onscroll = _.debounce(() => {
         let bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 100 // 밑에서 100만큼 거리부터 trigger됨. 확인코드: console.log(window.innerHeight, window.pageYOffset, document.body.offsetHeight)
@@ -73,9 +73,13 @@ export default {
               }
               let newReviews = response.data
               newReviews.forEach(review => { // 유저가 추천한 리뷰에 표시
-                if (that.recommendMap[review.id] !== undefined) {
+                if (that.recommendMap[itemId][review.id] !== undefined) {
                   review.isRecommended = true
                 }
+                review.id = unescape(review.id) // escape 했던 string을 복원한다.
+                review.author = unescape(review.author)
+                review.title = unescape(review.title)
+                review.content = unescape(review.content)
               })
               that.curItemReviews.push(...newReviews)
               that.offsetValue = response.data.pop()[criteriaMap[that.criteria]]
@@ -97,7 +101,7 @@ export default {
     }
   },
   mounted () {
-    setTimeout(() => { this.scroll(this) }, 1000)// fixed bug : initial scrolling can cause double request of review
+    setTimeout(() => { this.scroll(this, this.curItem.id) }, 1000)// fixed bug : initial scrolling can cause double request of review
   },
   created () {
     const run = async () => {
@@ -116,7 +120,6 @@ export default {
         }
         recommendMap[kvPair[0]][kvPair[1]] = true
       })
-
       // 현재 아이템 불러오기
       const res = await this.$http.get('/api/items/' + itemId)
       this.curItem = res.data[0]
@@ -134,6 +137,10 @@ export default {
         if (recommendMap[itemId][review.id]) {
           review.isRecommended = true
         }
+        review.id = unescape(review.id) // escape 했던 string을 복원한다.
+        review.author = unescape(review.author)
+        review.title = unescape(review.title)
+        review.content = unescape(review.content)
       })
       this.offsetValue = resR.data.pop()[criteriaMap[this.criteria]]
 
@@ -154,6 +161,10 @@ export default {
           if (recommendMap[similarItemId][review.id]) {
             review.isRecommended = true
           }
+          review.id = unescape(review.id) // escape 했던 string을 복원한다.
+          review.author = unescape(review.author)
+          review.title = unescape(review.title)
+          review.content = unescape(review.content)
         })
         this.similarItemsReviews.push(reviews)
       }
