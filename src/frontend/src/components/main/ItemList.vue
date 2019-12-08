@@ -104,10 +104,10 @@
                           <v-flex xs12>
                             <v-textarea
                               v-model="reviewContent"
-                                :counter="3000"
+                                :counter="500"
                               label="content"
                               auto-grow
-                              :rules="[rule.required, rule.maxLength(3000)]"
+                              :rules="[rule.required, rule.maxLength(500)]"
                               required
                             >
                             </v-textarea>
@@ -228,7 +228,7 @@ export default {
       }
     },
     async Save () { // before Save run, LoadReview always run to provide proper value: this.isReview, this.postMap
-      if (!this.$refs.form.validate()) {
+      if (!this.$refs.form.reduce((acc, cur) => acc && cur.validate(), true)) {
         alert('입력을 올바르게 해주세요!')
         return
       }

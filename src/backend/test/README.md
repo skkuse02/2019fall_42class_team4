@@ -1,8 +1,28 @@
-npm i chai
-npm i chai-http
+# SCENARIO: 
 
-mocha --timeout 35000
+1. 회원가입
+2. 로그인
+3. 개인정보 변경 (키워드 변경, 비밀번호 변경)
+4. 상품 검색
+5. 유사 상품 비교, 선택
+6. 리뷰 Navigation (평점순, 최신순, 키워드 포함 조건)
+7. 상품 구매 + 내가 구매한 상품 목록 보기 + 상품 삭제
+8. 리뷰 작성 + 리뷰 삭제
+9. 리뷰 추천, 추천 취소 + 내가 추천한 리뷰 목록 보기 
 
+# DEMONSTRATION:
+
+Reference 사이트인 AMAZON과 ReviewRevolution의 상품 검색, 리뷰 탐색 편의성 비교 
+
+
+
+
+
+
+
+# Automized 테스트 실행 방법
+npm i 입력 후
+npm test 입력
 
 # manual 테스트 루틴 :
 
@@ -54,8 +74,3 @@ mocha --timeout 35000
 
 10. Password Change 페이지
 - password 변경이 잘 되는지 확인
-
-# SCENARIO: 
-
-
-# DEMONSTRATION:
