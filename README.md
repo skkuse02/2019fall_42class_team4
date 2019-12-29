@@ -45,7 +45,7 @@
 ### 9. 리뷰 추천, 추천 취소 + 내가 추천한 리뷰 목록 보기 
 ![](./demoVideos/reviewRecommendation.gif)
 
-- ### 프론트엔드 접속 주소 : http://review-revolution-client.s3-website-us-east-1.amazonaws.com (2019/12/8 기준)
+- ### 프론트엔드 접속 주소 : http://review-revolution-client.s3-website-us-east-1.amazonaws.com <배포 종료> (2019/12/8 기준)
 
 ## Automized 테스트 (integration test) 실행 방법
 /src/backend/ 에서
@@ -230,7 +230,7 @@ PS C:\Users\mdy60\OneDrive\바탕 화면\소프트웨어 공학개론\project\20
 
 ### 진행상황 
 ### - 구현 완료, 백엔드는 AWS EC2, 프론트엔드는 AWS S3에 배포 완료. (2019/12/8)
-### - 프론트엔드 접속 주소 : http://review-revolution-client.s3-website-us-east-1.amazonaws.com (2019/12/8 기준)
+### - 프론트엔드 접속 주소 : http://review-revolution-client.s3-website-us-east-1.amazonaws.com <배포 종료> (2019/12/8 기준)
 ### - design specification 완료 (2019/11/12)
 ### - design specification 4차 checkpoint : Testing Plan, State Diagram, Package Diagram 보완 (2019/11/12)
 ### - design specification 3차 checkpoint : Protocol, Database Design 작성 (2019/11/09)
